@@ -2,27 +2,29 @@ const express = require('express');
 const router = express.Router();
 const { client, COMPANION_PROMPT } = require('../lib/anthropic');
 const { retrieve } = require('../lib/rag');
+const { getLiveMatchContext } = require('../lib/sports-api');
 
 function buildMatchContextString(matchContext) {
-  if (!matchContext) return 'No live match context available.';
-  const { homeTeam, awayTeam, homeScore, awayScore, minute, stage } = matchContext;
+  const { homeTeam, awayTeam, homeScore, awayScore, minute, stage, isLive } = matchContext;
   const score = (homeScore != null && awayScore != null)
     ? `${homeScore}-${awayScore}`
-    : 'score not available';
+    : 'pre-match';
   const time = minute ? `${minute}'` : 'kickoff';
-  const round = stage || 'World Cup 2026';
-  return `${homeTeam} vs ${awayTeam} | ${score} | ${time} | ${round}`;
+  const status = isLive ? 'LIVE' : 'upcoming';
+  return `${homeTeam} vs ${awayTeam} | ${score} | ${time} | ${stage} | ${status}`;
 }
 
 router.post('/', async (req, res) => {
   try {
-    const { message, conversationHistory = [], matchContext = null } = req.body;
+    const { message, conversationHistory = [] } = req.body;
 
-    const retrievedKnowledge = retrieve(message, 3);
-    const matchContextString = buildMatchContextString(matchContext);
+    const [matchContext, retrievedKnowledge] = await Promise.all([
+      getLiveMatchContext(),
+      Promise.resolve(retrieve(message, 3)),
+    ]);
 
     const systemPrompt = COMPANION_PROMPT
-      .replace('{match_context}', matchContextString)
+      .replace('{match_context}', buildMatchContextString(matchContext))
       .replace('{retrieved_knowledge}', retrievedKnowledge);
 
     const messages = [
@@ -37,7 +39,7 @@ router.post('/', async (req, res) => {
       messages,
     });
 
-    res.json({ reply: response.content[0].text });
+    res.json({ reply: response.content[0].text, matchContext });
   } catch (error) {
     console.error('Companion error:', error);
     res.status(500).json({ error: 'Something went wrong' });

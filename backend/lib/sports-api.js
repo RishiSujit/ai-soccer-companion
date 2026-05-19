@@ -1,17 +1,66 @@
-// API-Football client — https://www.api-football.com
-// Free tier: 100 requests/day
+const axios = require('axios');
 
-const API_KEY = process.env.API_FOOTBALL_KEY;
-const BASE_URL = 'https://v3.football.api-sports.io';
+const FALLBACK = {
+  homeTeam: 'Argentina',
+  awayTeam: 'France',
+  homeScore: null,
+  awayScore: null,
+  minute: null,
+  stage: 'Group Stage',
+  isLive: false,
+};
 
-async function fetchMatchContext(matchId) {
-  // TODO: Phase 4 — fetch live score, events, and lineups for match companion
-  return null;
+const FIFA_WORLD_CUP_LEAGUE_ID = 1;
+
+const api = axios.create({
+  baseURL: 'https://v3.football.api-sports.io',
+  headers: {
+    'x-apisports-key': process.env.API_FOOTBALL_KEY,
+  },
+  timeout: 5000,
+});
+
+function extractMatchContext(fixture, isLive) {
+  const { teams, goals, fixture: details, league } = fixture;
+  return {
+    homeTeam: teams.home.name,
+    awayTeam: teams.away.name,
+    homeScore: goals.home,
+    awayScore: goals.away,
+    minute: details.status.elapsed ?? null,
+    stage: league.round ?? 'World Cup 2026',
+    isLive,
+  };
 }
 
-async function fetchLiveMatches() {
-  // TODO: Phase 4 — fetch all live World Cup 2026 matches
-  return [];
+async function getLiveMatchContext() {
+  try {
+    // Step 1 — check for live World Cup matches
+    const liveRes = await api.get('/fixtures', { params: { live: 'all' } });
+    const liveFixtures = liveRes.data.response ?? [];
+    const liveWCMatch = liveFixtures.find(
+      f => f.league.id === FIFA_WORLD_CUP_LEAGUE_ID
+    );
+
+    if (liveWCMatch) {
+      return extractMatchContext(liveWCMatch, true);
+    }
+
+    // Step 2 — no live match, fetch the next upcoming World Cup fixture
+    const nextRes = await api.get('/fixtures', {
+      params: { league: FIFA_WORLD_CUP_LEAGUE_ID, season: 2026, next: 1 },
+    });
+    const nextFixtures = nextRes.data.response ?? [];
+
+    if (nextFixtures.length > 0) {
+      return extractMatchContext(nextFixtures[0], false);
+    }
+
+    return FALLBACK;
+  } catch (error) {
+    console.error('Sports API error:', error.message);
+    return FALLBACK;
+  }
 }
 
-module.exports = { fetchMatchContext, fetchLiveMatches };
+module.exports = { getLiveMatchContext };
