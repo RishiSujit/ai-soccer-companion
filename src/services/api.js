@@ -28,7 +28,7 @@ export const sendCompanionMessage = async (message, conversationHistory, matchCo
 };
 
 export const getPredictionOptions = async (matchId) => {
-  const response = await fetch(`${API_URL}/api/predictions/options?matchId=${matchId}`);
+  const response = await fetch(`${API_URL}/api/predictions/options/${matchId}`);
   return response.json();
 };
 

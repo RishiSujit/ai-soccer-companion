@@ -188,6 +188,212 @@
   clip-path: polygon(0 45%, 65% 45%, 40% 20%, 55% 5%, 100% 50%, 55% 95%, 40% 80%, 65% 55%, 0 55%);
 }
 
+/* ── Nav tabs ─────────────────────────────────────────────── */
+
+.nav-tabs {
+  display: flex;
+  background: var(--bg-surface);
+  border-bottom: 0.5px solid #1e1e2e;
+  flex-shrink: 0;
+}
+
+.nav-tab {
+  flex: 1;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text-faint);
+  font-size: 12px;
+  font-weight: 500;
+  font-family: 'Inter', sans-serif;
+  padding: 10px 0;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+  letter-spacing: 0.01em;
+}
+
+.nav-tab:hover {
+  color: var(--text-muted);
+}
+
+.nav-tab--active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+/* ── Predictions view ─────────────────────────────────────── */
+
+.predictions-view {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 24px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 860px;
+  width: 100%;
+  align-self: center;
+  scrollbar-width: none;
+}
+
+.predictions-view::-webkit-scrollbar {
+  display: none;
+}
+
+.prediction-card {
+  background: var(--bg-surface);
+  border: 0.5px solid #2a2a3e;
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.prediction-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.prediction-card__teams {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.prediction-card__kickoff {
+  font-size: 11px;
+  color: var(--text-faint);
+}
+
+.prediction-card__label {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.prediction-options {
+  display: flex;
+  gap: 8px;
+}
+
+.prediction-option {
+  flex: 1;
+  background: var(--bg-surface-alt);
+  border: 0.5px solid #2a2a3e;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 500;
+  font-family: 'Inter', sans-serif;
+  padding: 9px 6px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  text-align: center;
+}
+
+.prediction-option:hover:not(:disabled) {
+  border-color: var(--accent-border);
+  color: var(--text-primary);
+}
+
+.prediction-option--selected {
+  background: var(--accent-dim);
+  border-color: var(--accent-border);
+  color: var(--accent);
+}
+
+.prediction-option:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.prop-bet-card {
+  background: var(--bg-surface);
+  border: 0.5px solid #2a2a3e;
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.prop-bet-card__question {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.prop-bet-options {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.prop-bet-option {
+  background: var(--bg-surface-alt);
+  border: 0.5px solid #2a2a3e;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 500;
+  font-family: 'Inter', sans-serif;
+  padding: 7px 14px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.prop-bet-option:hover:not(:disabled) {
+  border-color: var(--accent-border);
+  color: var(--text-primary);
+}
+
+.prop-bet-option--selected {
+  background: var(--accent-dim);
+  border-color: var(--accent-border);
+  color: var(--accent);
+}
+
+.prop-bet-option:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.lock-button {
+  width: 100%;
+  background: var(--accent);
+  color: #050d07;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 13px;
+  cursor: pointer;
+  margin-top: 4px;
+  transition: opacity 0.15s;
+}
+
+.lock-button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.lock-button--locked {
+  background: var(--accent-dim);
+  border: 0.5px solid var(--accent-border);
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  padding: 13px;
+  text-align: center;
+  margin-top: 4px;
+}
+
 /* ── Match companion ──────────────────────────────────────── */
 
 .companion-chat {
@@ -405,5 +611,13 @@
   .match-pill {
     width: calc(100% - 28px);
     margin: 10px 0 4px;
+  }
+
+  .predictions-view {
+    padding: 14px 14px 32px;
+  }
+
+  .prediction-options {
+    flex-direction: column;
   }
 }
