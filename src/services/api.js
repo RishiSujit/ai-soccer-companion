@@ -18,11 +18,11 @@ export const sendChatMessage = async (message, matchId, sessionId) => {
   return response.json();
 };
 
-export const sendCompanionMessage = async (message, conversationHistory, matchContext) => {
+export const sendCompanionMessage = async (message, conversationHistory, matchContext, userContext) => {
   const response = await fetch(`${API_URL}/api/chat`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ message, conversationHistory, matchContext }),
+    body: JSON.stringify({ message, conversationHistory, matchContext, userContext }),
   });
   return response.json();
 };
@@ -41,20 +41,80 @@ export const submitPrediction = async (userId, matchId, resultPrediction, propPr
   return response.json();
 };
 
-export const createGroup = async (name, userId) => {
+export const createGroup = async (userId, groupName) => {
   const response = await fetch(`${API_URL}/api/groups/create`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name, userId }),
+    body: JSON.stringify({ userId, groupName }),
   });
   return response.json();
 };
 
-export const joinGroup = async (inviteCode, userId, displayName) => {
+export const joinGroup = async (userId, inviteCode, displayName) => {
   const response = await fetch(`${API_URL}/api/groups/join`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ inviteCode, userId, displayName }),
+    body: JSON.stringify({ userId, inviteCode, displayName }),
   });
   return response.json();
+};
+
+export const getLeaderboard = async (groupId) => {
+  const response = await fetch(`${API_URL}/api/groups/${groupId}/leaderboard`);
+  return response.json();
+};
+
+export const getPlayerCard = async (playerName, team, position, userContext) => {
+  const response = await fetch(`${API_URL}/api/player-card`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ playerName, team, position, userContext }),
+  });
+  return response.json();
+};
+
+export const getLiveMatches = async () => {
+  try {
+    const response = await fetch(`${API_URL}/api/matches/live`);
+    if (!response.ok) throw new Error('No matches route');
+    return response.json();
+  } catch {
+    return null; // MatchSelector handles null with fallback
+  }
+};
+
+export const getRecapForTeam = async (team) => {
+  try {
+    const res = await fetch(`${API_URL}/api/home/recap/${encodeURIComponent(team)}`);
+    return res.json();
+  } catch {
+    return { recap: null };
+  }
+};
+
+export const getHotTake = async () => {
+  try {
+    const res = await fetch(`${API_URL}/api/home/hot-take`);
+    return res.json();
+  } catch {
+    return { hotTake: null };
+  }
+};
+
+export const voteOnHotTake = async (id, vote) => {
+  const res = await fetch(`${API_URL}/api/home/hot-take/${id}/vote`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ vote }),
+  });
+  return res.json();
+};
+
+export const getBracketForTeam = async (team) => {
+  try {
+    const res = await fetch(`${API_URL}/api/home/bracket/${encodeURIComponent(team)}`);
+    return res.json();
+  } catch {
+    return { bracket: [] };
+  }
 };

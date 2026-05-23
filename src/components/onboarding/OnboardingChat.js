@@ -3,7 +3,7 @@ import { sendOnboardingMessage } from '../../services/api';
 
 function OnboardingChat({ onTeamAssigned }) {
   const [messages, setMessages] = useState([
-    { role: 'assistant', content: "Hey! I'm going to help you find your World Cup team. Tell me — what's your favorite sports team, and what do you love about them?" },
+    { role: 'assistant', content: "Hey! Welcome to World Cup Companion. Quick question — do you already have a favorite soccer team, or are you starting fresh? ⚽" },
   ]);
   const [conversationHistory, setConversationHistory] = useState([]);
   const [input, setInput] = useState('');
@@ -31,7 +31,13 @@ function OnboardingChat({ onTeamAssigned }) {
 
       if (data.action === 'assign_team') {
         setIsDone(true);
-        onTeamAssigned({ team: data.team, reasoning: data.reasoning });
+        onTeamAssigned({
+          team: data.team,
+          reasoning: data.reasoning,
+          knownSports: data.knownSports || [],
+          favoriteTeams: data.favoriteTeams || [],
+          existingFan: data.existingFan || false,
+        });
       } else {
         setMessages(prev => [...prev, { role: 'assistant', content: data.reply }]);
         setConversationHistory([...updatedHistory, { role: 'assistant', content: data.reply }]);
@@ -53,15 +59,38 @@ function OnboardingChat({ onTeamAssigned }) {
     }
   };
 
+  const userMessageCount = messages.filter(m => m.role === 'user').length;
+
   return (
     <div className="onboarding-chat">
+      <div className="onboard-progress-header">
+        <span className="onboard-progress-label">
+          Finding your team · Step {Math.min(userMessageCount + 1, 3)} of 3
+        </span>
+        <div className="onboard-progress-bar">
+          <div
+            className="onboard-progress-fill"
+            style={{ width: `${Math.min((userMessageCount / 3) * 100, 100)}%` }}
+          />
+        </div>
+      </div>
+
       <div className="onboarding-chat__messages">
         {messages.map((msg, i) => (
           <div
             key={i}
-            className={`onboarding-chat__bubble onboarding-chat__bubble--${msg.role}`}
+            className="onboard-msg"
+            style={{ animation: 'slideUp 0.3s ease forwards' }}
           >
-            {msg.content}
+            {msg.role === 'assistant' && (
+              <div className="msg-sender-label">
+                <div className="ai-avatar">AI</div>
+                <span>Companion</span>
+              </div>
+            )}
+            <div className={`onboarding-chat__bubble onboarding-chat__bubble--${msg.role}`}>
+              {msg.content}
+            </div>
           </div>
         ))}
         {isLoading && (
@@ -81,7 +110,7 @@ function OnboardingChat({ onTeamAssigned }) {
           value={input}
           onChange={e => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder={isDone ? 'Team assigned!' : 'Type your answer...'}
+          placeholder={isDone ? 'Team assigned!' : 'Tell me about your favorite team...'}
           disabled={isLoading || isDone}
         />
         <button

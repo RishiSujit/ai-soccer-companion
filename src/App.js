@@ -1,11 +1,17 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import LandingPage from './components/LandingPage';
+import AuthScreen from './components/AuthScreen';
 import OnboardingChat from './components/onboarding/OnboardingChat';
 import TeamReveal from './components/onboarding/TeamReveal';
+import HomeScreen from './components/HomeScreen';
+import MatchSelector from './components/companion/MatchSelector';
 import CompanionChat from './components/companion/CompanionChat';
 import PredictionCard from './components/predictions/PredictionCard';
 import PropBetCard from './components/predictions/PropBetCard';
 import LockButton from './components/predictions/LockButton';
 import { submitPrediction } from './services/api';
+import GroupView from './components/groups/GroupView';
+import { supabase } from './lib/supabase';
 import './App.css';
 
 const HARDCODED_MATCH = {
@@ -19,17 +25,53 @@ const HARDCODED_MATCH = {
   ],
 };
 
-function Topbar() {
+function Topbar({ userName, userEmail, isGuest, onSignOut }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
   return (
     <header className="topbar">
       <div className="topbar__logo">⚽ World<span>Cup</span> Companion</div>
-      <div className="topbar__badge">2026</div>
+      <div className="topbar__right" ref={ref}>
+        {isGuest ? (
+          <div className="topbar__user-label topbar__user-label--guest">Guest</div>
+        ) : (
+          <button
+            className="topbar__user-btn"
+            onClick={() => setOpen(o => !o)}
+            aria-label="Account menu"
+          >
+            <div className="topbar__avatar">
+              {userName ? userName[0].toUpperCase() : '?'}
+            </div>
+            <span className="topbar__user-name">{userName || userEmail || 'Account'}</span>
+            <span className="topbar__chevron">{open ? '▲' : '▼'}</span>
+          </button>
+        )}
+        {open && (
+          <div className="topbar__dropdown">
+            {userEmail && <div className="topbar__dropdown-email">{userEmail}</div>}
+            <button className="topbar__dropdown-signout" onClick={() => { setOpen(false); onSignOut(); }}>
+              Sign out
+            </button>
+          </div>
+        )}
+      </div>
     </header>
   );
 }
 
-function NavTabs({ view, setView }) {
+function NavTabs({ view, onTabChange }) {
   const tabs = [
+    { id: 'home', label: 'Home' },
     { id: 'companion', label: 'Companion' },
     { id: 'predictions', label: 'Predictions' },
     { id: 'group', label: 'Group' },
@@ -40,7 +82,7 @@ function NavTabs({ view, setView }) {
         <button
           key={tab.id}
           className={`nav-tab ${view === tab.id ? 'nav-tab--active' : ''}`}
-          onClick={() => setView(tab.id)}
+          onClick={() => onTabChange(tab.id)}
         >
           {tab.label}
         </button>
@@ -49,11 +91,29 @@ function NavTabs({ view, setView }) {
   );
 }
 
-function PredictionsView() {
+function PredictionsView({ userContext, userId, isGuest, onShowAuth }) {
   const [resultPrediction, setResultPrediction] = useState(null);
   const [propPredictions, setPropPredictions] = useState({});
   const [locked, setLocked] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  if (isGuest) {
+    return (
+      <div className="guest-lock">
+        <div className="guest-lock__icon">🔒</div>
+        <div className="guest-lock__title">Sign up to make predictions</div>
+        <div className="guest-lock__desc">
+          Create a free account to lock in your picks before kickoff and compete on the leaderboard.
+        </div>
+        <button className="guest-lock__cta" onClick={() => onShowAuth('signup')}>
+          Create free account →
+        </button>
+        <button className="guest-lock__secondary" onClick={() => onShowAuth('signin')}>
+          Already have an account? Sign in
+        </button>
+      </div>
+    );
+  }
 
   const isPastKickoff = Date.now() >= new Date(HARDCODED_MATCH.kickoff_time).getTime();
 
@@ -65,14 +125,14 @@ function PredictionsView() {
     setIsSubmitting(true);
     try {
       await submitPrediction(
-        'test-user-1',
+        userId,
         HARDCODED_MATCH.matchId,
         resultPrediction,
         propPredictions,
       );
       setLocked(true);
     } catch {
-      // Fail silently — LockButton stays unlocked so Sam can retry
+      // Fail silently — LockButton stays unlocked so user can retry
     } finally {
       setIsSubmitting(false);
     }
@@ -107,27 +167,316 @@ function PredictionsView() {
   );
 }
 
-const POST_ONBOARDING_VIEWS = ['companion', 'predictions', 'group'];
+const POST_ONBOARDING_VIEWS = ['home', 'companion', 'predictions', 'group'];
 
 function App() {
-  const [view, setView] = useState('companion');
+  const [view, setView] = useState('landing');
   const [assignedTeam, setAssignedTeam] = useState(null);
+  const [selectedMatch, setSelectedMatch] = useState(null);
+  const [userContext, setUserContext] = useState({
+    team: null, knownSports: [], favoriteTeams: [], existingFan: false,
+  });
+  const [userId, setUserId] = useState(null);
+  const [userName, setUserName] = useState(null);
+  const [userEmail, setUserEmail] = useState(null);
+  const [isGuest, setIsGuest] = useState(false);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [authMode, setAuthMode] = useState('signup');
 
-  const handleTeamAssigned = ({ team, reasoning }) => {
-    setAssignedTeam({ team, reasoning });
+  useEffect(() => {
+    async function initAuth() {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+
+        if (session?.user && !session.user.is_anonymous) {
+          const user = session.user;
+          const meta = user.user_metadata || {};
+          const displayName = meta.display_name || meta.first_name || user.email?.split('@')[0] || null;
+
+          setUserId(user.id);
+          setUserName(displayName);
+          setUserEmail(user.email || null);
+          setIsGuest(false);
+
+          // Check Supabase for completed onboarding
+          const { data: userData } = await supabase
+            .from('users')
+            .select('assigned_team, onboarding_complete, onboarding_answers, display_name')
+            .eq('id', user.id)
+            .single();
+
+          if (userData?.onboarding_complete && userData?.assigned_team) {
+            const saved = userData.onboarding_answers || {};
+            setUserContext({
+              team: userData.assigned_team,
+              knownSports: saved.knownSports || [],
+              favoriteTeams: saved.favoriteTeams || [],
+              existingFan: saved.existingFan || false,
+              name: userData.display_name || displayName,
+            });
+            setAssignedTeam({ team: userData.assigned_team, reasoning: '' });
+            if (userData.display_name) setUserName(userData.display_name);
+            setAuthLoading(false);
+            setView('home');
+            return;
+          }
+
+          // Fallback: check localStorage
+          const localContext = restoreTeamFromStorage(user.id);
+          if (localContext) {
+            setAuthLoading(false);
+            setView('home');
+            return;
+          }
+
+          // Authenticated but no onboarding yet
+          setAuthLoading(false);
+          setView('onboarding');
+          return;
+        }
+      } catch {
+        // fall through to anonymous sign-in
+      }
+
+      // No authenticated session — sign in anonymously and show landing
+      try {
+        const { data, error } = await supabase.auth.signInAnonymously();
+        if (!error && data?.user) {
+          setUserId(data.user.id);
+          setIsGuest(true);
+        } else {
+          setUserId('guest-' + Date.now());
+          setIsGuest(true);
+        }
+      } catch {
+        setUserId('guest-' + Date.now());
+        setIsGuest(true);
+      }
+      setAuthLoading(false);
+      // view stays 'landing' — guests start from the landing page
+    }
+
+    initAuth();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'SIGNED_OUT') {
+        setUserId(null);
+        setUserName(null);
+        setUserEmail(null);
+        setIsGuest(false);
+        setAssignedTeam(null);
+        setUserContext({ team: null, knownSports: [], favoriteTeams: [], existingFan: false });
+        setView('landing');
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  function restoreTeamFromStorage(uid) {
+    try {
+      const savedTeam = localStorage.getItem(`wcc_team_${uid}`);
+      const savedContext = localStorage.getItem(`wcc_context_${uid}`);
+      if (savedTeam && savedContext) {
+        const parsedTeam = JSON.parse(savedTeam);
+        const parsedContext = JSON.parse(savedContext);
+        setAssignedTeam(parsedTeam);
+        setUserContext(parsedContext);
+        return parsedContext;
+      }
+    } catch {
+      // Ignore corrupt storage
+    }
+    return null;
+  }
+
+  const handleAuthenticated = async (user) => {
+    const meta = user.user_metadata || {};
+    const displayName = meta.display_name || meta.first_name || user.email?.split('@')[0] || null;
+
+    setUserId(user.id);
+    setUserName(displayName);
+    setUserEmail(user.email || null);
+    setIsGuest(false);
+
+    try {
+      const { data: userData } = await supabase
+        .from('users')
+        .select('assigned_team, onboarding_complete, onboarding_answers, display_name')
+        .eq('id', user.id)
+        .single();
+
+      if (userData?.onboarding_complete && userData?.assigned_team) {
+        const saved = userData.onboarding_answers || {};
+        setUserContext({
+          team: userData.assigned_team,
+          knownSports: saved.knownSports || [],
+          favoriteTeams: saved.favoriteTeams || [],
+          existingFan: saved.existingFan || false,
+          name: userData.display_name || displayName,
+        });
+        setAssignedTeam({ team: userData.assigned_team, reasoning: '' });
+        if (userData.display_name) setUserName(userData.display_name);
+        setView('home');
+        return;
+      }
+    } catch {
+      // fall through to localStorage check
+    }
+
+    // Fallback: check localStorage
+    const localContext = restoreTeamFromStorage(user.id);
+    if (localContext) {
+      setView('home');
+      return;
+    }
+
+    // Brand new user — go to onboarding
+    setView('onboarding');
+  };
+
+  const handleGuest = async () => {
+    try {
+      const { data, error } = await supabase.auth.signInAnonymously();
+      if (!error && data?.user) {
+        setUserId(data.user.id);
+      } else {
+        setUserId('guest-' + Date.now());
+      }
+    } catch {
+      setUserId('guest-' + Date.now());
+    }
+    setIsGuest(true);
+    setView('onboarding');
+  };
+
+  const handleSignOut = async () => {
+    try {
+      const keys = Object.keys(localStorage).filter(k => k.startsWith('wcc_'));
+      keys.forEach(k => localStorage.removeItem(k));
+      await supabase.auth.signOut();
+    } catch {
+      // onAuthStateChange handles the state reset
+    }
+  };
+
+  const handleShowAuth = (mode) => {
+    setAuthMode(mode || 'signup');
+    setView('auth');
+  };
+
+  const handleTeamAssigned = async (data) => {
+    const team = { team: data.team, reasoning: data.reasoning };
+    const context = {
+      team: data.team,
+      knownSports: data.knownSports || [],
+      favoriteTeams: data.favoriteTeams || [],
+      existingFan: data.existingFan || false,
+    };
+    setAssignedTeam(team);
+    setUserContext(context);
+
+    if (userId && !isGuest) {
+      // Persist to Supabase so returning users skip onboarding
+      try {
+        await supabase
+          .from('users')
+          .update({
+            assigned_team: data.team,
+            onboarding_complete: true,
+            onboarding_answers: {
+              knownSports: data.knownSports || [],
+              favoriteTeams: data.favoriteTeams || [],
+              existingFan: data.existingFan || false,
+            },
+          })
+          .eq('id', userId);
+      } catch (err) {
+        console.error('Save team error:', err);
+      }
+
+      // localStorage as offline backup
+      try {
+        localStorage.setItem(`wcc_team_${userId}`, JSON.stringify(team));
+        localStorage.setItem(`wcc_context_${userId}`, JSON.stringify(context));
+      } catch {
+        // Storage might be full or blocked
+      }
+    }
+
     setView('reveal');
   };
 
   const handleContinue = () => {
-    setView('companion');
+    setView('home');
   };
+
+  const handleTabChange = (tabId) => {
+    if (tabId === 'companion') setSelectedMatch(null);
+    setView(tabId);
+  };
+
+  const handleNavigate = (v, match) => {
+    if (match) setSelectedMatch(match);
+    else if (v === 'companion') setSelectedMatch(null);
+    setView(v);
+  };
+
+  if (authLoading) {
+    return (
+      <div style={{
+        background: '#080810',
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'column',
+        gap: '12px',
+      }}>
+        <div style={{
+          width: '32px',
+          height: '32px',
+          background: '#7cfc8e',
+          borderRadius: '8px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '18px',
+        }}>⚽</div>
+        <div style={{
+          fontSize: '12px',
+          color: '#4444aa',
+          fontWeight: '600',
+        }}>Loading...</div>
+      </div>
+    );
+  }
+
+  if (view === 'landing') {
+    return <LandingPage onShowAuth={handleShowAuth} />;
+  }
+
+  if (view === 'auth') {
+    return (
+      <AuthScreen
+        initialMode={authMode}
+        onAuthenticated={handleAuthenticated}
+        onGuest={handleGuest}
+      />
+    );
+  }
 
   const showNav = POST_ONBOARDING_VIEWS.includes(view);
 
   return (
     <div className="app-shell">
-      <Topbar />
-      {showNav && <NavTabs view={view} setView={setView} />}
+      <Topbar
+        userName={userName}
+        userEmail={userEmail}
+        isGuest={isGuest}
+        onSignOut={handleSignOut}
+      />
+      {showNav && <NavTabs view={view} onTabChange={handleTabChange} />}
       <main className="app-shell__content">
         {view === 'onboarding' && (
           <OnboardingChat onTeamAssigned={handleTeamAssigned} />
@@ -136,16 +485,44 @@ function App() {
           <TeamReveal
             team={assignedTeam.team}
             reasoning={assignedTeam.reasoning}
+            knownSports={userContext.knownSports}
+            existingFan={userContext.existingFan}
             onContinue={handleContinue}
           />
         )}
-        {view === 'companion' && <CompanionChat />}
-        {view === 'predictions' && <PredictionsView />}
+        {view === 'home' && (
+          <HomeScreen
+            userContext={userContext}
+            userId={userId}
+            onNavigate={handleNavigate}
+          />
+        )}
+        {view === 'companion' && !selectedMatch && (
+          <MatchSelector onMatchSelected={(m) => setSelectedMatch(m)} />
+        )}
+        {view === 'companion' && selectedMatch && (
+          <CompanionChat
+            match={selectedMatch}
+            userContext={userContext}
+            userId={userId}
+            onBack={() => setSelectedMatch(null)}
+          />
+        )}
+        {view === 'predictions' && (
+          <PredictionsView
+            userContext={userContext}
+            userId={userId}
+            isGuest={isGuest}
+            onShowAuth={handleShowAuth}
+          />
+        )}
         {view === 'group' && (
-          <div className="placeholder">
-            <h2>Group coming soon</h2>
-            <p>Create or join a group to compete with friends.</p>
-          </div>
+          <GroupView
+            userContext={userContext}
+            userId={userId}
+            isGuest={isGuest}
+            onShowAuth={handleShowAuth}
+          />
         )}
       </main>
     </div>

@@ -28,6 +28,9 @@ router.post('/', async (req, res) => {
         action: 'assign_team',
         team: parsed.team,
         reasoning: parsed.reasoning,
+        knownSports: parsed.knownSports || [],
+        favoriteTeams: parsed.favoriteTeams || [],
+        existingFan: parsed.existingFan || false,
         reply: null,
       });
     }

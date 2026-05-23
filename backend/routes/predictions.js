@@ -40,8 +40,12 @@ router.post('/submit', async (req, res) => {
   try {
     const { userId, matchId, resultPrediction, propPredictions } = req.body;
 
-    if (!userId || !matchId) {
-      return res.status(400).json({ error: 'userId and matchId are required' });
+    if (!userId) {
+      return res.status(400).json({ error: 'userId is required' });
+    }
+
+    if (!matchId) {
+      return res.status(400).json({ error: 'matchId is required' });
     }
 
     // Fetch the match to validate kickoff_time

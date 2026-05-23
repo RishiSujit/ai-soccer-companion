@@ -20,6 +20,11 @@ router.post('/create', async (req, res) => {
       return res.status(400).json({ error: 'userId and groupName are required' });
     }
 
+    // Ensure user row exists before FK insert — frontend anon key can't write users due to RLS
+    await supabase
+      .from('users')
+      .upsert({ id: userId, auth_type: 'authenticated' }, { onConflict: 'id' });
+
     const inviteCode = generateInviteCode();
 
     const { data: group, error: groupError } = await supabase
@@ -57,6 +62,11 @@ router.post('/join', async (req, res) => {
     if (!userId || !inviteCode || !displayName) {
       return res.status(400).json({ error: 'userId, inviteCode, and displayName are required' });
     }
+
+    // Ensure user row exists before FK insert
+    await supabase
+      .from('users')
+      .upsert({ id: userId, auth_type: 'authenticated' }, { onConflict: 'id' });
 
     const { data: group, error: groupError } = await supabase
       .from('groups')
@@ -107,7 +117,7 @@ router.get('/:groupId/leaderboard', async (req, res) => {
 
     const { data: leaderboard, error } = await supabase
       .from('group_members')
-      .select('id, display_name, total_points, joined_at')
+      .select('id, user_id, display_name, total_points, joined_at')
       .eq('group_id', groupId)
       .order('total_points', { ascending: false });
 
