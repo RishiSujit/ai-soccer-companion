@@ -76,10 +76,12 @@ export const getPlayerCard = async (playerName, team, position, userContext) => 
 export const getLiveMatches = async () => {
   try {
     const response = await fetch(`${API_URL}/api/matches/live`);
-    if (!response.ok) throw new Error('No matches route');
-    return response.json();
-  } catch {
-    return null; // MatchSelector handles null with fallback
+    if (!response.ok) throw new Error('Failed');
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.error('getLiveMatches error:', err);
+    return { matches: [] };
   }
 };
 
