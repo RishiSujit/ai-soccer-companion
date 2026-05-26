@@ -112,6 +112,51 @@ export const voteOnHotTake = async (id, vote) => {
   return res.json();
 };
 
+export const getUpcomingPredictions = async () => {
+  try {
+    const res = await fetch(`${API_URL}/api/predictions/upcoming`);
+    return res.json();
+  } catch {
+    return { matches: [], fromFallback: true };
+  }
+};
+
+export const getUserPredictions = async (userId) => {
+  try {
+    const res = await fetch(`${API_URL}/api/predictions/user/${userId}`);
+    return res.json();
+  } catch {
+    return { predictions: [] };
+  }
+};
+
+export const getDailyCard = async () => {
+  try {
+    const res = await fetch(`${API_URL}/api/daily-card/today`);
+    return res.json();
+  } catch {
+    return { card: null, fromFallback: true };
+  }
+};
+
+export const submitDailyCard = async (userId, answers, bonusTaken) => {
+  const res = await fetch(`${API_URL}/api/daily-card/submit`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ userId, answers, bonusTaken }),
+  });
+  return res.json();
+};
+
+export const getMyDailyPrediction = async (userId) => {
+  try {
+    const res = await fetch(`${API_URL}/api/daily-card/my-prediction?userId=${userId}`);
+    return res.json();
+  } catch {
+    return { prediction: null };
+  }
+};
+
 export const getBracketForTeam = async (team) => {
   try {
     const res = await fetch(`${API_URL}/api/home/bracket/${encodeURIComponent(team)}`);

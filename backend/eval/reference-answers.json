@@ -1,0 +1,527 @@
+{
+  "RC-01": {
+    "question": "What is the offside rule and when does it apply?",
+    "reference_answer": "Offside catches players trying to get a head start near the opponent's goal. When a teammate passes the ball forward to you, you must have at least two defending players between you and the goal at the exact moment the ball is kicked — not when you receive it. Those two defenders are almost always the goalkeeper plus one outfield defender. Think of it like a wide receiver running beyond the line of scrimmage before the snap in the NFL — illegal head start. The rule only applies in the opponent's half of the field. It does not apply on throw-ins, corner kicks, or goal kicks. It is one of the most debated calls in soccer and the reason VAR reviews every close goal before confirming it.",
+    "key_concepts": ["at least two defenders required", "judged at moment of pass not receipt", "only applies in opponent's half", "exempt on throw-ins, corners, goal kicks"],
+    "category": "Rules and Calls",
+    "analogy_sport": "NFL"
+  },
+  "RC-02": {
+    "question": "What is the difference between a yellow card and a red card?",
+    "reference_answer": "Soccer uses cards like a formal warning system. A yellow card is a caution — shown for reckless tackles, time-wasting, unsporting behavior, or arguing with the referee. The player stays on the field but is on notice. Two yellow cards in the same match automatically triggers a red card. A red card means immediate ejection — the player leaves the field and cannot return. Their team plays the rest of the match with 10 players instead of 11. Unlike a technical foul in the NBA where you stay on the court, a red card is permanent. Direct red cards are also given for violent conduct, serious dangerous fouls, or stopping an obvious goal-scoring opportunity — for example, the last defender tripping a player through on goal.",
+    "key_concepts": ["yellow = caution, player stays", "two yellows = automatic red", "red = ejection, team plays with 10", "direct red for violent conduct or denying obvious goal"],
+    "category": "Rules and Calls",
+    "analogy_sport": "NBA"
+  },
+  "RC-03": {
+    "question": "What is VAR and what types of decisions can it review?",
+    "reference_answer": "VAR stands for Video Assistant Referee — a team of remote officials who watch footage of key incidents and can flag the head referee to review a decision. Think of it like NFL replay review, but only for soccer's four most important situations: goals (checking for offside, fouls, or handball in the build-up), penalty decisions, red card incidents, and cases of mistaken identity where the referee disciplined the wrong player. VAR cannot review yellow cards or routine fouls. The head referee makes every final call — they can accept VAR's recommendation directly or walk to a pitchside monitor to watch the footage themselves. VAR was introduced to eliminate clear and obvious errors, but tight offside calls and contentious handball decisions still generate heavy debate.",
+    "key_concepts": ["reviews goals, penalties, red cards, mistaken identity only", "cannot review yellow cards", "head referee makes final call", "pitchside monitor option"],
+    "category": "Rules and Calls",
+    "analogy_sport": "NFL"
+  },
+  "RC-04": {
+    "question": "What is a penalty kick and what foul triggers one?",
+    "reference_answer": "A penalty kick is a direct shot on goal from 12 yards away with only the goalkeeper to beat. It is awarded when a defending player commits a foul inside their own penalty box — the large rectangle surrounding the goal. Think of it like getting a free throw in basketball after being fouled in the act of shooting, except it's one-on-one against the goalkeeper. The goalkeeper must stay on the goal line until the ball is kicked. Common fouls that trigger penalties include tripping an attacker inside the box, illegal handball that prevents a shot, or grabbing a shirt to stop a goal-scoring opportunity. Penalty kicks are scored approximately 75 to 80 percent of the time, making them the most valuable single event in a soccer match.",
+    "key_concepts": ["12 yards from goal", "foul inside penalty box", "goalkeeper on line until kick", "scored roughly 75-80% of the time"],
+    "category": "Rules and Calls",
+    "analogy_sport": "NBA"
+  },
+  "RC-05": {
+    "question": "What does injury time mean and how is it determined?",
+    "reference_answer": "The clock in soccer never stops — not for injuries, substitutions, VAR reviews, or goal celebrations. To compensate for this lost time, the referee adds extra minutes at the end of each 45-minute half called injury time or stoppage time. The fourth official (the sideline official) holds up a board showing the minimum additional minutes at the end of each half. The actual added time can exceed this number if further stoppages occur in injury time itself. Since 2022, referees have added significantly more time — sometimes 10 or more minutes — to account for extended VAR reviews and goal celebrations. Think of it like the two-minute warning in the NFL signaling the end is near, except unlike the NFL the clock keeps running continuously throughout, and the added time is where many World Cup matches are decided.",
+    "key_concepts": ["clock never stops in soccer", "added at end of each half", "fourth official shows board with minimum minutes", "actual time can exceed the shown amount"],
+    "category": "Rules and Calls",
+    "analogy_sport": "NFL"
+  },
+  "RC-06": {
+    "question": "How many substitutions does each team get per match?",
+    "reference_answer": "In World Cup matches, each team is allowed 5 substitutions during the game. However, teams can only pause play to substitute during 3 designated windows within regular time, plus halftime — so they need to plan substitutions strategically to avoid wasting a stoppage. If a team makes multiple changes in one stoppage window, it counts as one window but multiple substitutions. Before 2020, teams were limited to 3 substitutions per match. The extra two were added to manage fatigue and injury risk across a congested tournament schedule. Think of it like managing timeouts in football — you have limited opportunities to make personnel changes and choosing the right moment matters. A well-executed substitution in the 70th minute can completely change the dynamic of a match.",
+    "key_concepts": ["5 substitutions allowed per match", "only 3 stoppage windows plus halftime", "multiple subs can happen in one window", "changed from 3 subs before 2020"],
+    "category": "Rules and Calls",
+    "analogy_sport": "NFL"
+  },
+  "RC-07": {
+    "question": "What is a free kick and what is the difference between direct and indirect?",
+    "reference_answer": "A free kick is awarded after a foul and gives the fouled team possession at the spot of the foul with no opposition pressure at that moment. There are two types. A direct free kick can be shot straight at goal without the ball touching another player first — similar to a penalty shot in hockey. An indirect free kick must touch at least one other player before it can legally enter the net — the referee holds their arm up until that second touch happens. Indirect kicks are given for less serious infractions like dangerous play or goalkeeper handling violations. For all free kicks, defending players must stand at least 10 yards (9.15 meters) away while the kick is taken. Teams rehearse specific free kick routines because they produce a significant share of World Cup goals.",
+    "key_concepts": ["direct = can score immediately", "indirect = must touch another player first", "referee arm raised for indirect", "defending players must be 10 yards away"],
+    "category": "Rules and Calls",
+    "analogy_sport": "NHL"
+  },
+  "RC-08": {
+    "question": "What happens if a player receives two yellow cards in the same match?",
+    "reference_answer": "If a player receives a second yellow card in the same match, the referee immediately shows a red card — this is called a 'second yellow' or being 'sent off.' The player must leave the field immediately and cannot return under any circumstances. Their team plays the rest of the match with 10 players instead of 11, and cannot replace the ejected player with a substitute. This is different from a straight red card given for violent conduct, but the outcome is identical: ejection. Think of it like receiving your second technical foul in the NBA — the first tech is a warning you survive, but the second automatically ejects you for the remainder of the game. Players who received their first yellow for, say, a reckless tackle face extra danger if they continue tackling the same way.",
+    "key_concepts": ["second yellow = automatic red card", "player leaves immediately, cannot return", "team plays with 10 men for remainder", "no substitute can replace the ejected player"],
+    "category": "Rules and Calls",
+    "analogy_sport": "NBA"
+  },
+  "RC-09": {
+    "question": "What is a corner kick and when is one awarded?",
+    "reference_answer": "A corner kick is awarded when the defending team is the last to touch the ball before it crosses entirely over their own end line (the goal line), but without going into the goal. The attacking team restarts play from the corner arc — the quarter-circle at the corner of the field on the side where the ball went out. The kicker can whip the ball into the penalty box for teammates to head or shoot, or play it short to a nearby player to build a different angle of attack. Think of it like an inbound play in basketball after the ball goes out under the basket — except it's the attacking team that takes the restart in a very dangerous position near the goal. Corners are prime scoring opportunities that teams rehearse specific plays for.",
+    "key_concepts": ["awarded when defender last touches ball over their own goal line", "taken from corner arc on side ball exited", "ball played into box or short to teammate", "significant scoring opportunity"],
+    "category": "Rules and Calls",
+    "analogy_sport": "NBA"
+  },
+  "RC-10": {
+    "question": "What does it mean when a goalkeeper is shown a red card?",
+    "reference_answer": "When a goalkeeper receives a red card, they must immediately leave the field. The team must use one of their remaining substitutions to bring on a replacement goalkeeper. If the team has already used all their substitutions, an outfield player — typically a forward or midfielder — must put on the goalkeeper jersey and defend the goal for the remainder of the match. Playing with an untrained goalkeeper is an enormous disadvantage, like starting an NFL playoff game with your backup quarterback's backup. Goalkeepers most commonly receive red cards for handling the ball with their hands outside the penalty area, or for committing a foul that stops an opponent who had a clear path to goal — called denying an obvious goal-scoring opportunity, or DOGSO.",
+    "key_concepts": ["goalkeeper leaves immediately", "substitute goalkeeper must come on", "if no subs left, outfield player goes in goal", "red card for handling outside box or DOGSO"],
+    "category": "Rules and Calls",
+    "analogy_sport": "NFL"
+  },
+  "RC-11": {
+    "question": "What is the difference between a foul and a handball?",
+    "reference_answer": "A foul is illegal physical contact — tripping, pushing, charging recklessly, or tackling with excessive force. Soccer allows physical play, but poor technique or excessive aggression results in a foul. A handball is when the ball contacts a player's arm or hand, but not every handball is automatically illegal. The referee judges whether the arm was in an unnatural position — extended away from the body — or whether the player deliberately moved their arm toward the ball. Arms kept naturally close to the body usually are not given as handballs. Even an accidental handball in the penalty area can be penalized if it directly creates a goal or a scoring opportunity. Think of defensive pass interference in football — contact alone doesn't mean a penalty, the referee evaluates intent and position.",
+    "key_concepts": ["foul = illegal physical contact", "handball = arm in unnatural position or deliberate", "natural arm position usually not given", "accidental handball in box can still be penalized"],
+    "category": "Rules and Calls",
+    "analogy_sport": "NFL"
+  },
+  "RC-12": {
+    "question": "What happens if the score is tied after 90 minutes in a knockout match?",
+    "reference_answer": "In the group stage, ties end as draws and both teams earn one point. But knockout rounds must have a winner. If the score is level after 90 minutes, two additional 15-minute periods called extra time are played — 30 minutes total. Both teams always play the full extra time regardless of who scores during it; there is no sudden-death golden goal. If the score is still tied after 120 total minutes, the match goes to a penalty shootout. Think of NHL playoff overtime as a parallel — the extra periods are played in full segments before any shootout tiebreaker, and unlike NFL overtime, both teams are guaranteed equal chances throughout the extended play. Extra time and penalty shootouts are deeply stressful, physically exhausting events that can define entire careers.",
+    "key_concepts": ["draws allowed in group stage, not knockout", "extra time = two 15-minute periods", "full 30 minutes always played regardless of score", "penalty shootout if still tied after 120 minutes"],
+    "category": "Rules and Calls",
+    "analogy_sport": "NHL"
+  },
+  "RC-13": {
+    "question": "What is a penalty shootout and how does it work?",
+    "reference_answer": "A penalty shootout happens when knockout matches are still tied after 120 minutes of play. Each team selects 5 shooters who alternate taking kicks from 12 yards. After all 5 kicks per team, whichever scored more wins. If still level after 5 kicks each, it becomes sudden death: one kick per team, alternating, until one team scores and the other misses in the same round. Goalkeepers must remain on the goal line until the ball is kicked but can dive early if they guess the direction. Any outfield player on the field who hasn't received a red card can be a shooter. Teams strategize the order of their kickers — stronger, more composed shooters typically go earlier. Think of it like an NHL shootout or MLS tie-breaker but with the entire tournament potentially on every single kick.",
+    "key_concepts": ["5 kicks per team, alternating", "more goals after 5 kicks wins", "sudden death if still tied after 5 each", "goalkeeper stays on line until kick"],
+    "category": "Rules and Calls",
+    "analogy_sport": "NHL"
+  },
+  "RC-14": {
+    "question": "What does it mean when a referee plays advantage after a foul?",
+    "reference_answer": "When a foul occurs, the referee has the option to let play continue instead of stopping for a free kick. If the fouled team keeps the ball and is in a promising attacking position, the referee waves their arm forward and shouts 'play on' — this is called playing advantage. The idea is that stopping for a free kick would actually hurt the fouled team more than letting them keep possession in a better position. If the advantage fades within roughly 2 to 3 seconds because the attack breaks down, the referee can come back and award the original foul. Think of it like a basketball referee waving off a foul to let a fast break go to the basket — interrupting the play for free throws would be a worse outcome for the fouled team than letting them finish the possession.",
+    "key_concepts": ["referee lets play continue after foul", "advantage waved when fouled team has good position", "referee can return to foul if advantage dissolves within 2-3 seconds", "applied when stopping play hurts the fouled team"],
+    "category": "Rules and Calls",
+    "analogy_sport": "NBA"
+  },
+  "RC-15": {
+    "question": "What does xG mean and how does it measure a player's goal threat?",
+    "reference_answer": "xG stands for expected goals — a statistical measure that rates the quality of each shot on a scale from 0 to 1 based on factors like distance from goal, shot angle, whether it was headed or kicked, and the type of pass that created the opportunity. A penalty kick is approximately 0.76 xG, meaning a 76 percent chance of scoring. A close-range tap-in might be 0.9 xG. A speculative long shot from 35 yards might be 0.02 xG. Adding all of a team's xG across a match shows how many goals they deserved to score based on the quality of chances they created. Think of it like completion percentage over expected (CPOE) for NFL quarterbacks — it measures quality of opportunities, not just raw results, and reveals when a scoreline doesn't reflect the actual run of play.",
+    "key_concepts": ["scale of 0 to 1 per shot", "accounts for distance, angle, shot type", "penalty = ~0.76 xG", "team xG reveals if scoreline reflects performance"],
+    "category": "Rules and Calls",
+    "analogy_sport": "NFL"
+  },
+  "TS-01": {
+    "question": "What does a 4-3-3 formation mean and how does each position work?",
+    "reference_answer": "Formations describe how a team arranges their 10 outfield players — the goalkeeper is never counted. A 4-3-3 means 4 defenders in the backline, 3 midfielders in the middle, and 3 forwards up front. The numbers always read from back to front. The 4 defenders (typically 2 center backs in the middle plus 2 fullbacks on each side) protect the goal. The 3 midfielders connect defense to attack, control tempo, and win the ball back. The 3 forwards (usually 1 central striker plus 2 wingers on each side) create and score goals. Think of it like a football play diagram — the coach designs who lines up where and what each person's job is. Different formations shift the balance between defensive security and attacking threat.",
+    "key_concepts": ["4 defenders, 3 midfielders, 3 forwards", "goalkeeper not counted in formation", "numbers read back to front", "different formations balance defense vs attack"],
+    "category": "Teams and Styles",
+    "analogy_sport": "NFL"
+  },
+  "TS-02": {
+    "question": "What does it mean when a team plays defensively versus offensively?",
+    "reference_answer": "A defensively oriented team keeps most players in their own half, making it very hard for the opponent to find passing lanes or scoring chances. They absorb pressure and are happy with a 0-0 draw. An offensive team pushes players forward, takes risks with passes, and prioritizes creating chances even if it leaves gaps in their own defense. Most teams shift between these approaches depending on the score and opponent — leading by one goal with 10 minutes left calls for a very different strategy than trailing by one. Think of the difference between a prevent defense in the NFL (protect the lead, concede short gains) versus going no-huddle with 2 minutes left when you're trailing (attack aggressively, accept the risk). Soccer teams make the same calculation constantly throughout a match.",
+    "key_concepts": ["defensive = players behind the ball, accepting draws", "offensive = players forward, accepting defensive risk", "teams shift approach based on score", "scoreline determines tactical approach"],
+    "category": "Teams and Styles",
+    "analogy_sport": "NFL"
+  },
+  "TS-03": {
+    "question": "What is the difference between a striker and a winger?",
+    "reference_answer": "Both are forwards, but they operate in different areas of the field. A striker (also called a center forward) plays centrally, closest to the opponent's goal — their primary job is scoring. They are the main target for crosses and through-balls from teammates. A winger operates on the left or right side of the pitch, using pace and dribbling to beat defenders and either deliver the ball into the box or cut inside to shoot. Think of the striker like an NFL running back operating near the end zone — they get the final touch to finish. The winger is more like a wide receiver — a speed threat who creates space, generates opportunities, and delivers the ball. The best wingers score frequently themselves; others primarily record assists.",
+    "key_concepts": ["striker = central, primary scorer", "winger = wide, creates from sides", "striker targets crosses and through-balls", "wingers use pace to beat defenders and deliver"],
+    "category": "Teams and Styles",
+    "analogy_sport": "NFL"
+  },
+  "TS-04": {
+    "question": "What does it mean when a team presses high up the pitch?",
+    "reference_answer": "Pressing means actively chasing the ball to win it back instead of sitting back and waiting for the opponent to come forward. A high press means the entire team applies this pressure deep in the opponent's half — including forwards pressuring center backs and even the goalkeeper when they have the ball. The goal is to force errors in dangerous areas and create short-distance scoring opportunities from turnovers. It is aggressive, energy-intensive, and can create easy chances when it works, but leaves space behind the defensive line when it breaks down. Think of a full-court press in basketball — it creates chaos and forces mistakes, but a team that breaks it gets easy layups going the other direction. Teams that press high tend to score frequently from turnover situations.",
+    "key_concepts": ["pressing = actively chasing ball to win it", "high press = pressure applied in opponent's half", "forces errors in dangerous areas", "risk: leaves space behind if press is beaten"],
+    "category": "Teams and Styles",
+    "analogy_sport": "NBA"
+  },
+  "TS-05": {
+    "question": "Why do some teams have more possession than others and does that mean they are winning?",
+    "reference_answer": "Possession measures how much time each team has the ball, and more possession absolutely does not mean you are winning or playing better. A team can control 70 percent of the ball and lose 1-0 to a team that defends and counter-attacks. Some teams deliberately give the opponent the ball, preferring to defend compactly and spring forward quickly on turnovers. Possession stats can also be inflated by a team passing sideways in their own half without ever threatening the opponent's goal. Think of time of possession in the NFL — a team that runs the ball and controls the clock might win 17-13 against a faster offense that had more total yards. Managing the ball is valuable, but only if it leads to goal-scoring opportunities. Scorelines, not possession stats, decide who advances.",
+    "key_concepts": ["more possession does not mean winning", "counter-attacking teams deliberately cede possession", "possession without goal threat is not meaningful", "scorelines matter, not time with the ball"],
+    "category": "Teams and Styles",
+    "analogy_sport": "NFL"
+  },
+  "TS-06": {
+    "question": "What makes Brazil's style of soccer historically distinctive?",
+    "reference_answer": "Brazil's soccer identity is built on the concept of jogo bonito — literally 'the beautiful game.' Brazilian soccer has historically emphasized creative, improvisational, attack-minded play where individual skill, flair, and entertainment take priority over rigid defensive structure. Players are encouraged to dribble defenders, attempt flicks, and express themselves rather than follow a scripted system. This produced global legends including Pelé, Ronaldo, Ronaldinho, and Neymar. Brazil has won 5 World Cup titles — more than any other nation (1958, 1962, 1970, 1994, 2002). Think of the Showtime Lakers — the emphasis was on entertaining, fast, spectacular basketball that people loved watching regardless of the final score. Modern Brazil has become more tactically organized under recent coaches but still values technical excellence above all.",
+    "key_concepts": ["jogo bonito = beautiful game, creative and expressive", "5 World Cup titles, more than any nation", "produced Pelé, Ronaldo, Ronaldinho, Neymar", "individual flair prioritized over rigid structure"],
+    "category": "Teams and Styles",
+    "analogy_sport": "NBA"
+  },
+  "TS-07": {
+    "question": "What makes the German national team's approach different from others?",
+    "reference_answer": "Germany has historically been defined by tactical discipline, structured teamwork, and collective efficiency over individual brilliance. Their system emphasizes pressing in organized units, structured build-up play, and players being well-coached and disciplined positionally. Germany won the 2014 World Cup with a team where no single player was a global superstar, but every position functioned at a high level and the system outperformed more talented opponents. Think of the New England Patriots dynasty under Bill Belichick — it was not about one player, it was about executing the system better than anyone else, preparation, and discipline. Germany's youth academies, rebuilt in the early 2000s after poor international results, produced a generation of technically sound, tactically aware players who powered their 2014 title.",
+    "key_concepts": ["collective system over individual stars", "tactical discipline and organized pressing", "strong youth development academies", "won 2014 World Cup with team-first approach"],
+    "category": "Teams and Styles",
+    "analogy_sport": "NFL"
+  },
+  "TS-08": {
+    "question": "Why is Argentina considered one of the favorites in any World Cup?",
+    "reference_answer": "Argentina enters every World Cup as a contender because they combine world-class individual talent throughout the lineup with strong tactical organization. They won the 2022 World Cup in Qatar, ending a 36-year wait, with Lionel Messi delivering what many called the greatest individual World Cup performance ever. Their squad consistently features players from top European clubs in every position. Coach Lionel Scaloni built a resilient, hard-to-beat team that is effective in both possession and counter-attacking situations. Think of the Golden State Warriors dynasty — a roster with multiple star players who also played excellent team basketball, with the combination of individual excellence and collective cohesion making them nearly unstoppable. Argentina's record of 3 World Cup titles and consistent tournament depth makes them perennial favorites.",
+    "key_concepts": ["3 World Cup titles (1978, 1986, 2022)", "won 2022 with Messi at peak", "world-class players throughout the lineup", "resilient system under coach Scaloni"],
+    "category": "Teams and Styles",
+    "analogy_sport": "NBA"
+  },
+  "TS-09": {
+    "question": "What makes Morocco a compelling underdog story in recent World Cups?",
+    "reference_answer": "Morocco became the story of the 2022 World Cup by reaching the semifinals — the first African or Arab nation to ever advance that far. Along the way they eliminated Spain and Portugal, two former World Cup champions. Morocco succeeded through extremely disciplined defensive organization, compact team shape, and dangerous counter-attacks rather than individual star power. Their collective unity and national pride created a team that outperformed expectations at every stage. Think of an 8-seed in the NBA playoffs eliminating top seeds through defense, hustle, and clutch shooting — nobody expected them to be there, and they kept winning anyway. Morocco showed that a perfectly organized system with the right mentality can neutralize elite individual talent. They enter 2026 as a genuine dark horse contender rather than a surprise.",
+    "key_concepts": ["first African team in World Cup semifinal (2022)", "eliminated Spain and Portugal", "disciplined defense and counter-attacks", "team cohesion over individual stars"],
+    "category": "Teams and Styles",
+    "analogy_sport": "NBA"
+  },
+  "TS-10": {
+    "question": "What does it mean for a team to play a counter-attacking style?",
+    "reference_answer": "Counter-attacking teams deliberately concede possession and sit in a compact defensive block deep in their own half, making it very difficult to score against them. When they win the ball, they transition instantly and explosively — sending their fastest players forward before the opposing team can reorganize defensively. The key is exploiting the space left behind when the attacking team has pushed players forward. Counter-attacks often produce very fast, dangerous goal-scoring chances because the opponent is caught out of position. Think of a basketball team that plays excellent defense and then pushes the ball into transition for fast-break layups before the defense sets — exploiting disorganization rather than grinding through a set halfcourt offense. Counter-attacking soccer can look passive when not in possession, but be lethal in the few moments it attacks.",
+    "key_concepts": ["deliberately sits deep and defends", "explodes forward on winning possession", "exploits space left by attacking team", "can look passive but produces dangerous chances"],
+    "category": "Teams and Styles",
+    "analogy_sport": "NBA"
+  },
+  "TS-11": {
+    "question": "What is the difference between a defensive midfielder and an attacking midfielder?",
+    "reference_answer": "A defensive midfielder (sometimes called a holding midfielder or the number 6) sits directly in front of the back four defenders. Their main jobs are intercepting passes, breaking up attacks, and protecting the defensive line — they rarely take risks with the ball. Think of a middle linebacker reading the play and stopping it before it gets through the line. An attacking midfielder (the number 10) operates between the midfield and the forward line, creating scoring chances through creative passing, dribbling, and intelligent movement into space. They are the quarterback of the attack — reading defensive gaps and threading passes to strikers or wingers. The mindsets are nearly opposite: one destroys attacks before they develop, the other creates them.",
+    "key_concepts": ["defensive midfielder = screens defense, breaks up attacks, the 6", "attacking midfielder = creates chances, threads passes, the 10", "defensive mid rarely takes risks", "attacking mid is primary chance creator"],
+    "category": "Teams and Styles",
+    "analogy_sport": "NFL"
+  },
+  "TS-12": {
+    "question": "Why do coaches change formations during a match?",
+    "reference_answer": "Coaches adjust their team's formation during a match to respond to what is happening on the field — primarily to become more attacking when trailing, more defensive when protecting a lead, or to neutralize a specific threat from the opponent. If a team is losing 1-0 with 20 minutes left, the coach might remove a defensive midfielder and add a striker, shifting from 4-3-3 to 4-2-4, sacrificing defensive solidity for goal-scoring firepower. Substitutions often drive formation changes — bringing on a different type of player forces a positional reshuffle throughout the team. Think of a football coach switching from zone to man-to-man coverage, or going to the hurry-up offense when trailing late. Tactical flexibility is a mark of a well-prepared coaching staff.",
+    "key_concepts": ["respond to scoreline — trailing vs protecting lead", "substitutions often trigger formation changes", "trailing = sacrifice defense for attacking threat", "leading = increase defensive coverage"],
+    "category": "Teams and Styles",
+    "analogy_sport": "NFL"
+  },
+  "TS-13": {
+    "question": "What makes France consistently one of the strongest national teams?",
+    "reference_answer": "France consistently ranks among the world's best national teams because of their extraordinary depth — they can field multiple world-class players at nearly every position. Their player pool benefits enormously from diversity, with many players of African and Caribbean heritage giving France access to elite athleticism alongside strong technical development. France won the World Cup in 1998 and 2018, and reached the 2022 final, losing to Argentina on penalties. Their talent pipeline replenishes constantly — Zidane gave way to Henry, Henry to Ribéry, and now Mbappe leads the next generation. Think of Duke basketball — every year stars graduate and a new elite class arrives. France rarely goes through true rebuilding phases because the next generation is always ready to step in.",
+    "key_concepts": ["World Cup titles: 1998, 2018; finalist 2022", "extraordinary depth at every position", "diverse player pool with elite athleticism", "constant talent pipeline replenishment"],
+    "category": "Teams and Styles",
+    "analogy_sport": "NBA"
+  },
+  "TS-14": {
+    "question": "What does team chemistry mean in soccer and why does it matter?",
+    "reference_answer": "Team chemistry in soccer means players have built an intuitive understanding of each other's movement patterns, tendencies, and communication styles — so they can anticipate where teammates will be without needing to look or communicate explicitly. Soccer moves too fast for players to verbalize every decision, so years of playing together creates automatic coordination. International teams face a specific challenge: club players spend 9 to 10 months per year together, while national teams gather for only a few weeks before tournaments. Stars from different clubs must quickly synchronize. Think of the NBA All-Star Game — individual talent is elite but team chemistry is nearly zero, and the product looks like disorganized freelancing compared to a team that has played together for three seasons. Chemistry explains why a well-organized average team can beat a collection of superstars.",
+    "key_concepts": ["intuitive understanding built over time together", "international teams have limited time to develop chemistry", "club chemistry built over full seasons", "explains why organized teams beat talented collections"],
+    "category": "Teams and Styles",
+    "analogy_sport": "NBA"
+  },
+  "TS-15": {
+    "question": "What is the difference between club soccer and international soccer?",
+    "reference_answer": "Club teams — like Real Madrid, Manchester City, or Bayern Munich — compete year-round in domestic leagues and European competitions. Players train together daily, build deep familiarity, and develop intricate tactical systems over multiple seasons. International soccer is fundamentally different: each country's national team draws the best players from many different clubs and has only a few weeks together per year — during international breaks and major tournaments like the World Cup. This limited preparation time means international tactics must be simpler. Stars who dominate at their clubs sometimes struggle to recreate that chemistry with the national team because the connections haven't been built. Think of the difference between an NFL team that has run the same playbook for a full season versus a group of all-stars handed a playbook two weeks before a game.",
+    "key_concepts": ["clubs train daily, full season together", "international teams have limited weeks together", "international tactics must be simpler", "club stars don't always translate to national team success"],
+    "category": "Teams and Styles",
+    "analogy_sport": "NFL"
+  },
+  "PL-01": {
+    "question": "What position does a goalkeeper play and what makes a great one?",
+    "reference_answer": "The goalkeeper is the only player allowed to use their hands to control the ball, but only within their own penalty area — the large box around the goal. They are the last line of defense and every shot must beat them to count as a goal. Great goalkeepers need elite reflexes for close-range shots, the ability to command their penalty area by claiming crosses and organizing the defenders in front of them, accurate distribution to start attacks by throwing or kicking to teammates, and composure under extreme pressure. They wear a different colored jersey to be distinguishable from all other players. Think of the catcher in baseball — a position that faces a different direction than the rest of the team, controls the defensive rhythm, and must make split-second decisions in the most high-pressure moments of every game.",
+    "key_concepts": ["only player who can use hands (in own box)", "reflexes, aerial command, distribution, composure", "wears different colored jersey", "organizes the defense in front of them"],
+    "category": "Players",
+    "analogy_sport": "MLB"
+  },
+  "PL-02": {
+    "question": "What makes a center back different from a fullback?",
+    "reference_answer": "Both are defenders, but they play different positions with different responsibilities. Center backs play in the central defensive positions and are primarily responsible for stopping opposing strikers — they need to be physically strong, good at heading the ball to clear crosses, and disciplined positionally. Fullbacks play on the left and right sides of the defensive line, typically marking wingers. In modern soccer, fullbacks are expected to aggressively overlap forward and contribute to attacks — making them dual-threat players who defend and attack. Think of center backs like middle linebackers — physical, central, stopping the run. Fullbacks are like cornerbacks who can also run receiving routes — they defend one-on-one on their side but are also integral to the attacking system when the team has the ball.",
+    "key_concepts": ["center back = central, primarily stops strikers", "fullback = wide, marks wingers and joins attacks", "center backs need physicality and heading", "fullbacks need pace for modern overlapping roles"],
+    "category": "Players",
+    "analogy_sport": "NFL"
+  },
+  "PL-03": {
+    "question": "What does a defensive midfielder do and why is the role important?",
+    "reference_answer": "A defensive midfielder (also called a holding midfielder, CDM, or the number 6) is stationed directly in front of the back four defenders. Their primary function is screening the defense — intercepting passes before they reach dangerous areas, breaking up attacks, winning loose balls, and shutting down space. They make simple, safe passes to maintain possession rather than taking creative risks. They are also responsible for covering defensively when fullbacks push forward to attack. Think of a middle linebacker who reads the offensive play before it develops, closes down gaps, and eliminates problems before the running back gets through the line — protecting the secondary. A great defensive midfielder can make the entire team better without appearing in the highlight reel, and teams are visibly weaker without their best one.",
+    "key_concepts": ["screens the defense from attacks", "intercepts passes, breaks up plays", "makes safe passes rather than creative risks", "covers when fullbacks push forward"],
+    "category": "Players",
+    "analogy_sport": "NFL"
+  },
+  "PL-04": {
+    "question": "What makes Kylian Mbappe one of the most dangerous players?",
+    "reference_answer": "Kylian Mbappe is a French forward for Real Madrid widely considered the most complete attacker in world soccer. He combines among the fastest top-end speeds ever recorded for a player with technically excellent finishing, strong dribbling ability, and intelligent movement to create space. He scored 12 World Cup goals before turning 26 — only Pelé had more World Cup goals at that age. He won the World Cup with France in 2018 at just 19 years old. At the 2026 World Cup he will be 27, likely in his absolute prime. Think of him like Patrick Mahomes with LeBron James' athleticism — elite decision-making under pressure combined with freakish physical gifts that make him nearly impossible to contain when he gets even a step of space to accelerate.",
+    "key_concepts": ["elite top-end speed", "12 World Cup goals before age 26", "won 2018 World Cup at 19", "combines pace with finishing and dribbling"],
+    "category": "Players",
+    "analogy_sport": "NFL"
+  },
+  "PL-05": {
+    "question": "Who is Lionel Messi and why is he considered one of the greatest ever?",
+    "reference_answer": "Lionel Messi is an Argentine forward universally regarded as one of the two greatest soccer players in history alongside Pelé. He spent the peak of his career at FC Barcelona, winning 10 Spanish league titles and 4 Champions League (European club championship) titles. He has won the Ballon d'Or — soccer's top individual award — 8 times, more than anyone else. After years of heartbreak with Argentina in major tournaments, he won the 2022 World Cup in what many called the greatest individual World Cup performance ever played. Think of him like Michael Jordan — a generational talent who redefined what was possible and whose career was partly evaluated by whether he won the championship everyone expected. He has since moved to Inter Miami in MLS.",
+    "key_concepts": ["8 Ballon d'Or awards, most ever", "won 2022 World Cup with Argentina", "10 Spanish league titles and 4 Champions Leagues with Barcelona", "considered one of two greatest ever alongside Pelé"],
+    "category": "Players",
+    "analogy_sport": "NBA"
+  },
+  "PL-06": {
+    "question": "What makes Vinicius Jr. exciting to watch as an attacker?",
+    "reference_answer": "Vinicius Jr. is a Brazilian winger for Real Madrid who is one of the most exciting attackers in world soccer to watch. His defining traits are explosive acceleration out of a standstill, elite close control in tight spaces, and the confidence and skill to take on defenders one-on-one from the wide positions. He is a constant threat to dribble past his defender and create a dangerous situation or finish himself. Think of him like Tyreek Hill — a combination of elite straight-line speed and quick-twitch agility that makes him nearly unguardable in open space. Any defender who gives him a step of room is in trouble. He was named UEFA Champions League Player of the Season in 2024 and is expected to be a central figure in Brazil's 2026 World Cup campaign.",
+    "key_concepts": ["elite acceleration and close control", "takes on defenders one-on-one from wide", "constant dribbling threat", "Champions League Player of the Season 2024"],
+    "category": "Players",
+    "analogy_sport": "NFL"
+  },
+  "PL-07": {
+    "question": "What is Achraf Hakimi known for and what position does he play?",
+    "reference_answer": "Achraf Hakimi is a Moroccan defender who plays right back — the defensive position on the right side of the field — for Paris Saint-Germain. He is widely considered one of the best attacking fullbacks in the world, meaning he excels at both defending and aggressively joining the attack. When Morocco has the ball, Hakimi sprints forward along the right side, overlapping wingers, delivering crosses, and sometimes scoring himself — functioning almost as an extra winger. Think of him like a cornerback who also catches 10 passes a game — he covers his defensive responsibility but is equally dangerous in the attack. He was a key figure in Morocco's historic 2022 World Cup semifinal run and captains the Moroccan national team.",
+    "key_concepts": ["plays right back for PSG and Morocco", "one of the best attacking fullbacks in the world", "overlaps forward to create chances and score", "captain of Morocco's national team"],
+    "category": "Players",
+    "analogy_sport": "NFL"
+  },
+  "PL-08": {
+    "question": "What does it mean for a player to be a playmaker?",
+    "reference_answer": "A playmaker's primary role is creating scoring opportunities for teammates rather than scoring themselves — though the best playmakers also score regularly. They control the rhythm of the attack through intelligent passing, clever movement to find pockets of space, and the vision to see and execute passes that break defensive lines. The iconic playmaker traditionally wears the number 10 jersey — given to the team's most creative player. Think of a playmaker like an NFL quarterback — they have the ball frequently, read what the defense is presenting, and deliver it to the right teammate at the right moment under pressure. Great playmakers make the players around them significantly better and are often the difference between a team looking ordinary versus flowing with dangerous purpose.",
+    "key_concepts": ["creates chances for teammates, not primarily a scorer", "controls attack rhythm through passing and movement", "traditionally wears number 10", "makes surrounding players better"],
+    "category": "Players",
+    "analogy_sport": "NFL"
+  },
+  "PL-09": {
+    "question": "What is the Golden Boot award?",
+    "reference_answer": "The Golden Boot is awarded to the player who scores the most goals across the entire tournament. If two players are tied on goals when the tournament ends, the first tiebreaker is assists — goals created for teammates. If still level, it goes to fewest minutes played, rewarding efficiency. Every major forward in the World Cup is chasing the Golden Boot simultaneously with their team's success. Notable past winners include Mbappe in 2022 with 8 goals (the highest since 1970), Just Fontaine in 1958 with 13 goals (an all-time record that still stands), and Ronaldo in 2002. Think of it like the NBA scoring title or the NFL rushing title — it is the pure individual production award recognizing the player who was most lethal in front of goal throughout the competition.",
+    "key_concepts": ["awarded to tournament's top scorer", "tiebreaker: assists, then minutes played", "2022 winner: Mbappe with 8 goals", "all-time record: Fontaine 1958 with 13 goals"],
+    "category": "Players",
+    "analogy_sport": "NBA"
+  },
+  "PL-10": {
+    "question": "What is the Golden Glove award?",
+    "reference_answer": "The Golden Glove is awarded to the best goalkeeper in the tournament, selected by FIFA's technical study group based on overall performance across all matches — including save percentage, aerial command of the penalty area, distribution to start attacks, and consistency across every game played. It is the highest individual honor available to a goalkeeper. Past winners include Manuel Neuer for Germany in 2014, Thibaut Courtois for Belgium in 2018, and Emiliano Martinez for Argentina in 2022. Think of it like the Vezina Trophy in the NHL — awarded to the goaltender who was most valuable and most impressive over an entire season, or in this case a tournament. Great goalkeeping can carry a team deep into a World Cup even when the outfield players aren't operating at their highest level.",
+    "key_concepts": ["best goalkeeper in the tournament", "selected by FIFA technical study group", "based on saves, aerial command, distribution, consistency", "past winners: Neuer 2014, Courtois 2018, Martinez 2022"],
+    "category": "Players",
+    "analogy_sport": "NHL"
+  },
+  "PL-11": {
+    "question": "What does it mean when a player is a set piece specialist?",
+    "reference_answer": "A set piece is any dead ball restart — a free kick, corner kick, or occasionally a throw-in. A set piece specialist has exceptional technical ability to deliver these precisely and dangerously: bending a free kick around a defensive wall directly into the top corner, whipping a corner kick to a specific spot in the box for a teammate to head, or curling the ball over a wall and under the crossbar. Teams rehearse elaborate set piece routines because they account for approximately 25 to 30 percent of all goals in major tournaments. Think of a reliable placekicker in the NFL — a specialized skill that directly determines game outcomes, the rest of the team depends on them in crucial moments, and the ability is distinct from general athletic talent. David Beckham was historically one of the most famous set piece specialists.",
+    "key_concepts": ["set pieces = free kicks, corners, throw-ins", "specialist = precise delivery into dangerous areas", "~25-30% of tournament goals from set pieces", "distinct specialized skill separate from general play"],
+    "category": "Players",
+    "analogy_sport": "NFL"
+  },
+  "PL-12": {
+    "question": "What makes a player a good penalty taker?",
+    "reference_answer": "The defining quality of a great penalty taker is composure and commitment — picking a spot before the run-up and not changing the decision at the last moment. Psychological research on penalties shows that changing your mind at the last second leads to poor technique and missed penalties. Great takers hit the ball firmly to a corner, making it impossible for a goalkeeper who guesses the correct direction to save it. They also manage the enormous psychological pressure of knowing the entire tournament can hinge on a single kick. Think of a clutch free-throw shooter in basketball — some athletes simply do not feel the weight of the moment while others are paralyzed by it. Mental strength and practiced routine separate reliable penalty takers from those who struggle when it matters most.",
+    "key_concepts": ["composure and commitment to a decision", "don't change direction at last second", "hit firmly to a corner", "mental strength under pressure is the differentiator"],
+    "category": "Players",
+    "analogy_sport": "NBA"
+  },
+  "PL-13": {
+    "question": "Why do some players wear captain's armbands?",
+    "reference_answer": "The captain wears a distinctively colored armband and is the official on-field representative of the team. Their primary formal responsibility is being the player who can approach the referee and question or discuss decisions on behalf of the entire team — other players risk being shown a yellow card for arguing. Beyond referee communication, the captain sets the tone for team mentality, motivates teammates during difficult moments, and makes certain on-field decisions like which end to attack after winning the pregame coin toss. Think of it like a team captain in any American sport — it is a leadership designation combining accountability with authority. Captains are not always the most talented player on the team; often it is the most experienced or most respected figure who sets standards in training and keeps the locker room together.",
+    "key_concepts": ["official liaison between players and referee", "others can be carded for arguing", "sets tone and motivates teammates", "chosen for leadership, not necessarily best player"],
+    "category": "Players",
+    "analogy_sport": "NFL"
+  },
+  "PL-14": {
+    "question": "What is a hat trick and how rare is it in World Cup soccer?",
+    "reference_answer": "A hat trick is three goals scored by the same player in a single match. It is considered one of the most impressive individual feats in soccer and happens relatively rarely even at the club level. At the World Cup, hat tricks are genuinely uncommon — they occur roughly once or twice per tournament at most. Notable World Cup hat tricks include Geoff Hurst in the 1966 final (the only hat trick in a World Cup final ever), Gabriel Batistuta scoring multiple across tournaments, and Cristiano Ronaldo against Spain in 2018. By tradition the player receives the match ball to keep. Think of a no-hitter in baseball or a 50-point game in the NBA — a celebrated individual achievement that most fans never witness live, especially at a tournament where defenses are this organized.",
+    "key_concepts": ["three goals by same player in one match", "World Cup hat tricks very rare, roughly 1-2 per tournament", "Hurst 1966 final is the only final hat trick ever", "player traditionally keeps the match ball"],
+    "category": "Players",
+    "analogy_sport": "MLB"
+  },
+  "PL-15": {
+    "question": "What makes Rodri one of the most important midfielders in the world?",
+    "reference_answer": "Rodri (full name Rodrigo Hernandez) is a Spanish defensive midfielder for Manchester City who won the Ballon d'Or in 2024 — the first defensive midfielder to win soccer's top individual award in decades. He controls the rhythm of games, covers enormous ground to break up attacks before they develop, rarely loses possession, and distributes the ball with exceptional precision. His importance became clear when a serious knee injury in September 2024 sidelined him for months — both Manchester City and Spain visibly declined without him. Think of a great middle linebacker who is also somehow the best player on the field — he eliminates problems before they become dangerous while simultaneously orchestrating how the team plays when they have the ball.",
+    "key_concepts": ["won 2024 Ballon d'Or, first defensive mid in decades", "controls tempo, covers ground, rarely loses ball", "Manchester City and Spain declined significantly without him", "eliminates attacks while orchestrating possession"],
+    "category": "Players",
+    "analogy_sport": "NFL"
+  },
+  "TN-01": {
+    "question": "How many teams compete in the 2026 World Cup?",
+    "reference_answer": "The 2026 FIFA World Cup features 48 national teams — up from 32 in every tournament between 1998 and 2022. This is the largest World Cup ever held. The expanded field is organized into 12 groups of 4 teams, with 104 total matches played compared to 64 in the previous format. The expansion reflects FIFA's goal of including more nations from underrepresented regions including Asia, Africa, North America, and the Caribbean. All three host nations — the United States, Canada, and Mexico — qualify automatically. Think of it like expanding March Madness from 64 to 96 teams — more nations experiencing the World Cup for the first time, more potential upsets in the early rounds, and more games for fans to watch across the five-week tournament.",
+    "key_concepts": ["48 teams, up from 32", "12 groups of 4 teams", "104 total matches", "USA, Canada, Mexico qualify automatically as hosts"],
+    "category": "Tournament Structure",
+    "analogy_sport": "NBA"
+  },
+  "TN-02": {
+    "question": "How does the group stage work and how do teams advance?",
+    "reference_answer": "The 48 teams are divided into 12 groups of 4. Every team plays the other 3 teams in their group once over the first two weeks of the tournament. Points are awarded for each match: 3 points for a win, 1 point for a draw, 0 for a loss. After group play, the top 2 teams from each group (24 teams total) plus the 8 best third-place finishers advance — giving 32 teams a spot in the Round of 32, the first knockout stage. Think of the group stage like the regular season in a round-robin league — you play everyone in your group and standings determine who moves on. One bad result can be survived; two bad results usually end your tournament before the knockout rounds even begin.",
+    "key_concepts": ["3 points for win, 1 for draw, 0 for loss", "top 2 from each group advance automatically", "8 best third-place teams also advance", "32 teams total advance to knockout stage"],
+    "category": "Tournament Structure",
+    "analogy_sport": "NHL"
+  },
+  "TN-03": {
+    "question": "How does one qualify for the knockout stages from the group stage?",
+    "reference_answer": "To advance from the group stage, a team must finish in the top 2 of their group, or be one of the 8 best third-place finishers across all 12 groups. Top 2 in each group is determined by points. If teams are level on points, tiebreakers apply. For the 8 best third-place spots, all 12 third-place finishers are compared on points, then goal difference, then total goals scored. The 8 with the best combined record advance. Think of it like qualifying for the MLB playoffs — division winners advance automatically, but wild card spots go to the best non-division-winners regardless of which group they came from. Finishing third in a group is not guaranteed elimination — but you need to outperform other third-place teams across the entire field.",
+    "key_concepts": ["top 2 from each group advance automatically", "8 best third-place teams from all 12 groups also advance", "tiebreakers: goal difference, then total goals scored", "32 teams total advance to knockout rounds"],
+    "category": "Tournament Structure",
+    "analogy_sport": "MLB"
+  },
+  "TN-04": {
+    "question": "What are the tiebreaker rules if two teams finish level on points?",
+    "reference_answer": "When two or more teams finish with identical points in the same group, FIFA applies tiebreakers in this order: first, goal difference (goals scored minus goals allowed across all group matches — a team at +4 beats one at +1); second, total goals scored in all group games; third, head-to-head result between only the tied teams; fourth, head-to-head goal difference between only the tied teams. If teams remain equal after all four criteria, a drawing of lots (random selection) decides. Think of NFL tiebreakers — point differential first, then head-to-head, then strength of schedule in order. The goal difference rule explains why teams run up the score late in lopsided group stage wins — every additional goal scored or every goal conceded can determine who advances when the final standings are settled.",
+    "key_concepts": ["first: goal difference (scored minus allowed)", "second: total goals scored", "third: head-to-head result", "fourth: head-to-head goal difference"],
+    "category": "Tournament Structure",
+    "analogy_sport": "NFL"
+  },
+  "TN-05": {
+    "question": "What is the round of 16 and how does it differ from the group stage?",
+    "reference_answer": "In the 2026 expanded format, 32 teams advance from the group stage into the Round of 32 (the first knockout round), and the 16 survivors of that round then contest the Round of 16. By the time 16 teams remain, every team has already won a knockout match. The fundamental difference from the group stage is that there are no points and no second chances — one loss ends your tournament immediately. Every match must have a winner: if tied after 90 minutes, extra time is played and then a penalty shootout if needed. Think of the jump from the NFL regular season (where one loss is survivable) to the playoffs (where one loss ends your season). The atmosphere, tactics, and pressure all escalate dramatically in knockout soccer compared to group play.",
+    "key_concepts": ["2026 has Round of 32 first, then Round of 16", "one loss = tournament over", "no draws — extra time and penalties if needed", "pressure and tactical caution are significantly elevated"],
+    "category": "Tournament Structure",
+    "analogy_sport": "NFL"
+  },
+  "TN-06": {
+    "question": "How does the knockout bracket work from the round of 16 onward?",
+    "reference_answer": "After the group stage, the 32 advancing teams are slotted into a pre-set bracket — a predetermined path of matchups through the Round of 32, Round of 16, Quarterfinals, Semifinals, and the Final. Your position in the bracket is determined by how you finished in your group — first place in one group faces a specific second or third-place team from another group. The bracket structure means you can often predict which teams could meet in the quarterfinals or semifinals before a ball is kicked in the knockout rounds. Think of it like NCAA March Madness — the bracket is set on selection day and each team follows their predetermined path to the championship game. Unlike a league format, there are no byes or cumulative advantages — you must beat your assigned opponent or go home.",
+    "key_concepts": ["bracket set after group stage", "position in bracket determined by group finish", "Round of 32 → Round of 16 → Quarterfinals → Semifinals → Final", "must beat assigned opponent each round"],
+    "category": "Tournament Structure",
+    "analogy_sport": "NBA"
+  },
+  "TN-07": {
+    "question": "What happens when a knockout match ends in a draw after 90 minutes?",
+    "reference_answer": "A draw after 90 minutes in any knockout match triggers extra time — two additional 15-minute periods for 30 minutes of additional play. Unlike NFL overtime where a first score can end the game, both teams always play the entire 30 minutes of extra time regardless of scoring. If the score is still level after 120 total minutes, a penalty shootout determines the winner. Extra time is physically brutal — players have already given everything over 90 minutes and must cover the same ground for another 30. Think of NHL playoff overtime in the sense that you play additional full periods before any shootout tiebreaker, with the critical difference being that in soccer, everyone always plays the full extra time before penalties are considered.",
+    "key_concepts": ["extra time = two 15-minute periods", "full 30 minutes always played regardless", "penalty shootout if still tied after 120 minutes", "physically brutal after full 90 minutes"],
+    "category": "Tournament Structure",
+    "analogy_sport": "NHL"
+  },
+  "TN-08": {
+    "question": "How does a penalty shootout determine the winner?",
+    "reference_answer": "After 120 minutes of play (90 regular plus 30 extra time), if scores are still level, each team selects 5 penalty takers who alternate taking kicks from 12 yards. After both teams have taken their 5 kicks, whoever scored more wins. If still level after 5 kicks each, the shootout becomes sudden death — teams alternate one kick at a time, and the first round where one team scores and the other misses determines the winner. Goalkeepers must stay on the goal line until the ball is kicked. Teams strategize the order of shooters carefully — more composed, experienced takers typically go first to build momentum and avoid unnecessary pressure on the sequence. Think of an MLS or NHL shootout, but with the entire tournament potentially riding on every single kick.",
+    "key_concepts": ["5 kicks per team alternating", "more goals after 5 wins", "sudden death if level after 5 each", "shooter order is a strategic decision"],
+    "category": "Tournament Structure",
+    "analogy_sport": "NHL"
+  },
+  "TN-09": {
+    "question": "How many matches does a team play if they win the tournament?",
+    "reference_answer": "A team that wins the 2026 World Cup plays exactly 8 matches total: 3 games in the group stage, then one each in the Round of 32, Round of 16, Quarterfinal, Semifinal, and the Final. This is one more than the 7-match requirement in previous 32-team World Cups, because the expanded format adds a Round of 32 knockout round. Every match involves real stakes because even in the group stage, results affect bracket position. Think of an NFL team winning the Super Bowl — they play 17 regular season games and then 4 playoff games, a 21-game gauntlet. The World Cup champion's 8-game run is shorter in total games but compressed into 39 days, with no days off between some matches, making fatigue management a critical part of winning the tournament.",
+    "key_concepts": ["8 matches total to win 2026 World Cup", "3 group games + R32 + R16 + QF + SF + Final", "one more match than previous 32-team format", "fatigue management is critical across 39 days"],
+    "category": "Tournament Structure",
+    "analogy_sport": "NFL"
+  },
+  "TN-10": {
+    "question": "What is the difference between group stage and knockout rounds in terms of stakes?",
+    "reference_answer": "In the group stage, losing one match is survivable — you can accumulate enough points from your remaining games to still advance. Draws are valuable currency. Teams manage risk, protect players from injury, and can approach games with some caution. In the knockout rounds, everything changes instantly: one loss sends you home regardless of how impressively you played in earlier rounds or how many stars you have. Draws lead to extra time and penalties rather than a clean result. Think of the difference between an NFL regular season game (one of 17, a loss can be absorbed) versus a playoff game (one loss ends the entire season). The psychological weight of knockout elimination changes how coaches and players approach every tactical decision throughout a match.",
+    "key_concepts": ["group stage: one loss survivable, draws valuable", "knockout: one loss = tournament over, no exceptions", "group stage allows risk management", "knockout psychology fundamentally different"],
+    "category": "Tournament Structure",
+    "analogy_sport": "NFL"
+  },
+  "TN-11": {
+    "question": "Where is the 2026 World Cup hosted and why is it significant?",
+    "reference_answer": "The 2026 FIFA World Cup is co-hosted by three countries — the United States, Canada, and Mexico — the first time three nations have jointly hosted a World Cup. Most matches (60 of 104) are played in the United States across 11 American cities including New York/New Jersey, Los Angeles, Dallas, Miami, and Atlanta. Canada hosts in Toronto and Vancouver; Mexico in Mexico City, Guadalajara, and Monterrey. The final is scheduled at MetLife Stadium in East Rutherford, New Jersey. This is historically significant for American sports because it gives soccer its biggest mainstream platform in the US since the 1994 World Cup, which was credited with dramatically growing the sport's popularity in America. Billions of global viewers will focus on American cities for a tournament the world cares about.",
+    "key_concepts": ["co-hosted by USA, Canada, Mexico (first time three countries)", "60 of 104 matches in USA", "final at MetLife Stadium, New Jersey", "biggest American soccer mainstream moment since 1994"],
+    "category": "Tournament Structure",
+    "analogy_sport": "NFL"
+  },
+  "TN-12": {
+    "question": "How long does the entire tournament last?",
+    "reference_answer": "The 2026 World Cup runs from June 11 to July 19, 2026 — a total of 39 days. During that span, 104 matches are played across 16 host cities in the United States, Canada, and Mexico. In the group stage, multiple matches happen simultaneously each day, meaning dedicated fans can watch several games per day. The knockout rounds slow to one or two matches per day as the field narrows. Think of it like compressed MLB playoff baseball — but instead of 162 regular season games over 180 days, you get 104 high-stakes international matches in 39 days across three countries. For fans, the World Cup becomes an almost full-time viewing experience during its run, with meaningful games happening essentially every day from June 11 through mid-July.",
+    "key_concepts": ["June 11 to July 19, 2026", "39 days total", "104 total matches", "multiple games per day in group stage"],
+    "category": "Tournament Structure",
+    "analogy_sport": "MLB"
+  },
+  "TN-13": {
+    "question": "What is the World Cup trophy and what happens to it after?",
+    "reference_answer": "The FIFA World Cup Trophy is made of solid 18-karat gold with a malachite base, weighs approximately 6.175 kilograms (about 13.6 pounds), and stands 36.8 centimeters tall. It depicts two human figures holding the globe aloft. FIFA retains permanent custody of the original trophy — winning nations receive a gold-plated replica to keep and display permanently. Players and staff celebrate with the real trophy immediately after winning the final. The current trophy has been awarded since 1974, when it replaced the original Jules Rimet Trophy (which Brazil kept permanently after winning it for the third time in 1970). Think of the Stanley Cup in how the winning team celebrates with it immediately after winning, but unlike the Cup, the original FIFA trophy never permanently leaves FIFA's possession.",
+    "key_concepts": ["18-karat gold, ~6.175 kg", "FIFA keeps original permanently", "winning nations receive a gold-plated replica", "current trophy used since 1974"],
+    "category": "Tournament Structure",
+    "analogy_sport": "NHL"
+  },
+  "TN-14": {
+    "question": "What does it mean for a team to be eliminated in the group stage?",
+    "reference_answer": "Group stage elimination means a team has collected too few points to qualify for the knockout rounds — either mathematically ruled out before their final game, or they've completed all three group matches and finished outside the advancement spots. In the 2026 format, a team must finish in the top 2 of their 4-team group or be one of the 8 best third-place finishers. A team that goes winless (three losses) across group play is eliminated and cannot advance regardless. It is the equivalent of being mathematically eliminated from baseball playoff contention — the season continues through the scheduled games but advancement is impossible. Some teams finish with a respectable 1-1-1 record (one win, one draw, one loss) and still go home if other third-place teams had better goal difference.",
+    "key_concepts": ["can't finish in top 2 or 8 best third-place teams", "winless teams (0 points) are definitively eliminated", "can still be eliminated with mixed record if others perform better", "season over, pack up and go home"],
+    "category": "Tournament Structure",
+    "analogy_sport": "MLB"
+  },
+  "TN-15": {
+    "question": "How are the groups determined before the tournament begins?",
+    "reference_answer": "FIFA holds a ceremonial draw to determine which 4 teams go into each of the 12 groups. Before the draw, teams are divided into 4 seeding pots based on their FIFA World Ranking — the top 12 ranked teams, including the three host nations who are automatically seeded, go into Pot 1. No two teams from the same pot can be in the same group, ensuring the strongest teams are kept apart in early stages. Teams are drawn one per pot into each group. If two top seeds end up in the same group it is called a 'group of death' — an informal term for a brutally competitive group where at least one strong team will go home early. Think of seeding in March Madness — it structures the draw to reward top teams but doesn't guarantee outcomes.",
+    "key_concepts": ["ceremonial draw determines groups", "teams seeded into 4 pots by FIFA ranking", "Pot 1 teams kept apart in different groups", "group of death = multiple strong teams in same group"],
+    "category": "Tournament Structure",
+    "analogy_sport": "NBA"
+  },
+  "MC-01": {
+    "question": "What makes USA vs Mexico historically significant?",
+    "reference_answer": "USA vs Mexico is called El Clásico de CONCACAF — the defining rivalry of North American soccer. The two nations have met dozens of times in World Cup qualifiers, regional tournaments, and friendlies, with Mexico historically dominating for decades before the United States began competing consistently at their level in the 2010s. Every meeting carries the emotional weight of every previous result. The rivalry has political and cultural dimensions that make it more charged than a typical soccer match. With both nations co-hosting the 2026 World Cup alongside Canada, any USA-Mexico meeting on home soil would generate an atmosphere and viewership unlike anything soccer has previously produced in North America. Think of Red Sox vs Yankees — generations of fans on both sides have grown up with this rivalry and treat every result as deeply personal.",
+    "key_concepts": ["El Clásico de CONCACAF — defining North American soccer rivalry", "Mexico historically dominant, US closed the gap in 2010s", "political and cultural dimensions amplify stakes", "co-hosting 2026 adds new layer of intensity"],
+    "category": "Match Context",
+    "analogy_sport": "MLB"
+  },
+  "MC-02": {
+    "question": "What is at stake in a group stage match where both teams have already qualified?",
+    "reference_answer": "When both teams have secured knockout-round advancement before their final group match, the remaining competition is over group position — finishing first versus second determines which team faces which opponent in the Round of 32. First place in one group typically faces a third-place team or a second-place team from a different group, potentially meaning a more or less favorable bracket path. Coaches often rotate starters to preserve key players for the knockout rounds, giving reserve players tournament minutes. The result still matters because bracket positioning affects the entire tournament path. Think of an NFL team that has clinched home-field advantage resting its starters in the final week — the playoff seeding still matters even if the individual game has lower stakes than usual.",
+    "key_concepts": ["group position determines bracket opponent in Round of 32", "first place may get easier knockout draw", "coaches often rest starters to prevent injury", "bracket path affected by group finish"],
+    "category": "Match Context",
+    "analogy_sport": "NFL"
+  },
+  "MC-03": {
+    "question": "Why is Brazil vs Argentina considered one of soccer's greatest rivalries?",
+    "reference_answer": "Brazil vs Argentina — known as the Superclásico de las Américas — is one of the most historically rich matchups in global sports, going back over 100 years. Both nations have won multiple World Cups (Brazil 5, Argentina 3) and have produced the most celebrated players in soccer history — Pelé and Ronaldo from Brazil, Maradona and Messi from Argentina. Their meetings at major tournaments generate enormous global attention and intense national pride on both sides. Think of Yankees vs Red Sox amplified to two entire countries and roughly 100 additional years of history — except both teams have been dominant, both have champions, and both have passionate fan bases that carry the rivalry generationally. Any Brazil-Argentina match at the World Cup, regardless of when it falls, is treated by both nations like a final.",
+    "key_concepts": ["called Superclásico de las Américas", "Brazil 5 World Cups, Argentina 3", "produced Pelé, Ronaldo, Maradona, Messi", "over 100 years of rivalry history"],
+    "category": "Match Context",
+    "analogy_sport": "MLB"
+  },
+  "MC-04": {
+    "question": "What makes a quarterfinal different in intensity from a group stage match?",
+    "reference_answer": "By the quarterfinals, only 8 teams remain from the original 48. Every player knows they are three wins from lifting the trophy. The probability of winning the entire tournament has jumped from roughly 2 percent at the start to 12.5 percent — and it feels like it. Defensively, teams organize more carefully. Tactically, coaches are less willing to take risks. Set pieces become even more crucial because open play goals are harder to come by. The crowd atmosphere is at maximum intensity. Think of an NFL divisional round game versus a week 8 regular season game — the same athletes play completely differently when one loss ends everything they have worked toward for four years. Quarterfinals at the World Cup are consistently among the most intense sporting events in the world.",
+    "key_concepts": ["only 8 teams from 48 remain", "12.5% chance of winning from this point", "tactics tighten, risk tolerance drops", "atmosphere and pressure at maximum intensity"],
+    "category": "Match Context",
+    "analogy_sport": "NFL"
+  },
+  "MC-05": {
+    "question": "What typically changes tactically when a team is losing with 20 minutes left?",
+    "reference_answer": "When trailing with 20 minutes remaining, teams reliably shift toward more attacking configurations: a defensive midfielder or fullback is substituted for an extra forward, moving from something like 4-3-3 to 4-2-4 or even 3-5-2 with wing-backs pushing high. Passes become longer and more direct, prioritizing speed of attack over patience. The goalkeeper may push forward to add height at corner kicks in desperate situations. The opponent gets more space to counter-attack as a result. Think of pulling the goalie in hockey with 2 minutes left — you are trading defensive protection for offensive firepower, accepting that the current approach is not working and that a goal conceded matters less than trying to equalize. This creates more open, exciting play for spectators even as it increases risk.",
+    "key_concepts": ["extra attacker replaces defensive player", "passes become longer and more direct", "goalkeeper may join attacks at corners", "creates more space for opponent counter-attacks"],
+    "category": "Match Context",
+    "analogy_sport": "NHL"
+  },
+  "MC-06": {
+    "question": "Why do teams play more conservatively with a one-goal lead late in a match?",
+    "reference_answer": "Protecting a one-goal lead in soccer means managing the risk of conceding a goal more than trying to score a second one. Teams drop more players behind the ball, choose safe short passes over ambitious forward ones, and may substitute a forward for a defensive midfielder to add defensive cover. The objective becomes time and possession management — not scoring. Ball-in-corner possession tactics, where teams retain the ball in safe areas and run down the clock, appear regularly in these situations. Think of kneeling the ball in the NFL once you have a two-possession lead with 2 minutes left — you have the lead and simply cannot afford to give the opponent the ball back. In soccer, where a single error can immediately equalize, the conservative calculation makes perfect tactical sense.",
+    "key_concepts": ["prioritize not conceding over scoring", "drop more players behind the ball", "substitute toward defensive coverage", "time and possession management becomes the goal"],
+    "category": "Match Context",
+    "analogy_sport": "NFL"
+  },
+  "MC-07": {
+    "question": "What does home advantage mean in a tournament hosted across multiple countries?",
+    "reference_answer": "In a normal World Cup, the host nation benefits from home crowds throughout the tournament. In 2026's three-country format, home advantage is distributed across different cities and regions. The US gets genuine home crowd support in major soccer cities like Los Angeles, Miami, and Dallas, where large Hispanic and immigrant communities create massive crowd support for various teams. Mexico plays in genuine home stadiums in Mexico City, Guadalajara, and Monterrey. Canada hosts in Toronto and Vancouver. For other nations, crowd composition depends on which fan base travels to a particular city — England fans in Boston, Brazilian communities in Miami. Think of a neutral-site Super Bowl or Final Four where the crowd isn't determined by geography but by which fan base shows up, travels better, or has more local ties.",
+    "key_concepts": ["distributed across 16 cities in 3 countries", "USA gets genuine home atmosphere in soccer-rich cities", "Mexico plays in actual home stadiums", "other nations' support depends on traveling fan bases"],
+    "category": "Match Context",
+    "analogy_sport": "NFL"
+  },
+  "MC-08": {
+    "question": "Why is the first goal so important in a knockout match?",
+    "reference_answer": "Statistical research consistently shows that the team scoring first in a knockout match wins approximately 70 to 75 percent of the time. The first goal changes the tactical dynamic completely for both teams. The leading team can now drop deeper, defend with numbers, and absorb pressure while threatening on counter-attacks. The trailing team must open up and push players forward to score — creating more space for the opponent to exploit. The psychological dimension is equally powerful: scoring first gives confidence while chasing the game creates anxiety that affects decision-making. In a sport where the final margin is typically 1 or 2 goals over 90 minutes, that lead can be insurmountable. Think of getting the first score in any playoff game — it puts the opponent in a reactive position and forces them to change their game plan.",
+    "key_concepts": ["scoring first wins ~70-75% of knockout matches", "changes tactics: leader defends, trailer must open up", "creates psychological advantage and disadvantage", "opponent forced into reactive position"],
+    "category": "Match Context",
+    "analogy_sport": "NFL"
+  },
+  "MC-09": {
+    "question": "What makes the World Cup final different from every other match in the tournament?",
+    "reference_answer": "The World Cup Final is arguably the most-watched single sporting event on Earth — the 2022 final between Argentina and France drew an estimated 1.5 billion viewers globally. Everything is amplified beyond any other match: players have waited 4 years for this moment, entire nations are simultaneously watching, and the result permanently defines legacies. The weight of the occasion is physically palpable in stadiums. Both teams typically play more cautiously than in any other match, unwilling to give anything away with so much at stake. Think of the Super Bowl — but for a sport the entire world cares about, with a global audience roughly 4 to 5 times larger and the understanding that the next chance for any of these players is four years away. Winning the World Cup Final is what every soccer player dreams about from childhood.",
+    "key_concepts": ["estimated 1.5 billion viewers for 2022 final", "both teams play with extreme caution", "4-year wait amplifies everything", "defines legacies permanently"],
+    "category": "Match Context",
+    "analogy_sport": "NFL"
+  },
+  "MC-10": {
+    "question": "What is a must-win match and how does pressure affect play?",
+    "reference_answer": "A must-win match is one where a team needs a victory — not a draw, not a good performance — to remain in the tournament or advance to their objective. A draw is worthless, forcing teams to take risks they would otherwise avoid: aggressive high pressing, more players forward, long shots from distance, bold early substitutions. Paradoxically, must-win matches often produce exciting, open soccer because desperate teams attack with purpose. When both teams are simultaneously in a must-win situation, the match can be extraordinary. Think of an elimination game in the MLB playoffs — a team that needs to win to survive a series plays a completely different style than in a game where losing simply evens things up. The desperation changes every calculation about risk versus reward.",
+    "key_concepts": ["victory required, draw is worthless", "forces aggressive risk-taking and early attacking substitutions", "often produces open, exciting soccer", "when both teams must win, can be extraordinary"],
+    "category": "Match Context",
+    "analogy_sport": "MLB"
+  },
+  "MC-11": {
+    "question": "Why do teams sometimes use their weaker lineup in the final group stage match?",
+    "reference_answer": "When a team secures their knockout-round spot before the final group match, coaches face a decision: the risk of injuring a key player in a game that doesn't affect their advancement outweighs the benefits of maintaining match sharpness. Teams typically rest 4 to 6 regular starters, giving minutes to reserve players who have barely played. Those fringe players also benefit from World Cup experience that may matter later. The main trade-off is that resting starters might mean finishing second in the group instead of first, which affects the bracket path and potential opponents. Think of an NBA team sitting its stars during back-to-back games in late March — once the playoff seed is locked, the injury risk of playing full effort isn't worth it. Critics argue rotation compromises competitive integrity; coaches argue it's smart tournament management.",
+    "key_concepts": ["injury risk to key players outweighs benefit", "4-6 starters often rested", "group finish and bracket positioning still matter", "gives fringe players experience"],
+    "category": "Match Context",
+    "analogy_sport": "NBA"
+  },
+  "MC-12": {
+    "question": "What makes an upset in soccer different from an upset in American sports?",
+    "reference_answer": "Soccer's extremely low-scoring nature makes upsets far more frequent and harder to prevent than in basketball, football, or baseball over a full game. In basketball or football, the better team usually wins because there are enough possessions and plays for quality to establish itself over 48 minutes or 60 plays. Soccer typically produces 2 to 3 goals in 90 minutes — in a sport where margins are this thin, a single moment of defensive error or a fortunate deflection can be the entire deciding difference. Statistical luck plays a larger role because every scoring chance is precious. Think of a one-game baseball playoff — the sample size is small enough that variance dominates over quality. An 8-seed can beat a 1-seed in soccer more easily than in the NBA because a 90-minute game is simply not long enough for the better team to always assert dominance.",
+    "key_concepts": ["low scoring makes single moments decisive", "90 minutes insufficient for quality to always prevail", "luck plays larger role per scoring opportunity", "upsets more common than basketball or football"],
+    "category": "Match Context",
+    "analogy_sport": "NBA"
+  },
+  "MC-13": {
+    "question": "How does crowd noise affect the experience of a World Cup match?",
+    "reference_answer": "The atmosphere at World Cup matches is unlike almost any other sporting event. Fans from the same nation congregate in large blocks, creating coordinated chanting, singing (with songs specific to their national team), and sustained noise that lasts the entire 90-plus minutes — not just during exciting plays. Drums, horns, flags, and face paint create a layered visual and sonic environment. Players regularly describe it as physically affecting their performance and emotional state. Think of the loudest crowd moments in a packed NFL stadium — the Arrowhead Stadium crowd in Kansas City at full volume — but sustained continuously for 90 minutes, mixed with the cultural expressions of dozens of different nations. When a goal is scored, the emotional release from thousands of fans in one section simultaneously erupts in a way that is viscerally felt throughout the entire stadium.",
+    "key_concepts": ["sustained 90-minute chanting, not just reaction to big plays", "nation-specific songs and coordinated supporter culture", "physically affects player performance", "goal celebrations create unique mass emotional releases"],
+    "category": "Match Context",
+    "analogy_sport": "NFL"
+  },
+  "MC-14": {
+    "question": "What does it mean when a match is described as a dead rubber?",
+    "reference_answer": "A dead rubber is a group stage match where the result has no meaningful impact on standings, advancement, or any competitive objective — typically when both teams are already either eliminated or have secured their knockout-round spots and cannot improve their group position regardless of the outcome. Both teams often treat dead rubbers as low-stakes opportunities: coaches rest regular starters to protect them for later rounds, fringe players get rare World Cup minutes, and tactical experimentation is more common. Match quality often drops compared to high-stakes games. Think of an NFL Week 18 regular season game where both teams have either clinched or been eliminated and starters are sitting — the game is still played, but nobody is particularly invested in the outcome. Dead rubbers frustrate fans who traveled expecting competitive soccer but benefit younger players.",
+    "key_concepts": ["result has no effect on standings or advancement", "both teams already eliminated or secured qualification", "starters often rested, reserve players get minutes", "match quality typically lower than high-stakes games"],
+    "category": "Match Context",
+    "analogy_sport": "NFL"
+  },
+  "MC-15": {
+    "question": "Why do soccer matches feel slower in the first half and more intense in the second?",
+    "reference_answer": "Soccer matches consistently follow a pattern where the first half is more cautious — teams are establishing defensive shape, testing the opponent's approach, and avoiding costly early mistakes. Players are physically fresh but mentally conservative. As the match progresses, fatigue causes defenders to lose sharpness and positional discipline. Substitutions bring fresh energy that disrupts organized defensive structures. Trailing teams take increasing risks as time runs out. The majority of goals in soccer are scored in the second half, with the final 20 to 30 minutes disproportionately producing drama. Injury time especially creates chaos because desperation and physical exhaustion collide simultaneously. Think of the first quarter in basketball — teams probe cautiously — versus the fourth quarter when everyone is tired, the stakes are clear, and the real game actually happens.",
+    "key_concepts": ["first half: establishing shape, cautious", "second half: fatigue, substitutions, increasing risks", "majority of goals scored in second half", "final 20-30 minutes and injury time are most dramatic"],
+    "category": "Match Context",
+    "analogy_sport": "NBA"
+  }
+}

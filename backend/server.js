@@ -13,6 +13,7 @@ app.use('/api/groups', require('./routes/groups'));
 app.use('/api/player-card', require('./routes/playerCard'));
 app.use('/api/home', require('./routes/home'));
 app.use('/api/matches', require('./routes/matches'));
+app.use('/api/daily-card', require('./routes/dailyCard'));
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port ${process.env.PORT}`);
@@ -58,3 +59,37 @@ setInterval(async () => {
 }, 5 * 60 * 1000);
 
 console.log('Background jobs started');
+
+// ── Daily card generation ────────────────────────────────────
+const { generateDailyCards } = require('./jobs/generateDailyCard');
+
+generateDailyCards().catch(console.error);
+
+const _dcNow = new Date();
+const _dcMidnight = new Date(_dcNow.getFullYear(), _dcNow.getMonth(), _dcNow.getDate() + 1, 0, 0, 0);
+const _dcMsUntilMidnight = _dcMidnight.getTime() - _dcNow.getTime();
+
+setTimeout(() => {
+  generateDailyCards().catch(console.error);
+  setInterval(() => {
+    generateDailyCards().catch(console.error);
+  }, 24 * 60 * 60 * 1000);
+}, _dcMsUntilMidnight);
+
+// ── Prop generation ──────────────────────────────────────────
+const { generatePropsForUpcoming } = require('./jobs/generateProps');
+
+generatePropsForUpcoming().catch(console.error);
+
+const now = new Date();
+const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
+const msUntilMidnight = midnight.getTime() - now.getTime();
+
+setTimeout(() => {
+  generatePropsForUpcoming().catch(console.error);
+  setInterval(() => {
+    generatePropsForUpcoming().catch(console.error);
+  }, 24 * 60 * 60 * 1000);
+}, msUntilMidnight);
+
+console.log(`Next prop generation in ${Math.round(msUntilMidnight / 1000 / 60)} minutes`);

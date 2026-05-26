@@ -1,0 +1,437 @@
+/* ── Wrapper ──────────────────────────────────────────────── */
+
+.dcv-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding-bottom: 32px;
+}
+
+/* ── Header ───────────────────────────────────────────────── */
+
+.dcv-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 20px 24px 14px;
+  gap: 12px;
+}
+
+.dcv-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.dcv-date {
+  font-size: 12px;
+  color: var(--text-faint);
+  margin-top: 3px;
+}
+
+.dcv-pts-badge {
+  font-size: 12px;
+  color: var(--text-secondary);
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.dcv-pts-badge strong {
+  color: #7cfc8e;
+}
+
+.dcv-pts-locked {
+  color: #7cfc8e;
+  font-weight: 600;
+}
+
+/* ── Matches strip ────────────────────────────────────────── */
+
+.dcv-matches-strip {
+  padding: 0 24px 16px;
+  border-bottom: 0.5px solid #1e1e2e;
+}
+
+.dcv-matches-label {
+  font-size: 10px;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+
+.dcv-matches-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.dcv-match-chip {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: #111120;
+  border: 0.5px solid #1e1e2e;
+  border-radius: 20px;
+  padding: 4px 10px;
+  font-size: 11px;
+}
+
+.dcv-match-chip-name {
+  color: var(--text-secondary);
+}
+
+.dcv-fallback-note {
+  font-size: 10px;
+  color: #4a4a6a;
+  margin-top: 8px;
+  font-style: italic;
+}
+
+/* ── Section ──────────────────────────────────────────────── */
+
+.dcv-section {
+  padding: 20px 24px 4px;
+  border-bottom: 0.5px solid #1e1e2e;
+}
+
+.dcv-section-header {
+  margin-bottom: 14px;
+}
+
+.dcv-section-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+  margin-bottom: 2px;
+}
+
+.dcv-section-sub {
+  font-size: 11px;
+  color: var(--text-faint);
+}
+
+.dcv-feature-matchup {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  font-size: 13px;
+}
+
+.dcv-feature-vs {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.dcv-feature-reason {
+  font-size: 11px;
+  color: var(--text-faint);
+  font-style: italic;
+  margin-top: 4px;
+}
+
+/* ── Question block ───────────────────────────────────────── */
+
+.dcv-question {
+  margin-bottom: 18px;
+}
+
+.dcv-question-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.dcv-question-text {
+  font-size: 13px;
+  color: var(--text-primary);
+  line-height: 1.4;
+  flex: 1;
+}
+
+.dcv-question-pts {
+  font-size: 10px;
+  font-weight: 700;
+  color: #7cfc8e;
+  background: rgba(124, 252, 142, 0.08);
+  border: 0.5px solid rgba(124, 252, 142, 0.2);
+  border-radius: 10px;
+  padding: 2px 7px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.dcv-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.dcv-option {
+  background: #111120;
+  border: 0.5px solid #2a2a3e;
+  border-radius: 8px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  padding: 7px 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.dcv-option:hover:not(:disabled) {
+  border-color: #3a3a5e;
+  color: var(--text-primary);
+}
+
+.dcv-option--selected {
+  background: rgba(124, 252, 142, 0.12);
+  border-color: #7cfc8e;
+  color: #7cfc8e;
+  font-weight: 600;
+}
+
+.dcv-option--locked {
+  cursor: default;
+  opacity: 0.8;
+}
+
+.dcv-option--locked.dcv-option--selected {
+  opacity: 1;
+}
+
+/* ── Bonus section ────────────────────────────────────────── */
+
+.dcv-bonus-section {
+  margin: 16px 24px;
+  background: rgba(251, 191, 36, 0.04);
+  border: 0.5px solid rgba(251, 191, 36, 0.2);
+  border-radius: 12px;
+  padding: 18px;
+}
+
+.dcv-bonus-header {
+  margin-bottom: 12px;
+}
+
+.dcv-bonus-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #fbbf24;
+  margin-bottom: 2px;
+}
+
+.dcv-bonus-sub {
+  font-size: 11px;
+  color: #8a7a4a;
+}
+
+.dcv-bonus-question {
+  font-size: 13px;
+  color: var(--text-primary);
+  line-height: 1.4;
+  margin-bottom: 14px;
+}
+
+.dcv-bonus-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dcv-bonus-take {
+  background: rgba(251, 191, 36, 0.12);
+  border: 0.5px solid rgba(251, 191, 36, 0.4);
+  border-radius: 8px;
+  color: #fbbf24;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 11px 16px;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: left;
+}
+
+.dcv-bonus-take:hover {
+  background: rgba(251, 191, 36, 0.18);
+}
+
+.dcv-bonus-skip {
+  background: transparent;
+  border: 0.5px solid #2a2a3e;
+  border-radius: 8px;
+  color: var(--text-faint);
+  font-size: 12px;
+  padding: 9px 16px;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: left;
+}
+
+.dcv-bonus-skip:hover {
+  color: var(--text-secondary);
+  border-color: #3a3a5e;
+}
+
+.dcv-bonus-confirm {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.dcv-bonus-confirm-text {
+  font-size: 13px;
+  color: #fbbf24;
+  font-weight: 600;
+}
+
+.dcv-bonus-skipped-text {
+  font-size: 13px;
+  color: var(--text-faint);
+}
+
+.dcv-bonus-undo {
+  background: transparent;
+  border: none;
+  color: var(--text-faint);
+  font-size: 11px;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+}
+
+.dcv-bonus-locked-state {
+  font-size: 13px;
+}
+
+.dcv-bonus-taken {
+  color: #fbbf24;
+  font-weight: 600;
+}
+
+.dcv-bonus-skipped {
+  color: var(--text-faint);
+}
+
+/* ── Lock area ────────────────────────────────────────────── */
+
+.dcv-lock-area {
+  padding: 16px 24px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+}
+
+.dcv-pts-running {
+  font-size: 12px;
+  color: #7cfc8e;
+  text-align: center;
+}
+
+.dcv-lock-btn {
+  background: #7cfc8e;
+  border: none;
+  border-radius: 10px;
+  color: #080810;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 14px 20px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.dcv-lock-btn:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.dcv-lock-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+/* ── Locked summary ───────────────────────────────────────── */
+
+.dcv-locked-summary {
+  margin: 16px 24px 0;
+  background: rgba(124, 252, 142, 0.06);
+  border: 0.5px solid rgba(124, 252, 142, 0.2);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+
+.dcv-locked-label {
+  font-size: 13px;
+  color: #7cfc8e;
+  font-weight: 600;
+  margin-bottom: 3px;
+}
+
+.dcv-locked-pts {
+  font-size: 11px;
+  color: var(--text-faint);
+}
+
+/* ── Guest lock ───────────────────────────────────────────── */
+
+.dcv-guest-lock {
+  padding: 48px 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.dcv-guest-icon {
+  font-size: 32px;
+}
+
+.dcv-guest-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.dcv-guest-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+  max-width: 280px;
+  line-height: 1.5;
+}
+
+.dcv-guest-cta {
+  background: #7cfc8e;
+  border: none;
+  border-radius: 8px;
+  color: #080810;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 12px 24px;
+  cursor: pointer;
+  margin-top: 4px;
+}
+
+.dcv-guest-secondary {
+  background: transparent;
+  border: none;
+  color: var(--text-faint);
+  font-size: 12px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* ── Loading / empty ──────────────────────────────────────── */
+
+.dcv-loading,
+.dcv-empty {
+  padding: 48px 24px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-faint);
+}

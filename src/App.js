@@ -6,24 +6,10 @@ import TeamReveal from './components/onboarding/TeamReveal';
 import HomeScreen from './components/HomeScreen';
 import MatchSelector from './components/companion/MatchSelector';
 import CompanionChat from './components/companion/CompanionChat';
-import PredictionCard from './components/predictions/PredictionCard';
-import PropBetCard from './components/predictions/PropBetCard';
-import LockButton from './components/predictions/LockButton';
-import { submitPrediction } from './services/api';
-import GroupView from './components/groups/GroupView';
+import PredictionsGroupView from './components/PredictionsGroupView';
 import { supabase } from './lib/supabase';
 import './App.css';
 
-const HARDCODED_MATCH = {
-  matchId: 'test-match-1',
-  homeTeam: 'USA',
-  awayTeam: 'Mexico',
-  kickoff_time: '2026-06-22T20:00:00Z',
-  props: [
-    { id: 'prop-1', question: 'Will there be a red card?', options: ['Yes', 'No'] },
-    { id: 'prop-2', question: 'First goal scorer nationality?', options: ['USA', 'Mexico', 'No goal'] },
-  ],
-};
 
 function Topbar({ userName, userEmail, isGuest, onSignOut }) {
   const [open, setOpen] = useState(false);
@@ -74,7 +60,6 @@ function NavTabs({ view, onTabChange }) {
     { id: 'home', label: 'Home' },
     { id: 'companion', label: 'Companion' },
     { id: 'predictions', label: 'Predictions' },
-    { id: 'group', label: 'Group' },
   ];
   return (
     <nav className="nav-tabs">
@@ -91,83 +76,8 @@ function NavTabs({ view, onTabChange }) {
   );
 }
 
-function PredictionsView({ userContext, userId, isGuest, onShowAuth }) {
-  const [resultPrediction, setResultPrediction] = useState(null);
-  const [propPredictions, setPropPredictions] = useState({});
-  const [locked, setLocked] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  if (isGuest) {
-    return (
-      <div className="guest-lock">
-        <div className="guest-lock__icon">🔒</div>
-        <div className="guest-lock__title">Sign up to make predictions</div>
-        <div className="guest-lock__desc">
-          Create a free account to lock in your picks before kickoff and compete on the leaderboard.
-        </div>
-        <button className="guest-lock__cta" onClick={() => onShowAuth('signup')}>
-          Create free account →
-        </button>
-        <button className="guest-lock__secondary" onClick={() => onShowAuth('signin')}>
-          Already have an account? Sign in
-        </button>
-      </div>
-    );
-  }
-
-  const isPastKickoff = Date.now() >= new Date(HARDCODED_MATCH.kickoff_time).getTime();
-
-  const handlePropSelect = (propId, value) => {
-    setPropPredictions(prev => ({ ...prev, [propId]: value }));
-  };
-
-  const handleLock = async () => {
-    setIsSubmitting(true);
-    try {
-      await submitPrediction(
-        userId,
-        HARDCODED_MATCH.matchId,
-        resultPrediction,
-        propPredictions,
-      );
-      setLocked(true);
-    } catch {
-      // Fail silently — LockButton stays unlocked so user can retry
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  return (
-    <div className="predictions-view">
-      <PredictionCard
-        match={HARDCODED_MATCH}
-        selected={resultPrediction}
-        onSelect={setResultPrediction}
-        isPastKickoff={isPastKickoff}
-        locked={locked}
-      />
-      {HARDCODED_MATCH.props.map(prop => (
-        <PropBetCard
-          key={prop.id}
-          prop={prop}
-          selected={propPredictions[prop.id] ?? null}
-          onSelect={(value) => handlePropSelect(prop.id, value)}
-          isPastKickoff={isPastKickoff}
-          locked={locked}
-        />
-      ))}
-      <LockButton
-        onLock={handleLock}
-        disabled={!resultPrediction || isPastKickoff}
-        locked={locked}
-        isSubmitting={isSubmitting}
-      />
-    </div>
-  );
-}
-
-const POST_ONBOARDING_VIEWS = ['home', 'companion', 'predictions', 'group'];
+const POST_ONBOARDING_VIEWS = ['home', 'companion', 'predictions'];
 
 function App() {
   const [view, setView] = useState('landing');
@@ -509,19 +419,15 @@ function App() {
           />
         )}
         {view === 'predictions' && (
-          <PredictionsView
-            userContext={userContext}
+          <PredictionsGroupView
             userId={userId}
-            isGuest={isGuest}
-            onShowAuth={handleShowAuth}
-          />
-        )}
-        {view === 'group' && (
-          <GroupView
+            userName={userName}
             userContext={userContext}
-            userId={userId}
             isGuest={isGuest}
-            onShowAuth={handleShowAuth}
+            onShowAuth={(mode) => {
+              setAuthMode(mode);
+              setView('auth');
+            }}
           />
         )}
       </main>
