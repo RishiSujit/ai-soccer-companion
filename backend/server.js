@@ -14,6 +14,7 @@ app.use('/api/player-card', require('./routes/playerCard'));
 app.use('/api/home', require('./routes/home'));
 app.use('/api/matches', require('./routes/matches'));
 app.use('/api/daily-card', require('./routes/dailyCard'));
+app.use('/api/ratings', require('./routes/ratings'));
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port ${process.env.PORT}`);

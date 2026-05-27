@@ -635,19 +635,32 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
 .follow-ups-container {
   display: flex;
-  align-items: flex-start;
+  flex-direction: column;
   gap: 6px;
   animation: fadeSlideUp 0.25s ease forwards;
   padding: 2px 0 4px;
+}
+
+.follow-ups-label {
+  font-size: 10px;
+  color: #3a3a6a;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding-left: 2px;
 }
 
 .follow-ups-pills {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  flex: 1;
 }
 
 .follow-up-pill {
@@ -664,31 +677,93 @@
   font-family: inherit;
 }
 
-.follow-up-pill:hover {
+.follow-up-pill:hover:not(:disabled) {
   background: #1a1a3a;
   border-color: #5555bb;
   color: #ccccff;
 }
 
-.follow-up-pill:active {
+.follow-up-pill:active:not(:disabled) {
   background: #2a2a5a;
+}
+
+.follow-up-pill.loading {
+  color: #5555bb;
+  border-color: #3a3a7a;
+}
+
+.follow-up-pill:disabled {
+  cursor: default;
+  opacity: 0.5;
 }
 
 .follow-up-dismiss {
   background: transparent;
-  border: none;
+  border: 1px solid #1e1e3a;
+  border-radius: 20px;
   color: #3a3a6a;
-  font-size: 16px;
-  line-height: 1;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 5px 11px;
   cursor: pointer;
-  padding: 2px 4px;
-  flex-shrink: 0;
-  transition: color 0.15s;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
   font-family: inherit;
 }
 
-.follow-up-dismiss:hover {
+.follow-up-dismiss:hover:not(:disabled) {
+  background: #0d0d1a;
+  border-color: #2a2a5a;
   color: #8888cc;
+}
+
+.follow-up-dismiss:disabled {
+  cursor: default;
+  opacity: 0.4;
+}
+
+/* ── Message thumbs up/down ratings ──────────────────────── */
+
+.message-rating-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  margin-left: 4px;
+  height: 24px;
+}
+
+.rating-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  opacity: 0.3;
+  transition: opacity 0.15s, background 0.15s;
+  padding: 2px 4px;
+  border-radius: 4px;
+  line-height: 1;
+  font-family: inherit;
+}
+
+.rating-btn:hover:not(:disabled) {
+  opacity: 0.8;
+  background: #1a1a2e;
+}
+
+.rating-btn.rated {
+  opacity: 1;
+}
+
+.rating-btn:disabled {
+  cursor: default;
+}
+
+.rating-thanks {
+  font-size: 10px;
+  color: #4444aa;
+  font-weight: 500;
+  animation: fadeIn 0.2s ease forwards;
 }
 
 /* ── Mobile tabbed layout ─────────────────────────────────── */
