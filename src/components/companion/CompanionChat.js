@@ -16,12 +16,15 @@ const FLAGS = {
 const OPENING_MESSAGE = "I'm your match companion for this game. Ask me anything — rules, players, what just happened. I'll explain it in plain English.";
 
 // Extracted so both desktop and mobile can each mount their own scroll ref
-function ChatPanel({ messages, isLoading, input, setInput, onSend, onKeyDown, onRate }) {
+function ChatPanel({
+  messages, isLoading, input, setInput, onSend, onKeyDown, onRate,
+  followUps, showFollowUps, onFollowUpTap, onDismissFollowUps,
+}) {
   const bottomRef = useRef(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, isLoading]);
+  }, [messages, isLoading, showFollowUps]);
 
   return (
     <div className="chat-panel">
@@ -51,6 +54,24 @@ function ChatPanel({ messages, isLoading, input, setInput, onSend, onKeyDown, on
             <span className="onboarding-chat__dots">
               <span>.</span><span>.</span><span>.</span>
             </span>
+          </div>
+        )}
+        {showFollowUps && followUps.length > 0 && (
+          <div className="follow-ups-container">
+            <div className="follow-ups-pills">
+              {followUps.map((q, i) => (
+                <button
+                  key={i}
+                  className="follow-up-pill"
+                  onClick={() => onFollowUpTap(q)}
+                >
+                  {q}
+                </button>
+              ))}
+            </div>
+            <button className="follow-up-dismiss" onClick={onDismissFollowUps} aria-label="Dismiss">
+              ×
+            </button>
           </div>
         )}
         <div ref={bottomRef} />
@@ -83,11 +104,15 @@ function CompanionChat({ match, userContext, userId, onBack }) {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [mobileTab, setMobileTab] = useState('formation');
+  const [followUps, setFollowUps] = useState([]);
+  const [showFollowUps, setShowFollowUps] = useState(false);
 
-  const handleSend = async () => {
-    const trimmed = input.trim();
+  const sendMessage = async (text) => {
+    const trimmed = text.trim();
     if (!trimmed || isLoading) return;
 
+    setFollowUps([]);
+    setShowFollowUps(false);
     setMessages(prev => [...prev, { role: 'user', content: trimmed, rated: null }]);
     setInput('');
     setIsLoading(true);
@@ -98,6 +123,10 @@ function CompanionChat({ match, userContext, userId, onBack }) {
       const data = await sendCompanionMessage(trimmed, conversationHistory, match, userContext);
       setMessages(prev => [...prev, { role: 'assistant', content: data.reply, rated: null }]);
       setConversationHistory([...updatedHistory, { role: 'assistant', content: data.reply }]);
+      if (data.followUps && data.followUps.length > 0) {
+        setFollowUps(data.followUps);
+        setShowFollowUps(true);
+      }
     } catch {
       setMessages(prev => [
         ...prev,
@@ -106,6 +135,17 @@ function CompanionChat({ match, userContext, userId, onBack }) {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleSend = () => sendMessage(input);
+
+  const handleFollowUpTap = (question) => {
+    setShowFollowUps(false);
+    sendMessage(question);
+  };
+
+  const handleDismissFollowUps = () => {
+    setShowFollowUps(false);
   };
 
   const handleKeyDown = (e) => {
@@ -124,6 +164,8 @@ function CompanionChat({ match, userContext, userId, onBack }) {
   const chatProps = {
     messages, isLoading, input, setInput,
     onSend: handleSend, onKeyDown: handleKeyDown, onRate: handleRate,
+    followUps, showFollowUps, onFollowUpTap: handleFollowUpTap,
+    onDismissFollowUps: handleDismissFollowUps,
   };
 
   return (

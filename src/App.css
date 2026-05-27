@@ -628,6 +628,69 @@
   gap: 8px;
 }
 
+/* ── Follow-up quick-tap buttons ─────────────────────────── */
+
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.follow-ups-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  animation: fadeSlideUp 0.25s ease forwards;
+  padding: 2px 0 4px;
+}
+
+.follow-ups-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  flex: 1;
+}
+
+.follow-up-pill {
+  background: transparent;
+  border: 1px solid #2a2a5a;
+  border-radius: 20px;
+  color: #8888cc;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 5px 11px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  font-family: inherit;
+}
+
+.follow-up-pill:hover {
+  background: #1a1a3a;
+  border-color: #5555bb;
+  color: #ccccff;
+}
+
+.follow-up-pill:active {
+  background: #2a2a5a;
+}
+
+.follow-up-dismiss {
+  background: transparent;
+  border: none;
+  color: #3a3a6a;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 2px 4px;
+  flex-shrink: 0;
+  transition: color 0.15s;
+  font-family: inherit;
+}
+
+.follow-up-dismiss:hover {
+  color: #8888cc;
+}
+
 /* ── Mobile tabbed layout ─────────────────────────────────── */
 
 .companion-mobile {
