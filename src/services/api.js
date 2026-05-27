@@ -157,6 +157,18 @@ export const getMyDailyPrediction = async (userId) => {
   }
 };
 
+export const getTeamHeadline = async (team, userSports) => {
+  try {
+    const sports = Array.isArray(userSports) ? userSports.join(',') : userSports || 'NFL,NBA';
+    const res = await fetch(
+      `${API_URL}/api/home/team-headline?team=${encodeURIComponent(team)}&userSports=${sports}`
+    );
+    return res.json();
+  } catch {
+    return { headline: null };
+  }
+};
+
 export const getPreMatchBriefing = async (userTeam, userSports) => {
   try {
     const sports = Array.isArray(userSports)

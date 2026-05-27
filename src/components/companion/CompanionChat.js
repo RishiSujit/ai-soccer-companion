@@ -16,6 +16,20 @@ const FLAGS = {
 
 const OPENING_MESSAGE = "I'm your match companion for this game. Ask me anything — rules, players, what just happened. I'll explain it in plain English.";
 
+function getPillIcon(question) {
+  const q = question.toLowerCase();
+  if (q.includes('how often') || q.includes('how many') || q.includes('percent') || q.includes('stat') || q.includes('number')) return '📊';
+  if (q.includes('why') && (q.includes('controversial') || q.includes('argue') || q.includes('debate') || q.includes('hate') || q.includes('unfair'))) return '🔥';
+  if (q.includes('watch') || q.includes('look for') || q.includes('spot') || q.includes('see')) return '👀';
+  if (q.includes('what happens') || q.includes('next') || q.includes('now') || q.includes('result')) return '⚡';
+  if (q.includes('odds') || q.includes('chance') || q.includes('likely') || q.includes('probably')) return '🎲';
+  if (q.includes('best') || q.includes('greatest') || q.includes('who is')) return '🏆';
+  if (q.includes('history') || q.includes('before') || q.includes('last time') || q.includes('ever')) return '📖';
+  if (q.includes('bar') || q.includes('friends') || q.includes('say') || q.includes('tell')) return '🍺';
+  if (q.includes('matter') || q.includes('impact') || q.includes('change') || q.includes('affect')) return '🎯';
+  return '💬';
+}
+
 function ChatPanel({
   messages, isLoading, input, setInput, onSend, onKeyDown,
   ratings, onRating,
@@ -90,7 +104,14 @@ function ChatPanel({
                   onClick={() => onFollowUpTap(q, i)}
                   disabled={isLoading}
                 >
-                  {tappedIndex === i ? '...' : q}
+                  {tappedIndex === i ? (
+                    '...'
+                  ) : (
+                    <>
+                      <span className="pill-icon">{getPillIcon(q)}</span>
+                      <span className="pill-text">{q}</span>
+                    </>
+                  )}
                 </button>
               ))}
               <button

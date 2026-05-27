@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { createClient } = require('@supabase/supabase-js');
+const Anthropic = require('@anthropic-ai/sdk');
 const { generateDailyHotTake } = require('../jobs/generateHotTake');
 require('dotenv').config();
 
@@ -8,6 +9,8 @@ const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
+
+const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 // GET /api/home/recap/:team
 router.get('/recap/:team', async (req, res) => {
@@ -88,6 +91,44 @@ router.get('/bracket/:team', async (req, res) => {
     res.json({ bracket: data || [] });
   } catch (err) {
     res.json({ bracket: [] });
+  }
+});
+
+// GET /api/home/team-headline?team=Argentina&userSports=NFL,NBA
+router.get('/team-headline', async (req, res) => {
+  try {
+    const { team, userSports } = req.query;
+
+    if (!team) return res.json({ headline: null });
+
+    const sports = userSports ? userSports.split(',') : ['NFL', 'NBA'];
+
+    const prompt = `Write a single compelling headline about ${team} at the 2026 World Cup for a casual American ${sports[0]} fan.
+
+Under 20 words.
+Make it feel like a sports headline.
+Capture what makes ${team} interesting or what their storyline is.
+No quotes, no punctuation at the end.
+Plain text only.
+
+Examples of good style:
+"The defending champions looking to prove 2022 was no fluke"
+"America's team on home soil for the first time in 32 years"
+"The aging legend's last shot at glory"`;
+
+    const response = await anthropic.messages.create({
+      model: 'claude-sonnet-4-5',
+      max_tokens: 60,
+      messages: [{ role: 'user', content: prompt }],
+    });
+
+    res.json({ headline: response.content[0].text.trim(), team });
+  } catch (err) {
+    console.error('Headline error:', err.message);
+    res.json({
+      headline: `Follow ${req.query.team || 'this team'}'s World Cup journey`,
+      team: req.query.team,
+    });
   }
 });
 

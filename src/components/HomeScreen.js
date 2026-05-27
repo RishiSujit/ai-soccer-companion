@@ -6,6 +6,7 @@ import {
   getLiveMatches,
   voteOnHotTake,
   getPreMatchBriefing,
+  getTeamHeadline,
 } from '../services/api';
 import BriefingCard from './BriefingCard';
 import './HomeScreen.css';
@@ -138,6 +139,17 @@ function formatDate(dateStr) {
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
+function getTeamFlag(team) {
+  const flags = {
+    'Argentina': '🇦🇷', 'France': '🇫🇷', 'Brazil': '🇧🇷',
+    'England': '🏴󠁧󠁢󠁥󠁮󠁧󠁿', 'USA': '🇺🇸', 'Germany': '🇩🇪',
+    'Spain': '🇪🇸', 'Portugal': '🇵🇹', 'Morocco': '🇲🇦',
+    'Mexico': '🇲🇽', 'Netherlands': '🇳🇱', 'Italy': '🇮🇹',
+    'Japan': '🇯🇵', 'Senegal': '🇸🇳', 'Croatia': '🇭🇷',
+  };
+  return flags[team] || '🌍';
+}
+
 function HomeScreen({ userContext, userId, onNavigate }) {
   const [recap, setRecap] = useState(null);
   const [hotTake, setHotTake] = useState(null);
@@ -148,6 +160,10 @@ function HomeScreen({ userContext, userId, onNavigate }) {
   const [briefing, setBriefing] = useState(null);
   const [showBriefing, setShowBriefing] = useState(false);
   const dismissedFixtureId = useRef(null);
+
+  const [activeTeamIndex, setActiveTeamIndex] = useState(0);
+  const [teamHeadlines, setTeamHeadlines] = useState({});
+  const touchStartX = useRef(null);
 
   const team = userContext?.team || 'Argentina';
   const teamStats = TEAM_STATS[team] || TEAM_STATS['Argentina'];
@@ -195,6 +211,45 @@ function HomeScreen({ userContext, userId, onNavigate }) {
     const interval = setInterval(checkBriefing, 30 * 60 * 1000);
     return () => clearInterval(interval);
   }, [userContext?.team]);
+
+  const featuredTeams = [
+    team,
+    'Argentina', 'France', 'Brazil', 'England',
+    'USA', 'Germany', 'Spain', 'Portugal', 'Morocco',
+  ].filter((t, i, arr) => arr.indexOf(t) === i).slice(0, 8);
+
+  useEffect(() => {
+    const sports = userContext?.knownSports?.join(',') || 'NFL,NBA';
+    const cached = {};
+
+    async function load() {
+      const results = await Promise.all(
+        featuredTeams.map(t => getTeamHeadline(t, sports))
+      );
+      featuredTeams.forEach((t, i) => {
+        cached[t] = results[i]?.headline || `Follow ${t}'s World Cup journey`;
+      });
+      setTeamHeadlines(cached);
+    }
+
+    load();
+  }, [team]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e) => {
+    if (touchStartX.current === null) return;
+    const diff = touchStartX.current - e.changedTouches[0].clientX;
+    touchStartX.current = null;
+    if (Math.abs(diff) < 50) return;
+    if (diff > 0) {
+      setActiveTeamIndex(prev => Math.min(prev + 1, featuredTeams.length - 1));
+    } else {
+      setActiveTeamIndex(prev => Math.max(prev - 1, 0));
+    }
+  };
 
   const handleVote = (vote) => {
     const ht = hotTake || FALLBACK_HOT_TAKE;
@@ -255,44 +310,43 @@ function HomeScreen({ userContext, userId, onNavigate }) {
       {/* ── SECTION 2: My Team + Your Tournament ───────── */}
       <div className="home-grid-2">
 
-        <div className="home-card myteam-card">
-          <div className="home-card-label">MY TEAM</div>
-          <div className="myteam-main">
-            <div className="myteam-flag-circle">{teamFlag}</div>
-            <div className="myteam-name">{team}</div>
-            <div className="myteam-subtitle">World Cup 2026</div>
-          </div>
-          <div className="myteam-stat-pills">
-            <div className="stat-pill">
-              <span className="stat-pill-label">FIFA</span>
-              <span className="stat-pill-value">#{teamStats.rank}</span>
+        <div className="home-card">
+          <div className="home-card-label">TEAMS TO WATCH</div>
+          <div className="team-carousel">
+            <div className="team-dots">
+              {featuredTeams.map((t, i) => (
+                <button
+                  key={t}
+                  className={`team-dot${i === activeTeamIndex ? ' active' : ''}`}
+                  onClick={() => setActiveTeamIndex(i)}
+                  aria-label={t}
+                />
+              ))}
             </div>
-            <div className="stat-pill">
-              <span className="stat-pill-label">Titles</span>
-              <span className="stat-pill-value">{teamStats.titles}</span>
-            </div>
-            <div className="stat-pill">
-              <span className="stat-pill-label">Last</span>
-              <span className={`stat-pill-value stat-result--${teamStats.lastResult === 'W' ? 'win' : teamStats.lastResult === 'L' ? 'loss' : 'draw'}`}>
-                {teamStats.lastResult}
-              </span>
-            </div>
-          </div>
-          {nextMatch && (
-            <div className="myteam-next-match">
-              <span className="next-match-label">
-                {nextMatch.isLive ? '🔴 LIVE NOW' : 'NEXT MATCH'}
-              </span>
-              <span className="next-match-text">
-                {nextMatch.isLive
-                  ? `${nextMatch.homeTeam} vs ${nextMatch.awayTeam}`
-                  : `vs ${getOpponent(nextMatch, team)}`}
-              </span>
-              {!nextMatch.isLive && nextMatch.match_date && (
-                <span className="next-match-date">{formatDate(nextMatch.match_date)}</span>
+            <div
+              className="team-card-carousel"
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+            >
+              <div className="team-card-flag">
+                {getTeamFlag(featuredTeams[activeTeamIndex])}
+              </div>
+              <div className="team-card-name">{featuredTeams[activeTeamIndex]}</div>
+              {activeTeamIndex === 0 && (
+                <div className="your-team-badge">Your team</div>
               )}
+              <div className="team-card-headline">
+                {teamHeadlines[featuredTeams[activeTeamIndex]] || 'Loading...'}
+              </div>
+              <button
+                className="follow-team-btn"
+                onClick={() => onNavigate('companion', { team: featuredTeams[activeTeamIndex] })}
+              >
+                Follow in Companion →
+              </button>
             </div>
-          )}
+            <div className="swipe-hint">← Swipe to explore teams →</div>
+          </div>
         </div>
 
         <div className="home-card tournament-card">
