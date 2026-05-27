@@ -10,7 +10,8 @@ async function runAll() {
   console.log('\nThis will run:');
   console.log('  1. Dataset 2b -- Signal accuracy (fast)');
   console.log('  2. Dataset 1  -- Static golden set (slow, ~10 min)');
-  console.log('\nEstimated time: 12-15 minutes\n');
+  console.log('  3. Dataset 3  -- Live scenarios (slow, ~6 min)');
+  console.log('\nEstimated time: 20-25 minutes\n');
 
   // Step 1 — Signal eval (fast, no API calls)
   console.log('\n--- STEP 1: Signal Eval ---\n');
@@ -36,6 +37,17 @@ async function runAll() {
     );
   } catch (err) {
     console.error('Static eval failed:', err);
+  }
+
+  // Step 3 — Live scenario eval
+  console.log('\n--- STEP 3: Live Eval ---\n');
+  try {
+    execSync(
+      `node ${path.join(__dirname, 'run-live-eval.js')} ${quickFlag}`,
+      { stdio: 'inherit' }
+    );
+  } catch (err) {
+    console.error('Live eval failed:', err);
   }
 
   console.log('\n' + '#'.repeat(60));

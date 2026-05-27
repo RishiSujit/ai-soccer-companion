@@ -1,0 +1,463 @@
+{
+  "match": {
+    "homeTeam": "Argentina",
+    "awayTeam": "France",
+    "stage": "Final",
+    "tournament": "2022 FIFA World Cup",
+    "venue": "Lusail Stadium, Qatar",
+    "description": "2022 World Cup Final — one of the greatest matches ever played"
+  },
+  "scenarios": [
+    {
+      "id": "LS-01",
+      "minute": 116,
+      "score": { "home": 3, "away": 3 },
+      "description": "Mbappe just equalized with a hat trick goal in extra time",
+      "recent_events": [
+        {
+          "time": { "elapsed": 116 },
+          "type": "Goal",
+          "team": { "name": "France" },
+          "player": { "name": "Mbappe" },
+          "detail": "Normal Goal"
+        },
+        {
+          "time": { "elapsed": 109 },
+          "type": "Goal",
+          "team": { "name": "Argentina" },
+          "player": { "name": "Messi" },
+          "detail": "Normal Goal"
+        },
+        {
+          "time": { "elapsed": 81 },
+          "type": "Goal",
+          "team": { "name": "France" },
+          "player": { "name": "Mbappe" },
+          "detail": "Normal Goal"
+        }
+      ],
+      "stats": {
+        "possession": { "home": 44, "away": 56 }
+      },
+      "isExtraTime": true,
+      "question": "what just happened?",
+      "expected_signals": {
+        "pressure": "critical",
+        "emotional_intensity_contains": "spike",
+        "stakes_contains": "maximum"
+      },
+      "expected_response_qualities": {
+        "must_mention_drama": true,
+        "must_explain_stakes": true,
+        "must_use_analogy": true,
+        "must_be_urgent": true
+      }
+    },
+    {
+      "id": "LS-02",
+      "minute": 116,
+      "score": { "home": 3, "away": 3 },
+      "description": "Score tied in extra time of the World Cup Final",
+      "recent_events": [
+        {
+          "time": { "elapsed": 116 },
+          "type": "Goal",
+          "team": { "name": "France" },
+          "player": { "name": "Mbappe" }
+        }
+      ],
+      "stats": {
+        "possession": { "home": 44, "away": 56 }
+      },
+      "isExtraTime": true,
+      "question": "what happens if it stays tied?",
+      "expected_signals": {
+        "stakes_contains": "maximum"
+      },
+      "expected_response_qualities": {
+        "must_mention_penalty_shootout": true,
+        "must_explain_stakes": true,
+        "must_use_analogy": true
+      }
+    },
+    {
+      "id": "LS-03",
+      "minute": 116,
+      "score": { "home": 3, "away": 3 },
+      "description": "France have momentum after Mbappe hat trick",
+      "recent_events": [
+        {
+          "time": { "elapsed": 116 },
+          "type": "Goal",
+          "team": { "name": "France" },
+          "player": { "name": "Mbappe" }
+        },
+        {
+          "time": { "elapsed": 109 },
+          "type": "Goal",
+          "team": { "name": "Argentina" },
+          "player": { "name": "Messi" }
+        },
+        {
+          "time": { "elapsed": 81 },
+          "type": "Goal",
+          "team": { "name": "France" },
+          "player": { "name": "Mbappe" }
+        },
+        {
+          "time": { "elapsed": 80 },
+          "type": "Goal",
+          "team": { "name": "France" },
+          "player": { "name": "Mbappe" }
+        }
+      ],
+      "stats": {
+        "possession": { "home": 44, "away": 56 }
+      },
+      "isExtraTime": true,
+      "question": "who has momentum?",
+      "expected_signals": {
+        "momentum_contains": "France"
+      },
+      "expected_response_qualities": {
+        "must_mention_momentum_team": "France",
+        "must_use_analogy": true
+      }
+    },
+    {
+      "id": "LS-04",
+      "minute": 115,
+      "score": { "home": 3, "away": 2 },
+      "description": "VAR reviewing potential offside on France attack",
+      "recent_events": [
+        {
+          "time": { "elapsed": 115 },
+          "type": "VAR",
+          "detail": "Goal disallowed - Offside",
+          "team": { "name": "France" },
+          "player": { "name": "Mbappe" }
+        }
+      ],
+      "stats": {
+        "possession": { "home": 44, "away": 56 }
+      },
+      "isExtraTime": true,
+      "question": "why did they stop play?",
+      "expected_signals": {
+        "emotional_intensity_contains": "spike"
+      },
+      "expected_response_qualities": {
+        "must_explain_var": true,
+        "must_explain_stakes": true,
+        "must_use_analogy": true
+      }
+    },
+    {
+      "id": "LS-05",
+      "minute": 80,
+      "score": { "home": 2, "away": 0 },
+      "description": "Argentina leading 2-0 with 10 minutes left in normal time",
+      "recent_events": [
+        {
+          "time": { "elapsed": 36 },
+          "type": "Goal",
+          "team": { "name": "Argentina" },
+          "player": { "name": "Di Maria" }
+        },
+        {
+          "time": { "elapsed": 23 },
+          "type": "Goal",
+          "team": { "name": "Argentina" },
+          "player": { "name": "Messi" }
+        }
+      ],
+      "stats": {
+        "possession": { "home": 52, "away": 48 }
+      },
+      "isExtraTime": false,
+      "question": "is Argentina going to win?",
+      "expected_signals": {
+        "pressure": "medium"
+      },
+      "expected_response_qualities": {
+        "must_not_be_overconfident": true,
+        "must_explain_stakes": true,
+        "must_use_analogy": true
+      }
+    },
+    {
+      "id": "LS-06",
+      "minute": 80,
+      "score": { "home": 2, "away": 1 },
+      "description": "Mbappe just scored a penalty to make it 2-1",
+      "recent_events": [
+        {
+          "time": { "elapsed": 80 },
+          "type": "Penalty",
+          "team": { "name": "France" },
+          "player": { "name": "Mbappe" },
+          "detail": "Penalty scored"
+        }
+      ],
+      "stats": {
+        "possession": { "home": 48, "away": 52 }
+      },
+      "isExtraTime": false,
+      "question": "explain what is happening right now",
+      "expected_signals": {
+        "pressure": "high",
+        "momentum_contains": "France"
+      },
+      "expected_response_qualities": {
+        "must_mention_comeback": true,
+        "must_explain_stakes": true,
+        "must_use_analogy": true
+      }
+    },
+    {
+      "id": "LS-07",
+      "minute": 23,
+      "score": { "home": 1, "away": 0 },
+      "description": "Messi just scored a penalty in the 23rd minute",
+      "recent_events": [
+        {
+          "time": { "elapsed": 23 },
+          "type": "Penalty",
+          "team": { "name": "Argentina" },
+          "player": { "name": "Messi" },
+          "detail": "Penalty scored"
+        }
+      ],
+      "stats": {
+        "possession": { "home": 50, "away": 50 }
+      },
+      "isExtraTime": false,
+      "question": "what happened?",
+      "expected_signals": {
+        "pressure": "low",
+        "emotional_intensity_contains": "high"
+      },
+      "expected_response_qualities": {
+        "must_mention_scorer": true,
+        "must_use_analogy": true
+      }
+    },
+    {
+      "id": "LS-08",
+      "minute": 0,
+      "score": { "home": 0, "away": 0 },
+      "description": "Match just kicked off — World Cup Final",
+      "recent_events": [],
+      "stats": {
+        "possession": { "home": 50, "away": 50 }
+      },
+      "isExtraTime": false,
+      "question": "explain this match to me like I just turned on the TV",
+      "expected_signals": {
+        "pressure": "low",
+        "stakes_contains": "maximum"
+      },
+      "expected_response_qualities": {
+        "must_set_scene": true,
+        "must_explain_stakes": true,
+        "must_use_analogy": true
+      }
+    },
+    {
+      "id": "LS-09",
+      "minute": 81,
+      "score": { "home": 2, "away": 2 },
+      "description": "France equalized with Mbappe brace in 2 minutes",
+      "recent_events": [
+        {
+          "time": { "elapsed": 81 },
+          "type": "Goal",
+          "team": { "name": "France" },
+          "player": { "name": "Mbappe" }
+        },
+        {
+          "time": { "elapsed": 80 },
+          "type": "Penalty",
+          "team": { "name": "France" },
+          "player": { "name": "Mbappe" },
+          "detail": "Penalty scored"
+        }
+      ],
+      "stats": {
+        "possession": { "home": 46, "away": 54 }
+      },
+      "isExtraTime": false,
+      "question": "how did France come back so fast?",
+      "expected_signals": {
+        "pressure": "high",
+        "emotional_intensity_contains": "spike",
+        "momentum_contains": "France"
+      },
+      "expected_response_qualities": {
+        "must_explain_comeback": true,
+        "must_use_analogy": true,
+        "must_be_urgent": true
+      }
+    },
+    {
+      "id": "LS-10",
+      "minute": 109,
+      "score": { "home": 3, "away": 2 },
+      "description": "Messi scored in extra time to put Argentina back ahead",
+      "recent_events": [
+        {
+          "time": { "elapsed": 109 },
+          "type": "Goal",
+          "team": { "name": "Argentina" },
+          "player": { "name": "Messi" }
+        }
+      ],
+      "stats": {
+        "possession": { "home": 45, "away": 55 }
+      },
+      "isExtraTime": true,
+      "question": "what does this goal mean?",
+      "expected_signals": {
+        "pressure": "critical",
+        "stakes_contains": "maximum",
+        "emotional_intensity_contains": "spike"
+      },
+      "expected_response_qualities": {
+        "must_explain_stakes": true,
+        "must_mention_scorer": true,
+        "must_use_analogy": true
+      }
+    },
+    {
+      "id": "LS-11",
+      "minute": 116,
+      "score": { "home": 3, "away": 3 },
+      "description": "Tied in extra time of World Cup Final",
+      "recent_events": [
+        {
+          "time": { "elapsed": 116 },
+          "type": "Goal",
+          "team": { "name": "France" },
+          "player": { "name": "Mbappe" }
+        }
+      ],
+      "stats": {
+        "possession": { "home": 44, "away": 56 }
+      },
+      "isExtraTime": true,
+      "question": "why is everyone going crazy right now?",
+      "expected_signals": {
+        "emotional_intensity_contains": "spike",
+        "stakes_contains": "maximum"
+      },
+      "expected_response_qualities": {
+        "must_mention_drama": true,
+        "must_use_analogy": true,
+        "must_be_urgent": true
+      }
+    },
+    {
+      "id": "LS-12",
+      "minute": 36,
+      "score": { "home": 2, "away": 0 },
+      "description": "Argentina leading 2-0 before halftime of the Final",
+      "recent_events": [
+        {
+          "time": { "elapsed": 36 },
+          "type": "Goal",
+          "team": { "name": "Argentina" },
+          "player": { "name": "Di Maria" }
+        }
+      ],
+      "stats": {
+        "possession": { "home": 54, "away": 46 }
+      },
+      "isExtraTime": false,
+      "question": "are they going to win the World Cup?",
+      "expected_signals": {
+        "pressure": "medium",
+        "stakes_contains": "maximum"
+      },
+      "expected_response_qualities": {
+        "must_not_be_overconfident": true,
+        "must_explain_stakes": true,
+        "must_use_analogy": true
+      }
+    },
+    {
+      "id": "LS-13",
+      "minute": 90,
+      "score": { "home": 2, "away": 2 },
+      "description": "90 minutes up, scores level — heading to extra time",
+      "recent_events": [
+        {
+          "time": { "elapsed": 81 },
+          "type": "Goal",
+          "team": { "name": "France" },
+          "player": { "name": "Mbappe" }
+        }
+      ],
+      "stats": {
+        "possession": { "home": 46, "away": 54 }
+      },
+      "isExtraTime": false,
+      "question": "what happens now?",
+      "expected_signals": {
+        "pressure": "critical",
+        "stakes_contains": "maximum"
+      },
+      "expected_response_qualities": {
+        "must_explain_extra_time": true,
+        "must_use_analogy": true,
+        "must_be_urgent": true
+      }
+    },
+    {
+      "id": "LS-14",
+      "minute": 71,
+      "score": { "home": 2, "away": 0 },
+      "description": "France bring on Mbappe as a substitute at 71 minutes",
+      "recent_events": [
+        {
+          "time": { "elapsed": 71 },
+          "type": "subst",
+          "team": { "name": "France" },
+          "player": { "name": "Mbappe" },
+          "detail": "Substitution 1"
+        }
+      ],
+      "stats": {
+        "possession": { "home": 52, "away": 48 }
+      },
+      "isExtraTime": false,
+      "question": "why did France bring someone on?",
+      "expected_signals": {
+        "pressure": "medium"
+      },
+      "expected_response_qualities": {
+        "must_explain_substitution": true,
+        "must_use_analogy": true
+      }
+    },
+    {
+      "id": "LS-15",
+      "minute": 116,
+      "score": { "home": 3, "away": 3 },
+      "description": "About to go to penalty shootout in the World Cup Final",
+      "recent_events": [],
+      "stats": {
+        "possession": { "home": 44, "away": 56 }
+      },
+      "isExtraTime": true,
+      "isPenaltyShootout": false,
+      "question": "explain penalty shootouts to me",
+      "expected_signals": {
+        "stakes_contains": "maximum"
+      },
+      "expected_response_qualities": {
+        "must_explain_penalty_shootout": true,
+        "must_use_analogy": true
+      }
+    }
+  ]
+}
