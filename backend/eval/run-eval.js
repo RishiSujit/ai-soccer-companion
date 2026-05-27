@@ -527,11 +527,13 @@ async function main() {
   const skipBaseline = args.includes('--skip-baseline');
 
   // In quick mode only run first 10 questions to test the pipeline
-  let referenceAnswers = REFERENCE_ANSWERS;
+  let referenceAnswers;
   if (quickMode) {
     console.log('\nQUICK MODE -- running first 10 questions only');
     const entries = Object.entries(REFERENCE_ANSWERS).slice(0, 10);
     referenceAnswers = Object.fromEntries(entries);
+  } else {
+    referenceAnswers = { ...REFERENCE_ANSWERS };
   }
 
   // Override REFERENCE_ANSWERS for this run (quick mode subset)
