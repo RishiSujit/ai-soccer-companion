@@ -1,0 +1,74 @@
+.pivotal-alert {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  right: 0;
+  z-index: 150;
+  padding: 0 16px;
+  animation: pivotalSlideDown 0.3s ease forwards;
+}
+
+@keyframes pivotalSlideDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.pivotal-alert-inner {
+  background: #0d0d1a;
+  border: 1px solid rgba(124, 252, 142, 0.25);
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  box-shadow: 0 4px 24px rgba(124, 252, 142, 0.1);
+}
+
+.pivotal-left {
+  flex: 1;
+  min-width: 0;
+}
+
+.pivotal-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #f0f0fa;
+  letter-spacing: -0.02em;
+  margin-bottom: 2px;
+}
+
+.pivotal-detail {
+  font-size: 11px;
+  color: #7cfc8e;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.pivotal-narrative {
+  font-size: 10px;
+  color: #6666aa;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pivotal-ask-btn {
+  background: #7cfc8e;
+  color: #030a04;
+  font-size: 12px;
+  font-weight: 800;
+  border-radius: 8px;
+  padding: 8px 14px;
+  white-space: nowrap;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  flex-shrink: 0;
+  transition: opacity 0.15s;
+}
+
+.pivotal-ask-btn:hover {
+  opacity: 0.88;
+}

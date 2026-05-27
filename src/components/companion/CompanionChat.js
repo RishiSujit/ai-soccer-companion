@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { sendCompanionMessage } from '../../services/api';
 import { supabase } from '../../lib/supabase';
+import PivotalMomentAlert from '../PivotalMomentAlert';
 import FormationPitch from './FormationPitch';
 import LineupList from './LineupList';
 
@@ -138,6 +139,8 @@ function CompanionChat({ match, userContext, userId, onBack }) {
   const [ratings, setRatings] = useState({});
   const [currentMatchContext, setCurrentMatchContext] = useState(null);
   const [currentSignals, setCurrentSignals] = useState(null);
+  const [pivotalEvent, setPivotalEvent] = useState(null);
+  const lastEventIdRef = useRef(null);
 
   const sendMessage = async (text) => {
     const trimmed = text.trim();
@@ -219,6 +222,29 @@ function CompanionChat({ match, userContext, userId, onBack }) {
     }
   };
 
+  useEffect(() => {
+    if (!currentMatchContext?.events) return;
+    const events = currentMatchContext.events || [];
+    const signals = currentMatchContext.derivedSignals;
+
+    if (!signals?.emotional_intensity?.includes('spike')) return;
+
+    const latestEvent = events[events.length - 1];
+    if (!latestEvent) return;
+
+    const eventId = `${latestEvent.time?.elapsed}-${latestEvent.type}-${latestEvent.player?.name}`;
+    if (eventId === lastEventIdRef.current) return;
+
+    const dramaticTypes = ['Goal', 'Red Card', 'VAR', 'Missed Penalty'];
+    if (!dramaticTypes.includes(latestEvent.type)) return;
+
+    lastEventIdRef.current = eventId;
+    setPivotalEvent(latestEvent);
+
+    const timer = setTimeout(() => setPivotalEvent(null), 8000);
+    return () => clearTimeout(timer);
+  }, [currentMatchContext]);
+
   const chatProps = {
     messages, isLoading, input, setInput,
     onSend: handleSend, onKeyDown: handleKeyDown,
@@ -230,6 +256,14 @@ function CompanionChat({ match, userContext, userId, onBack }) {
 
   return (
     <div className="companion-chat">
+
+      <PivotalMomentAlert
+        event={pivotalEvent}
+        signals={currentMatchContext?.derivedSignals}
+        userTeam={userContext?.team}
+        onAskCompanion={(q) => sendMessage(q)}
+        onDismiss={() => setPivotalEvent(null)}
+      />
 
       {/* ── Match hero header ──────────────────────────────── */}
       <div className="companion-hero">

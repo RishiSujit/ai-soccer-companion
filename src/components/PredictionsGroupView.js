@@ -5,6 +5,7 @@ import {
 } from '../services/api';
 import { supabase } from '../lib/supabase';
 import DailyCardView from './DailyCardView';
+import CelebrationOverlay from './CelebrationOverlay';
 import './PredictionsGroupView.css';
 
 function getInitials(name) {
@@ -25,6 +26,9 @@ function PredictionsGroupView({ userId, userName, userContext, isGuest, onShowAu
   const [groupError, setGroupError] = useState(null);
   const [groupLoading, setGroupLoading] = useState(false);
   const [copied, setCopied] = useState(false);
+
+  // Celebration state
+  const [celebration, setCelebration] = useState({ show: false, message: '', points: 0 });
 
   // Load existing group on mount
   useEffect(() => {
@@ -139,8 +143,23 @@ function PredictionsGroupView({ userId, userName, userContext, isGuest, onShowAu
     }
   }
 
+  const triggerCelebration = (message, points) => {
+    setCelebration({ show: true, message, points });
+  };
+
+  const dismissCelebration = () => {
+    setCelebration(prev => ({ ...prev, show: false }));
+  };
+
   return (
     <div className="predictions-page">
+
+      <CelebrationOverlay
+        show={celebration.show}
+        message={celebration.message}
+        points={celebration.points}
+        onDismiss={dismissCelebration}
+      />
 
       {/* ── Page header ──────────────────────────────────── */}
       <div className="predictions-header">
