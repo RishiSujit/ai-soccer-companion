@@ -157,6 +157,20 @@ export const getMyDailyPrediction = async (userId) => {
   }
 };
 
+export const getPreMatchBriefing = async (userTeam, userSports) => {
+  try {
+    const sports = Array.isArray(userSports)
+      ? userSports.join(',')
+      : userSports || 'NFL,NBA';
+    const res = await fetch(
+      `${API_URL}/api/briefing?userTeam=${encodeURIComponent(userTeam)}&userSports=${sports}`
+    );
+    return res.json();
+  } catch {
+    return { briefing: null };
+  }
+};
+
 export const getBracketForTeam = async (team) => {
   try {
     const res = await fetch(`${API_URL}/api/home/bracket/${encodeURIComponent(team)}`);

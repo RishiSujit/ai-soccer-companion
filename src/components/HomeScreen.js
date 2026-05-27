@@ -1,11 +1,13 @@
-import { useState, useEffect, Fragment } from 'react';
+import { useState, useEffect, useRef, Fragment } from 'react';
 import {
   getRecapForTeam,
   getHotTake,
   getBracketForTeam,
   getLiveMatches,
   voteOnHotTake,
+  getPreMatchBriefing,
 } from '../services/api';
+import BriefingCard from './BriefingCard';
 import './HomeScreen.css';
 
 const FLAGS = {
@@ -143,6 +145,9 @@ function HomeScreen({ userContext, userId, onNavigate }) {
   const [liveMatches, setLiveMatches] = useState([]);
   const [userVote, setUserVote] = useState(null);
   const [loading, setLoading] = useState({ recap: true, hotTake: true, bracket: true, matches: true });
+  const [briefing, setBriefing] = useState(null);
+  const [showBriefing, setShowBriefing] = useState(false);
+  const dismissedFixtureId = useRef(null);
 
   const team = userContext?.team || 'Argentina';
   const teamStats = TEAM_STATS[team] || TEAM_STATS['Argentina'];
@@ -169,6 +174,27 @@ function HomeScreen({ userContext, userId, onNavigate }) {
         setLoading({ recap: false, hotTake: false, bracket: false, matches: false });
       });
   }, [team]);
+
+  useEffect(() => {
+    if (!userContext?.team) return;
+
+    const checkBriefing = async () => {
+      try {
+        const sports = userContext.knownSports?.join(',') || 'NFL,NBA';
+        const data = await getPreMatchBriefing(userContext.team, sports);
+        if (data.briefing && data.briefing.fixtureId !== dismissedFixtureId.current) {
+          setBriefing(data.briefing);
+          setShowBriefing(true);
+        }
+      } catch (err) {
+        console.error('Briefing check error:', err);
+      }
+    };
+
+    checkBriefing();
+    const interval = setInterval(checkBriefing, 30 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, [userContext?.team]);
 
   const handleVote = (vote) => {
     const ht = hotTake || FALLBACK_HOT_TAKE;
@@ -199,8 +225,21 @@ function HomeScreen({ userContext, userId, onNavigate }) {
   const yesPct = Math.round((yesVotes / totalVotes) * 100);
   const noPct = 100 - yesPct;
 
+  const handleDismissBriefing = () => {
+    dismissedFixtureId.current = briefing?.fixtureId;
+    setShowBriefing(false);
+  };
+
   return (
     <div className="home-screen">
+
+      {showBriefing && briefing && (
+        <BriefingCard
+          briefing={briefing}
+          onDismiss={handleDismissBriefing}
+          onNavigate={onNavigate}
+        />
+      )}
 
       {/* ── SECTION 1: Welcome bar ──────────────────────── */}
       <div className="home-welcome">
