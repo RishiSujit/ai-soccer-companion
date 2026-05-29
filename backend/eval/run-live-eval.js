@@ -242,50 +242,58 @@ AI RESPONSE: "${response}"
 Score this response on all 5 dimensions.
 `;
 
-  try {
-    const judgeResponse = await client.messages.create({
-      model: 'claude-sonnet-4-5',
-      max_tokens: 800,
-      system: LIVE_JUDGE_PROMPT,
-      messages: [{ role: 'user', content: userMessage }],
-    });
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      const judgeResponse = await client.messages.create({
+        model: 'claude-sonnet-4-5',
+        max_tokens: 800,
+        system: LIVE_JUDGE_PROMPT,
+        messages: [{ role: 'user', content: userMessage }],
+      });
 
-    const text = judgeResponse.content[0].text
-      .replace(/```json/g, '')
-      .replace(/```/g, '')
-      .trim();
+      const text = judgeResponse.content[0].text
+        .replace(/```json/g, '')
+        .replace(/```/g, '')
+        .trim();
 
-    const scores = JSON.parse(text);
-    scores.total_score =
-      (scores.factual_accuracy || 0) +
-      (scores.context_awareness || 0) +
-      (scores.tone_match || 0) +
-      (scores.stakes_explanation || 0) +
-      (scores.analogy_relevance || 0);
+      const scores = JSON.parse(text);
+      scores.total_score =
+        (scores.factual_accuracy || 0) +
+        (scores.context_awareness || 0) +
+        (scores.tone_match || 0) +
+        (scores.stakes_explanation || 0) +
+        (scores.analogy_relevance || 0);
 
-    return scores;
+      return scores;
 
-  } catch (err) {
-    console.error('Judge error:', err.message);
-    return {
-      factual_accuracy: 0,
-      context_awareness: 0,
-      tone_match: 0,
-      stakes_explanation: 0,
-      analogy_relevance: 0,
-      total_score: 0,
-      flags: `Judge error: ${err.message}`,
-      factual_justification: '',
-      factual_rewrite: '',
-      context_justification: '',
-      context_rewrite: '',
-      tone_justification: '',
-      tone_rewrite: '',
-      stakes_justification: '',
-      stakes_rewrite: '',
-      analogy_justification: '',
-      analogy_rewrite: '',
-    };
+    } catch (err) {
+      console.log(`  ⚠️  Judge attempt ${attempt}/3 failed: ${err.message.slice(0, 50)}`);
+
+      if (attempt < 3) {
+        await new Promise(r => setTimeout(r, 1000));
+      } else {
+        console.log(`  ❌ Judge failed after 3 attempts — skipping ${scenario.id}`);
+        return {
+          factual_accuracy: null,
+          context_awareness: null,
+          tone_match: null,
+          stakes_explanation: null,
+          analogy_relevance: null,
+          total_score: null,
+          flags: `JUDGE_ERROR_SKIPPED: ${err.message.slice(0, 100)}`,
+          factual_justification: '',
+          factual_rewrite: '',
+          context_justification: '',
+          context_rewrite: '',
+          tone_justification: '',
+          tone_rewrite: '',
+          stakes_justification: '',
+          stakes_rewrite: '',
+          analogy_justification: '',
+          analogy_rewrite: '',
+        };
+      }
+    }
   }
 }
 
@@ -296,6 +304,7 @@ Score this response on all 5 dimensions.
 async function runCondition(scenarios, label, useSignals) {
   const results = [];
   let totalScore = 0;
+  let maxPossible = 0;
 
   console.log(`\nRunning ${label} (${scenarios.length} scenarios)...`);
   console.log('─'.repeat(50));
@@ -306,6 +315,22 @@ async function runCondition(scenarios, label, useSignals) {
     try {
       const { response, signals } = await getCompanionResponse(scenario, useSignals);
       const scores = await judgeLiveResponse(scenario, response, signals, useSignals);
+
+      if (scores.total_score === null) {
+        console.log(`⚠️  skipped (judge error)`);
+        results.push({
+          id: scenario.id,
+          question: scenario.question,
+          description: scenario.description,
+          minute: scenario.minute,
+          response,
+          signals: useSignals ? signals : null,
+          scores,
+          label,
+          skipped: true,
+        });
+        continue;
+      }
 
       const pct = Math.round((scores.total_score / 5.0) * 100);
       const icon = pct >= 75 ? '✅' : pct >= 50 ? '⚠️ ' : '❌';
@@ -320,9 +345,11 @@ async function runCondition(scenarios, label, useSignals) {
         signals: useSignals ? signals : null,
         scores,
         label,
+        skipped: false,
       });
 
       totalScore += scores.total_score;
+      maxPossible += 5.0;
 
     } catch (err) {
       console.log(`❌ ERROR: ${err.message}`);
@@ -331,22 +358,32 @@ async function runCondition(scenarios, label, useSignals) {
         error: err.message,
         scores: { total_score: 0 },
         label,
+        skipped: false,
       });
+      maxPossible += 5.0;
     }
 
     await new Promise(r => setTimeout(r, 800));
   }
 
-  const overallPct = Math.round((totalScore / (scenarios.length * 5.0)) * 100);
+  const skippedCount = results.filter(r => r.skipped).length;
+  const scoredCount = results.filter(r => !r.skipped).length;
+  const overallPct = maxPossible > 0 ? Math.round((totalScore / maxPossible) * 100) : 0;
+
+  if (skippedCount > 0) {
+    console.log(`  Scored: ${scoredCount} | Skipped (judge errors): ${skippedCount}`);
+  }
 
   return {
     label,
     results,
     summary: {
       total_score: totalScore,
-      max_possible: scenarios.length * 5.0,
+      max_possible: maxPossible,
       overall_pct: overallPct,
       scenarios_run: scenarios.length,
+      scored: scoredCount,
+      skipped: skippedCount,
     },
   };
 }

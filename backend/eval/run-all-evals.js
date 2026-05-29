@@ -53,6 +53,25 @@ async function runAll() {
   console.log('\n' + '#'.repeat(60));
   console.log('  EVAL SUITE COMPLETE');
   console.log('#'.repeat(60) + '\n');
+
+  // ─────────────────────────────────────────
+  // Improvement workflow prompt
+  // ─────────────────────────────────────────
+  console.log('─'.repeat(50));
+  console.log('NEXT STEPS:');
+  console.log('─'.repeat(50));
+  console.log('\n1. Review results in backend/eval/');
+  console.log('2. Run improvement analysis:');
+  console.log('   node backend/scripts/improve-from-feedback.js');
+  console.log('\n3. Apply suggested fixes to:');
+  console.log('   → backend/lib/matchSignals.js');
+  console.log('   → backend/routes/companion.js');
+  console.log('   → backend/knowledge-base/soccer-facts.txt');
+  console.log('\n4. Re-run quick eval to confirm:');
+  console.log('   node backend/eval/run-eval.js --quick --skip-baseline');
+  console.log('\n5. If gates pass — deploy:');
+  console.log('   git add . && git commit -m "fix: post-eval improvements" && git push');
+  console.log('─'.repeat(50) + '\n');
 }
 
 runAll();

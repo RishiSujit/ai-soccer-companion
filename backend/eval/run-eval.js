@@ -137,10 +137,35 @@ RETURN THIS JSON EXACTLY:
 `;
 
 // ─────────────────────────────────────────
-// Get AI response (full system or baseline)
+// Parse companion response format
 // ─────────────────────────────────────────
 
-async function getAIResponse(question, useRAG = true) {
+function parseEvalResponse(rawText) {
+  const marker = '[FOLLOW_UPS]';
+  const idx = rawText.indexOf(marker);
+
+  if (idx === -1) {
+    return { coreAnswer: rawText.trim(), followUps: [] };
+  }
+
+  const coreAnswer = rawText.substring(0, idx).trim();
+  const followUpsRaw = rawText.substring(idx + marker.length).trim();
+
+  let followUps = [];
+  try {
+    followUps = JSON.parse(followUpsRaw);
+  } catch (e) {
+    followUps = [];
+  }
+
+  return { coreAnswer, followUps };
+}
+
+// ─────────────────────────────────────────
+// Get raw AI response (full system or baseline)
+// ─────────────────────────────────────────
+
+async function getRawAIResponse(question, useRAG = true) {
   let systemPrompt = useRAG
     ? FULL_SYSTEM_PROMPT
     : BASELINE_SYSTEM_PROMPT;
@@ -152,7 +177,7 @@ async function getAIResponse(question, useRAG = true) {
 
   const response = await client.messages.create({
     model: 'claude-sonnet-4-5',
-    max_tokens: 250,
+    max_tokens: 350,
     system: systemPrompt,
     messages: [{
       role: 'user',
@@ -161,6 +186,62 @@ async function getAIResponse(question, useRAG = true) {
   });
 
   return response.content[0].text;
+}
+
+// ─────────────────────────────────────────
+// Judge follow-up pills quality
+// ─────────────────────────────────────────
+
+async function judgePills(question, coreAnswer, aiFollowUps, referenceFollowUps) {
+  const refText = referenceFollowUps?.length > 0
+    ? `\n\nREFERENCE PILLS FOR COMPARISON:\n${referenceFollowUps.join('\n')}`
+    : '';
+
+  const pillsText = aiFollowUps?.length > 0
+    ? aiFollowUps.join('\n')
+    : '(no follow-up pills generated)';
+
+  const userMessage = `
+QUESTION: ${question}
+CORE ANSWER: ${coreAnswer}
+
+AI FOLLOW-UP PILLS:
+${pillsText}
+${refText}
+
+Score these follow-up pills on two dimensions.
+Return ONLY valid JSON:
+{
+  "relevance": 0 or 0.5 or 1.0,
+  "diversity": 0 or 0.5 or 1.0,
+  "total_score": 0.0,
+  "notes": ""
+}
+
+RUBRIC:
+RELEVANCE (0/0.5/1.0): Do the pills ask logical follow-up questions a new soccer fan would actually want answered after the core response?
+DIVERSITY (0/0.5/1.0): Do the pills cover different aspects (stats, tactics, history, how-to-watch) rather than asking the same question multiple ways?
+`;
+
+  try {
+    const response = await client.messages.create({
+      model: 'claude-sonnet-4-5',
+      max_tokens: 200,
+      system: 'You are an eval judge. Return only valid JSON.',
+      messages: [{ role: 'user', content: userMessage }],
+    });
+
+    const text = response.content[0].text
+      .replace(/```json/g, '')
+      .replace(/```/g, '')
+      .trim();
+
+    const scores = JSON.parse(text);
+    scores.total_score = (scores.relevance || 0) + (scores.diversity || 0);
+    return scores;
+  } catch (err) {
+    return { relevance: 0, diversity: 0, total_score: 0, notes: `Error: ${err.message}` };
+  }
 }
 
 // ─────────────────────────────────────────
@@ -242,34 +323,60 @@ async function runEval(useRAG = true, label = 'full_system') {
     process.stdout.write(`  ${id}... `);
 
     try {
-      // Get AI response
-      const aiResponse = await getAIResponse(data.question, useRAG);
+      // Get raw AI response and parse
+      const rawResponse = await getRawAIResponse(data.question, useRAG);
+      const { coreAnswer, followUps } = parseEvalResponse(rawResponse);
 
-      // Judge the response
-      const scores = await judgeResponse(
+      // Reference answer: prefer core_answer, fall back to reference_answer
+      const referenceAnswer = data.core_answer || data.reference_answer || '';
+
+      // Judge the core response
+      const coreScores = await judgeResponse(
         data.question,
-        data.reference_answer,
-        aiResponse
+        referenceAnswer,
+        coreAnswer
       );
+
+      const hasPillReference = data.follow_up_pills?.length > 0;
 
       const result = {
         id,
         category: data.category,
         question: data.question,
-        ai_response: aiResponse,
-        reference_answer: data.reference_answer,
-        scores,
+        ai_response: coreAnswer,
+        ai_follow_ups: followUps,
+        reference_answer: referenceAnswer,
+        reference_pills: data.follow_up_pills || [],
+        scores: coreScores,
         label,
       };
 
-      results.push(result);
-      totalScore += scores.total_score;
-      maxPossible += 3.0;
+      if (hasPillReference) {
+        const pillScores = await judgePills(
+          data.question,
+          coreAnswer,
+          followUps,
+          data.follow_up_pills
+        );
+        result.pill_scores = pillScores;
+        result.combined_score = coreScores.total_score + pillScores.total_score;
+        totalScore += result.combined_score;
+        maxPossible += 6.0;
 
-      // Show pass/fail inline
-      const pct = Math.round((scores.total_score / 3.0) * 100);
-      const icon = pct >= 75 ? '✅' : pct >= 50 ? '⚠️ ' : '❌';
-      console.log(`${icon} ${pct}% (${scores.total_score}/3.0)`);
+        const pct = Math.round((result.combined_score / 6.0) * 100);
+        const icon = pct >= 75 ? '✅' : pct >= 50 ? '⚠️ ' : '❌';
+        console.log(`${icon} ${pct}% (${result.combined_score.toFixed(1)}/6.0 with pills)`);
+      } else {
+        result.combined_score = coreScores.total_score;
+        totalScore += coreScores.total_score;
+        maxPossible += 3.0;
+
+        const pct = Math.round((coreScores.total_score / 3.0) * 100);
+        const icon = pct >= 75 ? '✅' : pct >= 50 ? '⚠️ ' : '❌';
+        console.log(`${icon} ${pct}% (${coreScores.total_score}/3.0)`);
+      }
+
+      results.push(result);
 
     } catch (err) {
       console.log(`❌ ERROR: ${err.message}`);
@@ -279,9 +386,11 @@ async function runEval(useRAG = true, label = 'full_system') {
         question: data.question,
         error: err.message,
         scores: { total_score: 0 },
+        combined_score: 0,
         label,
       });
-      maxPossible += 3.0;
+      const hasPillRef = data.follow_up_pills?.length > 0;
+      maxPossible += hasPillRef ? 6.0 : 3.0;
     }
 
     // Rate limiting — avoid API throttle
@@ -319,14 +428,16 @@ function getCategoryBreakdown(results) {
         failures: [],
       };
     }
-    categories[cat].total += r.scores?.total_score || 0;
-    categories[cat].max += 3.0;
+    const combined = r.combined_score ?? r.scores?.total_score ?? 0;
+    const catMax = r.reference_pills?.length > 0 ? 6.0 : 3.0;
+    categories[cat].total += combined;
+    categories[cat].max += catMax;
     categories[cat].count += 1;
 
-    if ((r.scores?.total_score || 0) < 2.0) {
+    if (combined < (catMax * 0.67)) {
       categories[cat].failures.push({
         id: r.id,
-        score: r.scores?.total_score,
+        score: combined,
         question: r.question,
         flags: r.scores?.flags,
       });
@@ -475,16 +586,24 @@ function printReport(fullSystem, baseline, gateResults) {
 
   // Show top failures
   const allFailures = fullSystem.results
-    .filter(r => (r.scores?.total_score || 0) < 1.5)
-    .sort((a, b) =>
-      (a.scores?.total_score || 0) - (b.scores?.total_score || 0)
-    )
+    .filter(r => {
+      const combined = r.combined_score ?? r.scores?.total_score ?? 0;
+      const max = r.reference_pills?.length > 0 ? 6.0 : 3.0;
+      return combined < (max * 0.5);
+    })
+    .sort((a, b) => {
+      const aS = a.combined_score ?? a.scores?.total_score ?? 0;
+      const bS = b.combined_score ?? b.scores?.total_score ?? 0;
+      return aS - bS;
+    })
     .slice(0, 10);
 
   if (allFailures.length > 0) {
     console.log('\nTOP FAILURES TO FIX:');
     allFailures.forEach(f => {
-      console.log(`\n  ${f.id} (${f.scores?.total_score}/3.0):`);
+      const combined = f.combined_score ?? f.scores?.total_score ?? 0;
+      const max = f.reference_pills?.length > 0 ? 6.0 : 3.0;
+      console.log(`\n  ${f.id} (${combined}/${max}):`);
       console.log(`  Q: ${f.question.slice(0, 60)}...`);
       if (f.scores?.flags) {
         console.log(`  Flag: ${f.scores.flags.slice(0, 100)}`);

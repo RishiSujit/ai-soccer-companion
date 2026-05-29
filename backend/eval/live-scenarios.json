@@ -414,28 +414,30 @@
     },
     {
       "id": "LS-14",
-      "minute": 71,
-      "score": { "home": 2, "away": 0 },
-      "description": "France bring on Mbappe as a substitute at 71 minutes",
+      "minute": 111,
+      "score": { "home": 3, "away": 2 },
+      "description": "France bring on Kolo Muani in extra time — desperate for a goal",
       "recent_events": [
         {
-          "time": { "elapsed": 71 },
+          "time": { "elapsed": 111 },
           "type": "subst",
           "team": { "name": "France" },
-          "player": { "name": "Mbappe" },
-          "detail": "Substitution 1"
+          "player": { "name": "Kolo Muani" },
+          "detail": "Substitution"
         }
       ],
       "stats": {
-        "possession": { "home": 52, "away": 48 }
+        "possession": { "home": 45, "away": 55 }
       },
-      "isExtraTime": false,
-      "question": "why did France bring someone on?",
+      "isExtraTime": true,
+      "question": "why did France just make a substitution?",
       "expected_signals": {
-        "pressure": "medium"
+        "pressure": "critical",
+        "stakes_contains": "maximum"
       },
       "expected_response_qualities": {
         "must_explain_substitution": true,
+        "must_explain_stakes": true,
         "must_use_analogy": true
       }
     },

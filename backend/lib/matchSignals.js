@@ -124,7 +124,40 @@ function calculateStakes(matchState) {
 }
 
 function calculateEmotionalIntensity(matchState, events) {
-  const { minute = 0 } = matchState;
+  const {
+    minute = 0,
+    homeScore = 0,
+    awayScore = 0,
+    isExtraTime = false,
+    isPenaltyShootout = false,
+    stage = 'group',
+  } = matchState;
+
+  const scoreDiff = Math.abs(homeScore - awayScore);
+  const isKnockout = isKnockoutStage(stage);
+
+  // ─────────────────────────────────────────
+  // HARD OVERRIDES — always spike
+  // These fire before event logic because the
+  // situation itself is maximally dramatic
+  // regardless of recent events
+  // ─────────────────────────────────────────
+
+  if (isPenaltyShootout) {
+    return 'spike — penalty shootout';
+  }
+
+  if (isExtraTime && minute >= 115 && scoreDiff === 0) {
+    return 'spike — penalties imminent';
+  }
+
+  if (isExtraTime && minute >= 115 && scoreDiff === 1) {
+    return 'spike — elimination seconds away';
+  }
+
+  // ─────────────────────────────────────────
+  // EVENT-BASED SCORING
+  // ─────────────────────────────────────────
 
   const recentWindow = (events || []).filter(
     e => e.time?.elapsed >= (minute - 3)
@@ -158,6 +191,27 @@ function calculateEmotionalIntensity(matchState, events) {
   if (totalDrama >= 15) return 'spike — extremely dramatic moment';
   if (totalDrama >= 8) return 'high';
   if (totalDrama >= 4) return 'medium';
+
+  // ─────────────────────────────────────────
+  // SITUATIONAL FLOORS
+  // Applied when events produce no drama —
+  // the match situation itself still warrants
+  // elevated intensity
+  // ─────────────────────────────────────────
+
+  if (isExtraTime && scoreDiff === 0) {
+    return 'high — extra time level';
+  }
+
+  // Late knockout, tied: always spike even without recent events
+  if (isKnockout && !isExtraTime && minute >= 80 && scoreDiff === 0) {
+    return 'spike — late knockout tied';
+  }
+
+  if (isKnockout && !isExtraTime && minute >= 85 && scoreDiff === 1) {
+    return 'high — comeback possible';
+  }
+
   return 'low';
 }
 
@@ -170,7 +224,12 @@ function buildNarrativeMoment(matchState, signals) {
   const losingTeam = homeScore > awayScore ? awayTeam : homeTeam;
 
   if (matchState.isPenaltyShootout) {
-    return `Penalty shootout — one kick could end a team's World Cup`;
+    return `Penalty shootout — the World Cup comes down to five kicks each. One miss and it is over.`;
+  }
+
+  const etScoreDiff = Math.abs((matchState.homeScore || 0) - (matchState.awayScore || 0));
+  if (matchState.isExtraTime && (matchState.minute || 0) >= 115 && etScoreDiff === 0) {
+    return `${homeTeam} vs ${awayTeam} tied in the final minutes of extra time — penalty shootout almost certain unless someone scores in the next few minutes`;
   }
 
   if (matchState.isExtraTime) {
