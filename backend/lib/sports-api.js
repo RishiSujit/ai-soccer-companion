@@ -15,8 +15,8 @@ const FALLBACK = {
   recentEventsText: 'No events yet',
 };
 
-const ACTIVE_LEAGUE_ID = parseInt(process.env.TEST_LEAGUE_ID || process.env.ACTIVE_LEAGUE_ID) || 1;
-const ACTIVE_SEASON = parseInt(process.env.TEST_SEASON || process.env.ACTIVE_SEASON) || 2026;
+const ACTIVE_LEAGUE_ID = parseInt(process.env.ACTIVE_LEAGUE_ID) || 1;
+const ACTIVE_SEASON = parseInt(process.env.ACTIVE_SEASON) || 2026;
 
 const api = axios.create({
   baseURL: 'https://v3.football.api-sports.io',

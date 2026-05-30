@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { getLiveMatches } from '../../services/api';
-import { TEST_MATCH, TEST_MATCH_ENABLED } from '../../lib/testMatchData';
 import './MatchSelector.css';
 
 const FLAGS = {
@@ -10,7 +9,6 @@ const FLAGS = {
   'Netherlands':'🇳🇱','Italy':'🇮🇹','Japan':'🇯🇵',
   'Morocco':'🇲🇦','Senegal':'🇸🇳','Australia':'🇦🇺',
   'Croatia':'🇭🇷','Uruguay':'🇺🇾','Colombia':'🇨🇴',
-  'Paris Saint-Germain':'🇫🇷',
 };
 
 const FALLBACK_MATCHES = [
@@ -186,22 +184,6 @@ function MatchSelector({ onMatchSelected }) {
 
   return (
     <div className="match-selector">
-
-      {/* ── TEST: UCL Final card ───────────────────────────── */}
-      {TEST_MATCH_ENABLED && TEST_MATCH && (
-        <div className="ms-test-card" onClick={() => onMatchSelected(TEST_MATCH)}>
-          <div className="ms-test-card__badge">🧪 TEST MATCH</div>
-          <div className="ms-test-card__stage">{TEST_MATCH.stage}</div>
-          <div className="ms-test-card__teams">
-            <span>{FLAGS[TEST_MATCH.homeTeam] ?? '🌍'}</span>
-            <span className="ms-test-card__names">
-              {TEST_MATCH.homeTeam} vs {TEST_MATCH.awayTeam}
-            </span>
-            <span>{FLAGS[TEST_MATCH.awayTeam] ?? '🌍'}</span>
-          </div>
-          <div className="ms-test-card__kickoff">{TEST_MATCH.kickoffDisplay}</div>
-        </div>
-      )}
 
       {/* ── General Companion card ─────────────────────────── */}
       <div className="ms-general-card" onClick={() => onMatchSelected({ general: true })}>

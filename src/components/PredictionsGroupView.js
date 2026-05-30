@@ -2,10 +2,8 @@ import { useState, useEffect } from 'react';
 import {
   createGroup,
   joinGroup,
-  testAwardPoints,
 } from '../services/api';
 import { supabase } from '../lib/supabase';
-import { TEST_MATCH_ENABLED } from '../lib/testMatchData';
 import DailyCardView from './DailyCardView';
 import CelebrationOverlay from './CelebrationOverlay';
 import './PredictionsGroupView.css';
@@ -155,26 +153,9 @@ function PredictionsGroupView({ userId, userName, userContext, isGuest, onShowAu
     }
   }
 
-  const triggerCelebration = (message, points) => {
-    setCelebration({ show: true, message, points });
-  };
-
   const dismissCelebration = () => {
     setCelebration(prev => ({ ...prev, show: false }));
   };
-
-  async function handleTestAwardPoints(pts) {
-    if (!userId || !group) return;
-    try {
-      const result = await testAwardPoints(userId, pts);
-      if (result.success) {
-        triggerCelebration(`+${pts} test points awarded!`, pts);
-        loadLeaderboard(group.id);
-      }
-    } catch {
-      // Fail silently
-    }
-  }
 
   return (
     <div className="predictions-page">
@@ -372,18 +353,6 @@ function PredictionsGroupView({ userId, userName, userContext, isGuest, onShowAu
                   ))
                 )}
               </div>
-
-              {TEST_MATCH_ENABLED && (
-                <div className="test-controls">
-                  <div className="test-controls-label">🧪 TEST — Award Points</div>
-                  <div className="test-controls-row">
-                    <button className="test-award-btn" onClick={() => handleTestAwardPoints(5)}>+5 pts</button>
-                    <button className="test-award-btn" onClick={() => handleTestAwardPoints(10)}>+10 pts</button>
-                    <button className="test-award-btn" onClick={() => handleTestAwardPoints(25)}>+25 pts</button>
-                  </div>
-                  <div className="test-controls-note">Awards to your account in all groups</div>
-                </div>
-              )}
 
               <div className="leave-group" onClick={handleLeaveGroup}>Leave group</div>
             </div>

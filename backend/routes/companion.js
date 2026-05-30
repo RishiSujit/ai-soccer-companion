@@ -77,28 +77,6 @@ function buildUserContextString(userContext) {
   return `This user follows ${sports}. ${teams} Always use analogies from these sports when explaining soccer concepts.`;
 }
 
-const UCL_FINAL_CONTEXT = `
-MATCH CONTEXT — UCL FINAL 2026:
-PSG are the defending champions trying for back-to-back titles — like the Chiefs going for consecutive Super Bowls.
-Arsenal just won the Premier League and are in their first UCL Final in 20 years.
-PSG knocked Arsenal out in last year's semifinals 3-1 on aggregate. This is a revenge final.
-
-PSG STARS:
-- Ousmane Dembele — top UCL scorer this season, explosive French winger, makes things happen every time he touches the ball
-- Khvicha Kvaratskhelia (Kvara) — Georgian winger, unpredictable and fast, joined from Napoli and transformed PSG
-- Gianluigi Donnarumma — elite Italian goalkeeper, huge and commanding
-- Marquinhos — PSG captain, calm center back, leader of the defense
-- Achraf Hakimi — attacking right back, one of the best in Europe
-- Joao Neves / Vitinha — Portuguese midfield duo who control tempo
-
-ARSENAL STARS:
-- Bukayo Saka — English winger, their best player, academy graduate, fearless and creative
-- Viktor Gyökeres — new Swedish striker, clinical finisher, led the league in goals this season
-- Martin Odegaard — Norwegian captain, the quarterback of the team, decides where the ball goes
-- Declan Rice — English defensive mid, the engine, covers everything and breaks up attacks
-
-COACH: Luis Enrique (PSG) vs Mikel Arteta (Arsenal) — both Spanish managers, both high-press philosophies.`;
-
 function buildMatchContextString(matchContext) {
   if (!matchContext) return 'No live match data available.';
 
@@ -148,10 +126,6 @@ SIGNAL INSTRUCTIONS:
 - Clear momentum → reference it naturally in your answer
 - Match your energy to the moment
 `;
-  }
-
-  if (matchContext.isTestMatch) {
-    context += UCL_FINAL_CONTEXT;
   }
 
   return context;

@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 const axios = require('axios');
 
-const LEAGUE_ID = parseInt(process.env.TEST_LEAGUE_ID || process.env.ACTIVE_LEAGUE_ID) || 1;
-const SEASON = parseInt(process.env.TEST_SEASON || process.env.ACTIVE_SEASON) || 2026;
+const LEAGUE_ID = parseInt(process.env.ACTIVE_LEAGUE_ID) || 1;
+const SEASON = parseInt(process.env.ACTIVE_SEASON) || 2026;
 const API_KEY = process.env.API_FOOTBALL_KEY;
 const BASE_URL = 'https://v3.football.api-sports.io';
 const HEADERS = { 'x-apisports-key': API_KEY };
