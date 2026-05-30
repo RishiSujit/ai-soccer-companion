@@ -83,6 +83,7 @@ function App() {
   const [view, setView] = useState('landing');
   const [assignedTeam, setAssignedTeam] = useState(null);
   const [selectedMatch, setSelectedMatch] = useState(null);
+  const [companionPreloadedQuestion, setCompanionPreloadedQuestion] = useState(null);
   const [userContext, setUserContext] = useState({
     team: null, knownSports: [], favoriteTeams: [], existingFan: false,
   });
@@ -322,13 +323,29 @@ function App() {
   };
 
   const handleTabChange = (tabId) => {
-    if (tabId === 'companion') setSelectedMatch(null);
+    if (tabId === 'companion') {
+      setSelectedMatch(null);
+      setCompanionPreloadedQuestion(null);
+    }
     setView(tabId);
   };
 
   const handleNavigate = (v, match) => {
+    if (v === 'companion') {
+      if (!match) {
+        setSelectedMatch(null);
+        setCompanionPreloadedQuestion(null);
+      } else if (match?.general) {
+        setSelectedMatch({ general: true });
+        setCompanionPreloadedQuestion(match.preloadedQuestion || null);
+      } else {
+        setSelectedMatch(match);
+        setCompanionPreloadedQuestion(null);
+      }
+      setView('companion');
+      return;
+    }
     if (match) setSelectedMatch(match);
-    else if (v === 'companion') setSelectedMatch(null);
     setView(v);
   };
 
@@ -408,14 +425,27 @@ function App() {
           />
         )}
         {view === 'companion' && !selectedMatch && (
-          <MatchSelector onMatchSelected={(m) => setSelectedMatch(m)} />
+          <MatchSelector
+            onMatchSelected={(m) => {
+              if (m?.general) {
+                setSelectedMatch({ general: true });
+                setCompanionPreloadedQuestion(null);
+              } else {
+                setSelectedMatch(m);
+              }
+            }}
+          />
         )}
         {view === 'companion' && selectedMatch && (
           <CompanionChat
-            match={selectedMatch}
+            match={selectedMatch.general ? null : selectedMatch}
             userContext={userContext}
             userId={userId}
-            onBack={() => setSelectedMatch(null)}
+            preloadedQuestion={companionPreloadedQuestion}
+            onBack={() => {
+              setSelectedMatch(null);
+              setCompanionPreloadedQuestion(null);
+            }}
           />
         )}
         {view === 'predictions' && (

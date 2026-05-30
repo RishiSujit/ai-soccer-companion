@@ -191,3 +191,13 @@ export const getBracketForTeam = async (team) => {
     return { bracket: [] };
   }
 };
+
+// TEST ONLY — awards points to all groups the user is in for UCL Final testing
+export const testAwardPoints = async (userId, points) => {
+  const res = await fetch(`${API_URL}/api/groups/test-award-points`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ userId, points }),
+  });
+  return res.json();
+};

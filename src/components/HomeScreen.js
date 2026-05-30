@@ -340,7 +340,10 @@ function HomeScreen({ userContext, userId, onNavigate }) {
               </div>
               <button
                 className="follow-team-btn"
-                onClick={() => onNavigate('companion', { team: featuredTeams[activeTeamIndex] })}
+                onClick={() => onNavigate('companion', {
+                  general: true,
+                  preloadedQuestion: `Tell me about ${featuredTeams[activeTeamIndex]} — who are their key players and how do they play?`,
+                })}
               >
                 Follow in Companion →
               </button>
@@ -404,7 +407,13 @@ function HomeScreen({ userContext, userId, onNavigate }) {
               </li>
             ))}
           </ul>
-          <button className="home-cta-link" onClick={() => onNavigate('companion')}>
+          <button
+            className="home-cta-link"
+            onClick={() => onNavigate('companion', {
+              general: true,
+              preloadedQuestion: `Break down the ${displayRecap.home_team} ${displayRecap.home_score}–${displayRecap.away_score} ${displayRecap.away_team} match for me`,
+            })}
+          >
             Ask Companion about this match →
           </button>
         </div>
@@ -442,7 +451,10 @@ function HomeScreen({ userContext, userId, onNavigate }) {
             </div>
           )}
 
-          <button className="home-cta-link" onClick={() => onNavigate('companion')}>
+          <button
+            className="home-cta-link"
+            onClick={() => onNavigate('companion', { general: true })}
+          >
             Ask Companion to explain →
           </button>
         </div>

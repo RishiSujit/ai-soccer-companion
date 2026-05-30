@@ -133,4 +133,49 @@ router.get('/:groupId/leaderboard', async (req, res) => {
   }
 });
 
+// TEST ONLY — POST /api/groups/test-award-points
+// Awards arbitrary points to a user for UCL Final testing
+// Only active when REACT_APP_TEST_MATCH_ENABLED=true in .env
+router.post('/test-award-points', async (req, res) => {
+  if (process.env.REACT_APP_TEST_MATCH_ENABLED !== 'true') {
+    return res.status(403).json({ error: 'Test endpoints not enabled' });
+  }
+  try {
+    const { userId, points } = req.body;
+    if (!userId || typeof points !== 'number') {
+      return res.status(400).json({ error: 'userId and points (number) are required' });
+    }
+
+    await supabase
+      .from('users')
+      .upsert({ id: userId, auth_type: 'authenticated' }, { onConflict: 'id' });
+
+    const { data: members, error: fetchError } = await supabase
+      .from('group_members')
+      .select('id, total_points')
+      .eq('user_id', userId);
+
+    if (fetchError) {
+      console.error('Test award fetch error:', fetchError);
+      return res.status(500).json({ error: 'Failed to fetch memberships' });
+    }
+
+    if (!members?.length) {
+      return res.json({ success: true, updated: 0, message: 'User is not in any group' });
+    }
+
+    for (const member of members) {
+      await supabase
+        .from('group_members')
+        .update({ total_points: (member.total_points || 0) + points })
+        .eq('id', member.id);
+    }
+
+    res.json({ success: true, updated: members.length, pointsAdded: points });
+  } catch (error) {
+    console.error('Test award points error:', error);
+    res.status(500).json({ error: 'Something went wrong' });
+  }
+});
+
 module.exports = router;

@@ -14,19 +14,27 @@ const FLAGS = {
   'Croatia':'🇭🇷','Uruguay':'🇺🇾','Colombia':'🇨🇴',
 };
 
-const OPENING_MESSAGE = "I'm your match companion for this game. Ask me anything — rules, players, what just happened. I'll explain it in plain English.";
+const MATCH_OPENING = "I'm your match companion for this game. Ask me anything — rules, players, what just happened. I'll explain it in plain English.";
+const GENERAL_OPENING = "Hey! I'm your World Cup 2026 companion. Ask me anything — rules, players, how the tournament works, or what's been happening. What's on your mind?";
+
+const GENERAL_STARTER_PILLS = [
+  "Explain the offside rule to me",
+  "Who are the favorites to win it all?",
+  "How does the group stage work?",
+  "What's VAR and when does it get used?",
+];
 
 function getPillIcon(question) {
   const q = question.toLowerCase();
-  if (q.includes('how often') || q.includes('how many') || q.includes('percent') || q.includes('stat') || q.includes('number')) return '📊';
-  if (q.includes('why') && (q.includes('controversial') || q.includes('argue') || q.includes('debate') || q.includes('hate') || q.includes('unfair'))) return '🔥';
-  if (q.includes('watch') || q.includes('look for') || q.includes('spot') || q.includes('see')) return '👀';
-  if (q.includes('what happens') || q.includes('next') || q.includes('now') || q.includes('result')) return '⚡';
-  if (q.includes('odds') || q.includes('chance') || q.includes('likely') || q.includes('probably')) return '🎲';
-  if (q.includes('best') || q.includes('greatest') || q.includes('who is')) return '🏆';
-  if (q.includes('history') || q.includes('before') || q.includes('last time') || q.includes('ever')) return '📖';
+  if (q.includes('how often') || q.includes('how many') || q.includes('stat')) return '📊';
+  if (q.includes('why') && (q.includes('controversial') || q.includes('argue'))) return '🔥';
+  if (q.includes('watch') || q.includes('look for') || q.includes('spot')) return '👀';
+  if (q.includes('what happens') || q.includes('next') || q.includes('result')) return '⚡';
+  if (q.includes('odds') || q.includes('chance') || q.includes('likely')) return '🎲';
+  if (q.includes('best') || q.includes('greatest') || q.includes('who is') || q.includes('favorites')) return '🏆';
+  if (q.includes('history') || q.includes('before') || q.includes('last time')) return '📖';
   if (q.includes('bar') || q.includes('friends') || q.includes('say') || q.includes('tell')) return '🍺';
-  if (q.includes('matter') || q.includes('impact') || q.includes('change') || q.includes('affect')) return '🎯';
+  if (q.includes('how does') || q.includes('explain') || q.includes('what is') || q.includes('rule') || q.includes('var')) return '💡';
   return '💬';
 }
 
@@ -45,11 +53,7 @@ function ChatPanel({
     <div className="chat-panel">
       <div className="split-chat-feed">
         {messages.map((msg, i) => (
-          <div
-            key={i}
-            className="companion-message"
-            style={{ animation: 'slideUp 0.3s ease forwards' }}
-          >
+          <div key={i} className="companion-message" style={{ animation: 'slideUp 0.3s ease forwards' }}>
             {msg.role === 'assistant' && (
               <div className="msg-sender-label">
                 <div className="ai-avatar">AI</div>
@@ -66,17 +70,13 @@ function ChatPanel({
                   onClick={() => onRating(i, 'up', msg.content)}
                   disabled={!!ratings[i]}
                   aria-label="Helpful"
-                >
-                  👍
-                </button>
+                >👍</button>
                 <button
                   className={`rating-btn thumbs-down${ratings[i] === 'down' ? ' rated' : ''}`}
                   onClick={() => onRating(i, 'down', msg.content)}
                   disabled={!!ratings[i]}
                   aria-label="Not helpful"
-                >
-                  👎
-                </button>
+                >👎</button>
                 {ratings[i] && (
                   <span className="rating-thanks">
                     {ratings[i] === 'up' ? 'Thanks!' : "Got it — we'll improve"}
@@ -104,9 +104,7 @@ function ChatPanel({
                   onClick={() => onFollowUpTap(q, i)}
                   disabled={isLoading}
                 >
-                  {tappedIndex === i ? (
-                    '...'
-                  ) : (
+                  {tappedIndex === i ? '...' : (
                     <>
                       <span className="pill-icon">{getPillIcon(q)}</span>
                       <span className="pill-text">{q}</span>
@@ -114,11 +112,7 @@ function ChatPanel({
                   )}
                 </button>
               ))}
-              <button
-                className="follow-up-dismiss"
-                onClick={onDismissFollowUps}
-                disabled={isLoading}
-              >
+              <button className="follow-up-dismiss" onClick={onDismissFollowUps} disabled={isLoading}>
                 Got it ✓
               </button>
             </div>
@@ -146,9 +140,11 @@ function ChatPanel({
   );
 }
 
-function CompanionChat({ match, userContext, userId, onBack }) {
+function CompanionChat({ match, userContext, userId, onBack, preloadedQuestion }) {
+  const isGeneral = !match;
+
   const [messages, setMessages] = useState([
-    { role: 'assistant', content: OPENING_MESSAGE },
+    { role: 'assistant', content: isGeneral ? GENERAL_OPENING : MATCH_OPENING },
   ]);
   const [conversationHistory, setConversationHistory] = useState([]);
   const [input, setInput] = useState('');
@@ -161,12 +157,15 @@ function CompanionChat({ match, userContext, userId, onBack }) {
   const [currentMatchContext, setCurrentMatchContext] = useState(null);
   const [currentSignals, setCurrentSignals] = useState(null);
   const [pivotalEvent, setPivotalEvent] = useState(null);
+  const [showStarterPills, setShowStarterPills] = useState(isGeneral);
   const lastEventIdRef = useRef(null);
+  const preloadFiredRef = useRef(false);
 
   const sendMessage = async (text) => {
     const trimmed = text.trim();
     if (!trimmed || isLoading) return;
 
+    setShowStarterPills(false);
     setFollowUps([]);
     setShowFollowUps(false);
     setTappedIndex(null);
@@ -182,19 +181,28 @@ function CompanionChat({ match, userContext, userId, onBack }) {
       setConversationHistory([...updatedHistory, { role: 'assistant', content: data.reply }]);
       if (data.matchContext) setCurrentMatchContext(data.matchContext);
       if (data.signals) setCurrentSignals(data.signals);
-      if (data.followUps && data.followUps.length > 0) {
+      if (data.followUps?.length > 0) {
         setFollowUps(data.followUps);
         setShowFollowUps(true);
       }
     } catch {
       setMessages(prev => [
         ...prev,
-        { role: 'assistant', content: "Sorry, something went wrong. Try again?" },
+        { role: 'assistant', content: "Sorry, something went wrong. Try asking again?" },
       ]);
     } finally {
       setIsLoading(false);
     }
   };
+
+  // Fire preloaded question from home screen on mount
+  useEffect(() => {
+    if (preloadedQuestion && !preloadFiredRef.current) {
+      preloadFiredRef.current = true;
+      const timer = setTimeout(() => sendMessage(preloadedQuestion), 350);
+      return () => clearTimeout(timer);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSend = () => sendMessage(input);
 
@@ -221,21 +229,15 @@ function CompanionChat({ match, userContext, userId, onBack }) {
 
   const handleRating = async (messageIndex, rating, messageContent) => {
     if (ratings[messageIndex]) return;
-
     setRatings(prev => ({ ...prev, [messageIndex]: rating }));
-
     try {
       const { data: { session } } = await supabase.auth.getSession();
-
       await supabase.from('response_ratings').insert({
         user_id: session?.user?.id || userId || null,
         message_content: messageContent.slice(0, 500),
         rating,
         match_id: currentMatchContext?.id || null,
-        context: {
-          matchState: currentMatchContext,
-          signals: currentSignals,
-        },
+        context: { matchState: currentMatchContext, signals: currentSignals },
         created_at: new Date().toISOString(),
       });
     } catch (err) {
@@ -247,21 +249,15 @@ function CompanionChat({ match, userContext, userId, onBack }) {
     if (!currentMatchContext?.events) return;
     const events = currentMatchContext.events || [];
     const signals = currentMatchContext.derivedSignals;
-
     if (!signals?.emotional_intensity?.includes('spike')) return;
-
     const latestEvent = events[events.length - 1];
     if (!latestEvent) return;
-
     const eventId = `${latestEvent.time?.elapsed}-${latestEvent.type}-${latestEvent.player?.name}`;
     if (eventId === lastEventIdRef.current) return;
-
     const dramaticTypes = ['Goal', 'Red Card', 'VAR', 'Missed Penalty'];
     if (!dramaticTypes.includes(latestEvent.type)) return;
-
     lastEventIdRef.current = eventId;
     setPivotalEvent(latestEvent);
-
     const timer = setTimeout(() => setPivotalEvent(null), 8000);
     return () => clearTimeout(timer);
   }, [currentMatchContext]);
@@ -275,6 +271,47 @@ function CompanionChat({ match, userContext, userId, onBack }) {
     onDismissFollowUps: handleDismissFollowUps,
   };
 
+  // ── General mode (no match selected) ────────────────────
+  if (isGeneral) {
+    return (
+      <div className="companion-chat">
+        <div className="companion-hero companion-hero--general">
+          <div className="hero-top-row">
+            <button className="back-btn" onClick={onBack}>← Companion</button>
+            <div className="hero-general-title">World Cup 2026</div>
+            <div style={{ width: 80 }} />
+          </div>
+        </div>
+
+        <div className="companion-general-body">
+          {showStarterPills && (
+            <div className="starter-pills-container">
+              <div className="starter-pills-label">Start here</div>
+              <div className="starter-pills-grid">
+                {GENERAL_STARTER_PILLS.map((q, i) => (
+                  <button
+                    key={i}
+                    className="starter-pill"
+                    onClick={() => {
+                      setShowStarterPills(false);
+                      sendMessage(q);
+                    }}
+                    disabled={isLoading}
+                  >
+                    <span className="starter-pill__icon">{getPillIcon(q)}</span>
+                    <span className="starter-pill__text">{q}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+          <ChatPanel {...chatProps} />
+        </div>
+      </div>
+    );
+  }
+
+  // ── Match mode ───────────────────────────────────────────
   return (
     <div className="companion-chat">
 
@@ -286,10 +323,9 @@ function CompanionChat({ match, userContext, userId, onBack }) {
         onDismiss={() => setPivotalEvent(null)}
       />
 
-      {/* ── Match hero header ──────────────────────────────── */}
       <div className="companion-hero">
         <div className="hero-top-row">
-          <button className="back-btn" onClick={onBack}>← Matches</button>
+          <button className="back-btn" onClick={onBack}>← Change match</button>
           <div className="hero-stage-tag">
             <div className="live-indicator" />
             {match.stage}{match.minute ? ` · ${match.minute}'` : ''}
@@ -315,24 +351,14 @@ function CompanionChat({ match, userContext, userId, onBack }) {
         </div>
       </div>
 
-      {/* ── Desktop split layout (≥768px) ─────────────────── */}
+      {/* Desktop split */}
       <div className="companion-split">
         <div className="split-left">
           <div className="split-panel-header">
             <div className="split-panel-title">Live formation</div>
             <div className="split-panel-tabs">
-              <button
-                className={mobileTab !== 'lineup' ? 'active' : ''}
-                onClick={() => setMobileTab('formation')}
-              >
-                Pitch
-              </button>
-              <button
-                className={mobileTab === 'lineup' ? 'active' : ''}
-                onClick={() => setMobileTab('lineup')}
-              >
-                Lineup
-              </button>
+              <button className={mobileTab !== 'lineup' ? 'active' : ''} onClick={() => setMobileTab('formation')}>Pitch</button>
+              <button className={mobileTab === 'lineup' ? 'active' : ''} onClick={() => setMobileTab('lineup')}>Lineup</button>
             </div>
           </div>
           <div className="split-left-content">
@@ -350,35 +376,16 @@ function CompanionChat({ match, userContext, userId, onBack }) {
         </div>
       </div>
 
-      {/* ── Mobile tabbed layout (<768px) ─────────────────── */}
+      {/* Mobile tabbed */}
       <div className="companion-mobile">
         <div className="mobile-panel-tabs">
-          <div
-            className={`mobile-tab ${mobileTab === 'formation' ? 'active' : ''}`}
-            onClick={() => setMobileTab('formation')}
-          >
-            Formation
-          </div>
-          <div
-            className={`mobile-tab ${mobileTab === 'lineup' ? 'active' : ''}`}
-            onClick={() => setMobileTab('lineup')}
-          >
-            Lineup
-          </div>
-          <div
-            className={`mobile-tab ${mobileTab === 'chat' ? 'active' : ''}`}
-            onClick={() => setMobileTab('chat')}
-          >
-            Chat
-          </div>
+          <div className={`mobile-tab ${mobileTab === 'formation' ? 'active' : ''}`} onClick={() => setMobileTab('formation')}>Formation</div>
+          <div className={`mobile-tab ${mobileTab === 'lineup' ? 'active' : ''}`} onClick={() => setMobileTab('lineup')}>Lineup</div>
+          <div className={`mobile-tab ${mobileTab === 'chat' ? 'active' : ''}`} onClick={() => setMobileTab('chat')}>Chat</div>
         </div>
         <div className="mobile-panel-content">
-          {mobileTab === 'formation' && (
-            <div className="mobile-panel-scroll"><FormationPitch {...match} userContext={userContext} /></div>
-          )}
-          {mobileTab === 'lineup' && (
-            <div className="mobile-panel-scroll"><LineupList {...match} userContext={userContext} /></div>
-          )}
+          {mobileTab === 'formation' && <div className="mobile-panel-scroll"><FormationPitch {...match} userContext={userContext} /></div>}
+          {mobileTab === 'lineup' && <div className="mobile-panel-scroll"><LineupList {...match} userContext={userContext} /></div>}
           {mobileTab === 'chat' && <ChatPanel {...chatProps} />}
         </div>
       </div>

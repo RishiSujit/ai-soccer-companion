@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getDailyCard, submitDailyCard, getMyDailyPrediction } from '../services/api';
+import { TEST_MATCH_ENABLED, TEST_PREDICTION_CARD } from '../lib/testMatchData';
 import './DailyCardView.css';
 
 const FLAGS = {
@@ -38,6 +39,11 @@ function DailyCardView({ userId, userContext, isGuest, onShowAuth }) {
 
   useEffect(() => {
     async function load() {
+      if (TEST_MATCH_ENABLED && TEST_PREDICTION_CARD) {
+        setCard(TEST_PREDICTION_CARD);
+        setLoading(false);
+        return;
+      }
       setLoading(true);
       try {
         const [cardRes, predRes] = await Promise.all([
@@ -150,6 +156,10 @@ function DailyCardView({ userId, userContext, isGuest, onShowAuth }) {
 
   return (
     <div className="dcv-wrap">
+
+      {TEST_MATCH_ENABLED && (
+        <div className="test-banner">🧪 TEST MODE — Champions League Final</div>
+      )}
 
       {/* ── Header ─────────────────────────────────────────── */}
       <div className="dcv-header">
