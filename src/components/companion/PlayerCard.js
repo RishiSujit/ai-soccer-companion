@@ -99,6 +99,7 @@ function PlayerCard({ player, team, userContext, onClose }) {
       })
       .catch(() => setError('Network error. Please try again.'))
       .finally(() => setLoading(false));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [player.name, team, player.pos]);
 
   const tier = cardData?.tier || 'silver';

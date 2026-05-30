@@ -21,22 +21,6 @@ const FLAGS = {
   'Colombia': '🇨🇴', 'Australia': '🇦🇺',
 };
 
-const TEAM_STATS = {
-  'Argentina':  { rank: 1,  titles: 3, lastResult: 'W' },
-  'France':     { rank: 2,  titles: 2, lastResult: 'W' },
-  'England':    { rank: 4,  titles: 1, lastResult: 'W' },
-  'Brazil':     { rank: 5,  titles: 5, lastResult: 'W' },
-  'Portugal':   { rank: 6,  titles: 0, lastResult: 'W' },
-  'Spain':      { rank: 7,  titles: 1, lastResult: 'W' },
-  'Netherlands':{ rank: 7,  titles: 0, lastResult: 'W' },
-  'Croatia':    { rank: 9,  titles: 0, lastResult: 'W' },
-  'USA':        { rank: 11, titles: 0, lastResult: 'W' },
-  'Germany':    { rank: 13, titles: 4, lastResult: 'W' },
-  'Mexico':     { rank: 16, titles: 0, lastResult: 'L' },
-  'Morocco':    { rank: 14, titles: 0, lastResult: 'W' },
-  'Japan':      { rank: 18, titles: 0, lastResult: 'W' },
-  'Canada':     { rank: 44, titles: 0, lastResult: 'W' },
-};
 
 const GROUP_STANDINGS = {
   'Argentina': {
@@ -111,20 +95,6 @@ function getDaysToKickoff() {
   );
 }
 
-function getNextMatch(team, liveMatches, bracket) {
-  const live = liveMatches.find(
-    m => m.homeTeam === team || m.awayTeam === team
-  );
-  if (live) return { ...live, isLive: true };
-
-  const next = bracket.find(
-    m =>
-      (m.home_team === team || m.away_team === team) &&
-      (m.status === 'scheduled' || m.status === 'NS')
-  );
-  if (next) return { ...next, isLive: false };
-  return null;
-}
 
 function getOpponent(match, team) {
   if (match.home_team === team) return match.away_team || 'TBD';
@@ -133,11 +103,6 @@ function getOpponent(match, team) {
   return match.homeTeam || 'TBD';
 }
 
-function formatDate(dateStr) {
-  if (!dateStr) return '';
-  const d = new Date(dateStr);
-  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-}
 
 function getTeamFlag(team) {
   const flags = {
@@ -156,7 +121,6 @@ function HomeScreen({ userContext, userId, onNavigate }) {
   const [bracket, setBracket] = useState([]);
   const [liveMatches, setLiveMatches] = useState([]);
   const [userVote, setUserVote] = useState(null);
-  const [loading, setLoading] = useState({ recap: true, hotTake: true, bracket: true, matches: true });
   const [briefing, setBriefing] = useState(null);
   const [showBriefing, setShowBriefing] = useState(false);
   const dismissedFixtureId = useRef(null);
@@ -166,7 +130,6 @@ function HomeScreen({ userContext, userId, onNavigate }) {
   const touchStartX = useRef(null);
 
   const team = userContext?.team || 'Argentina';
-  const teamStats = TEAM_STATS[team] || TEAM_STATS['Argentina'];
   const firstName = team ? team.split(' ')[0] : 'Rishi';
   const daysLeft = getDaysToKickoff();
   const standingsData = GROUP_STANDINGS[team] || GROUP_STANDINGS['Argentina'];
@@ -185,10 +148,7 @@ function HomeScreen({ userContext, userId, onNavigate }) {
         setBracket(bracketRes?.bracket || []);
         setLiveMatches(matchesRes?.matches || []);
       })
-      .catch(() => {})
-      .finally(() => {
-        setLoading({ recap: false, hotTake: false, bracket: false, matches: false });
-      });
+      .catch(() => {});
   }, [team]);
 
   useEffect(() => {
@@ -210,6 +170,7 @@ function HomeScreen({ userContext, userId, onNavigate }) {
     checkBriefing();
     const interval = setInterval(checkBriefing, 30 * 60 * 1000);
     return () => clearInterval(interval);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userContext?.team]);
 
   const featuredTeams = [
@@ -264,7 +225,6 @@ function HomeScreen({ userContext, userId, onNavigate }) {
   const displayRecap = recap || FALLBACK_RECAP;
   const displayHotTake = hotTake || FALLBACK_HOT_TAKE;
   const displayBracket = bracket.length ? bracket : FALLBACK_BRACKET;
-  const nextMatch = getNextMatch(team, liveMatches, displayBracket);
 
   const bracketWithState = displayBracket.map((m, i) => {
     const prevDone = i === 0 || displayBracket[i - 1]?.status === 'FT';
