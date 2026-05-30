@@ -75,7 +75,7 @@ export const TEST_PREDICTION_CARD = TEST_MATCH_ENABLED ? {
       },
       {
         id: 'fm2',
-        question: 'Will Mbappe score?',
+        question: 'Will Dembele score?',
         options: ['Yes', 'No'],
         points: 2,
         type: 'yes_no',
@@ -91,12 +91,12 @@ export const TEST_PREDICTION_CARD = TEST_MATCH_ENABLED ? {
   },
   bonus: {
     id: 'bonus1',
-    question: 'PSG win AND Mbappe scores at least one goal',
+    question: 'PSG win AND Dembele scores at least one goal',
     points: 10,
     type: 'bonus',
     components: [
       'PSG win the Champions League',
-      'Mbappe scores in the match',
+      'Dembele scores in the match',
     ],
   },
 } : null;
