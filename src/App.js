@@ -288,11 +288,14 @@ function App() {
     setUserContext(context);
 
     if (userId && !isGuest) {
-      // Persist to Supabase so returning users skip onboarding
+      // Persist to Supabase so returning users skip onboarding.
+      // upsert (not update) so new users get a row created if one
+      // doesn't exist yet — update silently does nothing on 0 rows.
       try {
         await supabase
           .from('users')
-          .update({
+          .upsert({
+            id: userId,
             assigned_team: data.team,
             onboarding_complete: true,
             onboarding_answers: {
@@ -300,8 +303,7 @@ function App() {
               favoriteTeams: data.favoriteTeams || [],
               existingFan: data.existingFan || false,
             },
-          })
-          .eq('id', userId);
+          }, { onConflict: 'id' });
       } catch (err) {
         console.error('Save team error:', err);
       }

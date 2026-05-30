@@ -43,25 +43,35 @@ function PredictionsGroupView({ userId, userName, userContext, isGuest, onShowAu
 
   async function loadExistingGroup() {
     try {
-      const { data, error } = await supabase
+      // Step 1: find membership — maybeSingle() returns null (not error) when no row
+      const { data: membership, error: memErr } = await supabase
         .from('group_members')
-        .select(`
-          display_name,
-          total_points,
-          groups (id, name, invite_code, created_by)
-        `)
+        .select('group_id, total_points')
         .eq('user_id', userId)
-        .limit(1)
-        .single();
+        .maybeSingle();
 
-      if (error || !data) {
+      if (memErr || !membership) {
         setGroupPhase('idle');
         return;
       }
-      setGroup(data.groups);
+
+      // Step 2: fetch the group row directly (avoids PostgREST join issues)
+      const { data: groupData, error: groupErr } = await supabase
+        .from('groups')
+        .select('*')
+        .eq('id', membership.group_id)
+        .maybeSingle();
+
+      if (groupErr || !groupData) {
+        setGroupPhase('idle');
+        return;
+      }
+
+      setGroup(groupData);
       setGroupPhase('joined');
-      if (data.groups?.id) loadLeaderboard(data.groups.id);
-    } catch {
+      loadLeaderboard(membership.group_id);
+    } catch (err) {
+      console.error('Group load error:', err);
       setGroupPhase('idle');
     }
   }
