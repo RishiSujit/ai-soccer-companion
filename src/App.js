@@ -109,12 +109,14 @@ function App() {
           setUserEmail(user.email || null);
           setIsGuest(false);
 
-          // Check Supabase for completed onboarding
+          // Check Supabase for completed onboarding.
+          // maybeSingle() returns null (no error) for 0 rows.
+          // Only select columns guaranteed to exist in the schema.
           const { data: userData } = await supabase
             .from('users')
-            .select('assigned_team, onboarding_complete, onboarding_answers, display_name')
+            .select('assigned_team, onboarding_complete, onboarding_answers')
             .eq('id', user.id)
-            .single();
+            .maybeSingle();
 
           if (userData?.onboarding_complete && userData?.assigned_team) {
             const saved = userData.onboarding_answers || {};
@@ -123,10 +125,9 @@ function App() {
               knownSports: saved.knownSports || [],
               favoriteTeams: saved.favoriteTeams || [],
               existingFan: saved.existingFan || false,
-              name: userData.display_name || displayName,
+              name: displayName,
             });
             setAssignedTeam({ team: userData.assigned_team, reasoning: '' });
-            if (userData.display_name) setUserName(userData.display_name);
             setAuthLoading(false);
             setView('home');
             return;
@@ -213,9 +214,9 @@ function App() {
     try {
       const { data: userData } = await supabase
         .from('users')
-        .select('assigned_team, onboarding_complete, onboarding_answers, display_name')
+        .select('assigned_team, onboarding_complete, onboarding_answers')
         .eq('id', user.id)
-        .single();
+        .maybeSingle();
 
       if (userData?.onboarding_complete && userData?.assigned_team) {
         const saved = userData.onboarding_answers || {};
@@ -224,10 +225,9 @@ function App() {
           knownSports: saved.knownSports || [],
           favoriteTeams: saved.favoriteTeams || [],
           existingFan: saved.existingFan || false,
-          name: userData.display_name || displayName,
+          name: displayName,
         });
         setAssignedTeam({ team: userData.assigned_team, reasoning: '' });
-        if (userData.display_name) setUserName(userData.display_name);
         setView('home');
         return;
       }
