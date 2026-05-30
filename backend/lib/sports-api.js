@@ -15,7 +15,8 @@ const FALLBACK = {
   recentEventsText: 'No events yet',
 };
 
-const FIFA_WORLD_CUP_LEAGUE_ID = 1;
+const ACTIVE_LEAGUE_ID = parseInt(process.env.TEST_LEAGUE_ID || process.env.ACTIVE_LEAGUE_ID) || 1;
+const ACTIVE_SEASON = parseInt(process.env.TEST_SEASON || process.env.ACTIVE_SEASON) || 2026;
 
 const api = axios.create({
   baseURL: 'https://v3.football.api-sports.io',
@@ -131,10 +132,10 @@ async function getLiveMatchContext() {
   }
 
   try {
-    // Step 1 — check for live World Cup matches
+    // Step 1 — check for live matches in the active league
     const liveRes = await api.get('/fixtures', { params: { live: 'all' } });
     const liveFixtures = liveRes.data.response ?? [];
-    const liveWCMatch = liveFixtures.find(f => f.league.id === FIFA_WORLD_CUP_LEAGUE_ID);
+    const liveWCMatch = liveFixtures.find(f => f.league.id === ACTIVE_LEAGUE_ID);
 
     if (liveWCMatch) {
       const ctx = await buildFullMatchContext(liveWCMatch, true);
@@ -143,9 +144,9 @@ async function getLiveMatchContext() {
       return ctx;
     }
 
-    // Step 2 — no live match, fetch next upcoming World Cup fixture
+    // Step 2 — no live match, fetch next upcoming fixture
     const nextRes = await api.get('/fixtures', {
-      params: { league: FIFA_WORLD_CUP_LEAGUE_ID, season: 2026, next: 1 },
+      params: { league: ACTIVE_LEAGUE_ID, season: ACTIVE_SEASON, next: 1 },
     });
     const nextFixtures = nextRes.data.response ?? [];
 
