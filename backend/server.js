@@ -3,7 +3,34 @@ const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
-app.use(cors());
+
+const allowedOrigins = [
+  'http://localhost:3002',
+  'http://localhost:3000',
+  'https://ai-soccer-companion.vercel.app',
+  process.env.FRONTEND_URL,
+].filter(Boolean);
+
+app.use(cors({
+  origin: function(origin, callback) {
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.some(allowed =>
+      origin.startsWith(allowed) ||
+      allowed.includes(origin.replace('https://', '').replace('http://', ''))
+    )) {
+      return callback(null, true);
+    }
+
+    if (origin.includes('vercel.app')) {
+      return callback(null, true);
+    }
+
+    callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true,
+}));
+
 app.use(express.json());
 
 app.use('/api/onboarding', require('./routes/onboarding'));
