@@ -50,22 +50,51 @@ function PredictionsGroupView({ userId, userName, userContext, isGuest, onShowAu
     loadExistingGroup();
   }, [userId, isGuest]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Re-check group when user returns to tab
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible' && userId && !isGuest) {
+        loadExistingGroup();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [userId, isGuest]); // eslint-disable-line react-hooks/exhaustive-deps
+
   async function loadExistingGroup() {
     try {
-      // Step 1: find membership — maybeSingle() returns null (not error) when no row
-      const { data: membership, error: memErr } = await supabase
+      // Confirm session is active — anonymous/expired sessions return null silently
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        setGroupPhase(p => p === 'loading' ? 'idle' : p);
+        return;
+      }
+
+      // Use array query — maybeSingle() returns null on both empty AND RLS block,
+      // which would incorrectly wipe the cache. Array query lets us distinguish.
+      const { data: memberships, error: memErr } = await supabase
         .from('group_members')
         .select('group_id, total_points')
-        .eq('user_id', userId)
-        .maybeSingle();
+        .eq('user_id', userId);
 
-      if (memErr || !membership) {
+      if (memErr) {
+        // DB error — preserve cached group, only un-stick a loading spinner
+        console.error('Membership query error:', memErr);
+        setGroupPhase(p => p === 'loading' ? 'idle' : p);
+        return;
+      }
+
+      if (!memberships?.length) {
+        // Confirmed: user has no memberships in DB — safe to clear
+        setGroup(null);
         setGroupPhase('idle');
+        setLeaderboard([]);
         try { localStorage.removeItem(`wcc_group_${userId}`); } catch {}
         return;
       }
 
-      // Step 2: fetch the group row directly (avoids PostgREST join issues)
+      const membership = memberships[0];
+
       const { data: groupData, error: groupErr } = await supabase
         .from('groups')
         .select('*')
@@ -73,8 +102,8 @@ function PredictionsGroupView({ userId, userName, userContext, isGuest, onShowAu
         .maybeSingle();
 
       if (groupErr || !groupData) {
-        setGroupPhase('idle');
-        try { localStorage.removeItem(`wcc_group_${userId}`); } catch {}
+        // Group fetch failed — preserve cached state
+        setGroupPhase(p => p === 'loading' ? 'idle' : p);
         return;
       }
 
@@ -88,7 +117,8 @@ function PredictionsGroupView({ userId, userName, userContext, isGuest, onShowAu
       loadLeaderboard(membership.group_id);
     } catch (err) {
       console.error('Group load error:', err);
-      setGroupPhase('idle');
+      // Network / unexpected error — preserve cached group, don't wipe state
+      setGroupPhase(p => p === 'loading' ? 'idle' : p);
     }
   }
 
