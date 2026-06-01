@@ -142,11 +142,29 @@ function ChatPanel({
 
 function CompanionChat({ match, userContext, userId, onBack, preloadedQuestion }) {
   const isGeneral = !match;
+  const today = new Date().toISOString().split('T')[0];
+  const chatStorageKey = match?.id
+    ? `wcc_chat_${match.id}_${userId}`
+    : `wcc_chat_general_${userId}_${today}`;
 
-  const [messages, setMessages] = useState([
-    { role: 'assistant', content: isGeneral ? GENERAL_OPENING : MATCH_OPENING },
-  ]);
-  const [conversationHistory, setConversationHistory] = useState([]);
+  const [messages, setMessages] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(chatStorageKey));
+      if (saved?.timestamp > Date.now() - 7200000 && saved?.messages?.length > 0) {
+        return saved.messages;
+      }
+    } catch {}
+    return [{ role: 'assistant', content: isGeneral ? GENERAL_OPENING : MATCH_OPENING }];
+  });
+  const [conversationHistory, setConversationHistory] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(chatStorageKey));
+      if (saved?.timestamp > Date.now() - 7200000 && saved?.history?.length > 0) {
+        return saved.history;
+      }
+    } catch {}
+    return [];
+  });
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [mobileTab, setMobileTab] = useState('formation');
@@ -157,7 +175,14 @@ function CompanionChat({ match, userContext, userId, onBack, preloadedQuestion }
   const [currentMatchContext, setCurrentMatchContext] = useState(null);
   const [currentSignals, setCurrentSignals] = useState(null);
   const [pivotalEvent, setPivotalEvent] = useState(null);
-  const [showStarterPills, setShowStarterPills] = useState(isGeneral);
+  const [showStarterPills, setShowStarterPills] = useState(() => {
+    if (!isGeneral) return false;
+    try {
+      const saved = JSON.parse(localStorage.getItem(chatStorageKey));
+      if (saved?.timestamp > Date.now() - 7200000 && saved?.messages?.length > 0) return false;
+    } catch {}
+    return true;
+  });
   const lastEventIdRef = useRef(null);
   const preloadFiredRef = useRef(false);
 
@@ -203,6 +228,27 @@ function CompanionChat({ match, userContext, userId, onBack, preloadedQuestion }
       return () => clearTimeout(timer);
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Persist chat to localStorage whenever messages update
+  useEffect(() => {
+    if (messages.length <= 1) return;
+    try {
+      localStorage.setItem(chatStorageKey, JSON.stringify({
+        messages,
+        history: conversationHistory,
+        timestamp: Date.now(),
+      }));
+    } catch {}
+  }, [messages]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleClearChat = () => {
+    try { localStorage.removeItem(chatStorageKey); } catch {}
+    setMessages([{ role: 'assistant', content: isGeneral ? GENERAL_OPENING : MATCH_OPENING }]);
+    setConversationHistory([]);
+    setFollowUps([]);
+    setShowFollowUps(false);
+    if (isGeneral) setShowStarterPills(true);
+  };
 
   const handleSend = () => sendMessage(input);
 
@@ -279,7 +325,7 @@ function CompanionChat({ match, userContext, userId, onBack, preloadedQuestion }
           <div className="hero-top-row">
             <button className="back-btn" onClick={onBack}>← Companion</button>
             <div className="hero-general-title">World Cup 2026</div>
-            <div style={{ width: 80 }} />
+            <button className="clear-chat-btn" onClick={handleClearChat} title="Clear chat">↺</button>
           </div>
         </div>
 
@@ -370,7 +416,7 @@ function CompanionChat({ match, userContext, userId, onBack, preloadedQuestion }
         <div className="split-right">
           <div className="split-panel-header">
             <div className="split-panel-title">AI Companion</div>
-            <div style={{ fontSize: '9px', color: '#4444aa' }}>Ask anything</div>
+            <button className="clear-chat-btn" onClick={handleClearChat} title="Clear chat">↺</button>
           </div>
           <ChatPanel {...chatProps} />
         </div>

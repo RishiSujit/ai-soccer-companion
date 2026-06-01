@@ -15,9 +15,20 @@ function getInitials(name) {
 }
 
 function PredictionsGroupView({ userId, userName, userContext, isGuest, onShowAuth }) {
-  const [group, setGroup] = useState(null);
+  const [group, setGroup] = useState(() => {
+    if (!userId || isGuest) return null;
+    try {
+      const cached = localStorage.getItem(`wcc_group_${userId}`);
+      return cached ? JSON.parse(cached) : null;
+    } catch { return null; }
+  });
   const [leaderboard, setLeaderboard] = useState([]);
-  const [groupPhase, setGroupPhase] = useState('loading');
+  const [groupPhase, setGroupPhase] = useState(() => {
+    if (!userId || isGuest) return 'idle';
+    try {
+      return localStorage.getItem(`wcc_group_${userId}`) ? 'joined' : 'loading';
+    } catch { return 'loading'; }
+  });
 
   // Group form state
   const [groupName, setGroupName] = useState('');
@@ -50,6 +61,7 @@ function PredictionsGroupView({ userId, userName, userContext, isGuest, onShowAu
 
       if (memErr || !membership) {
         setGroupPhase('idle');
+        try { localStorage.removeItem(`wcc_group_${userId}`); } catch {}
         return;
       }
 
@@ -62,11 +74,17 @@ function PredictionsGroupView({ userId, userName, userContext, isGuest, onShowAu
 
       if (groupErr || !groupData) {
         setGroupPhase('idle');
+        try { localStorage.removeItem(`wcc_group_${userId}`); } catch {}
         return;
       }
 
       setGroup(groupData);
       setGroupPhase('joined');
+      try {
+        localStorage.setItem(`wcc_group_${userId}`, JSON.stringify({
+          id: groupData.id, name: groupData.name, invite_code: groupData.invite_code,
+        }));
+      } catch {}
       loadLeaderboard(membership.group_id);
     } catch (err) {
       console.error('Group load error:', err);
@@ -101,6 +119,11 @@ function PredictionsGroupView({ userId, userName, userContext, isGuest, onShowAu
       } else {
         setGroup(data.group);
         setGroupPhase('joined');
+        try {
+          localStorage.setItem(`wcc_group_${userId}`, JSON.stringify({
+            id: data.group.id, name: data.group.name, invite_code: data.group.invite_code,
+          }));
+        } catch {}
         loadLeaderboard(data.group.id);
       }
     } catch {
@@ -122,6 +145,11 @@ function PredictionsGroupView({ userId, userName, userContext, isGuest, onShowAu
       } else {
         setGroup(data.group);
         setGroupPhase('joined');
+        try {
+          localStorage.setItem(`wcc_group_${userId}`, JSON.stringify({
+            id: data.group.id, name: data.group.name, invite_code: data.group.invite_code,
+          }));
+        } catch {}
         loadLeaderboard(data.group.id);
       }
     } catch {
@@ -148,6 +176,7 @@ function PredictionsGroupView({ userId, userName, userContext, isGuest, onShowAu
       setGroup(null);
       setLeaderboard([]);
       setGroupPhase('idle');
+      try { localStorage.removeItem(`wcc_group_${userId}`); } catch {};
     } catch {
       // Fail silently
     }

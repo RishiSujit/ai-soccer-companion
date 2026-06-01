@@ -36,6 +36,9 @@ function DailyCardView({ userId, userContext, isGuest, onShowAuth }) {
   const [submitting, setSubmitting] = useState(false);
   const [fromFallback, setFromFallback] = useState(false);
 
+  const today = new Date().toISOString().split('T')[0];
+  const draftKey = userId ? `wcc_draft_${userId}_${today}` : null;
+
   useEffect(() => {
     async function load() {
       setLoading(true);
@@ -54,6 +57,16 @@ function DailyCardView({ userId, userContext, isGuest, onShowAuth }) {
           setAnswers(predRes.prediction.answers || {});
           setBonusTaken(predRes.prediction.bonus_taken || false);
           setLocked(true);
+          if (draftKey) try { localStorage.removeItem(draftKey); } catch {}
+        } else if (draftKey) {
+          try {
+            const saved = localStorage.getItem(draftKey);
+            if (saved) {
+              const draft = JSON.parse(saved);
+              if (draft.answers) setAnswers(draft.answers);
+              if (draft.bonusTaken !== undefined) setBonusTaken(draft.bonusTaken);
+            }
+          } catch {}
         }
       } catch {
         // Fail silently — UI will show loading state resolved
@@ -61,25 +74,27 @@ function DailyCardView({ userId, userContext, isGuest, onShowAuth }) {
       setLoading(false);
     }
     load();
-  }, [userId]);
+  }, [userId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   function handleAnswer(questionId, option) {
     if (locked) return;
-    setAnswers(prev => ({ ...prev, [questionId]: option }));
+    const newAnswers = { ...answers, [questionId]: option };
+    setAnswers(newAnswers);
+    if (draftKey) try {
+      localStorage.setItem(draftKey, JSON.stringify({ answers: newAnswers, bonusTaken }));
+    } catch {}
   }
 
   function handleBonus(take) {
     if (locked) return;
+    const newAnswers = take
+      ? { ...answers, bonus1: 'Yes' }
+      : Object.fromEntries(Object.entries(answers).filter(([k]) => k !== 'bonus1'));
     setBonusTaken(take);
-    if (take) {
-      setAnswers(prev => ({ ...prev, bonus1: 'Yes' }));
-    } else {
-      setAnswers(prev => {
-        const next = { ...prev };
-        delete next.bonus1;
-        return next;
-      });
-    }
+    setAnswers(newAnswers);
+    if (draftKey) try {
+      localStorage.setItem(draftKey, JSON.stringify({ answers: newAnswers, bonusTaken: take }));
+    } catch {}
   }
 
   async function handleLock() {
@@ -87,7 +102,10 @@ function DailyCardView({ userId, userContext, isGuest, onShowAuth }) {
     setSubmitting(true);
     try {
       const result = await submitDailyCard(userId, answers, bonusTaken || false);
-      if (result.success) setLocked(true);
+      if (result.success) {
+        setLocked(true);
+        if (draftKey) try { localStorage.removeItem(draftKey); } catch {}
+      }
     } catch {
       // Fail silently
     }
