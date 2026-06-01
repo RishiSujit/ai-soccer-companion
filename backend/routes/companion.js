@@ -35,36 +35,95 @@ High intensity: "Huge moment — Argentina just had a goal ruled out via VAR in 
 Critical pressure: "Argentina are running out of time — they need a goal in the next few minutes or their World Cup is over. Every attack counts now."
 
 OUTPUT FORMAT — you MUST follow this exactly:
-Write your core answer (2-3 sentences, include one NFL/NBA/MLB analogy if relevant).
-Then output the exact marker: [FOLLOW_UPS]
-Then output a JSON array of exactly 3 short follow-up questions the fan might want to ask next.
 
-Example:
-Messi just scored a penalty to put Argentina up 1-0. In football terms, it's like your QB hitting a field goal to open the scoring — puts points on the board but plenty of game left.
+[FACT]
+Your direct answer in plain English. 2-3 sentences maximum.
+
+[ANALOGY]
+Think of it like [X] — [one sentence].
+Only include this section when a sports analogy genuinely helps. Skip it entirely for live match updates where context is already clear.
+
 [FOLLOW_UPS]
-["Why was it a penalty?", "How good is Messi?", "What does Argentina need to win?"]`;
+["pill 1", "pill 2", "pill 3"]
+
+Example (rule question):
+[FACT]
+A penalty is a free shot from 12 yards after a foul inside the box. Just the goalkeeper to beat — no other defenders allowed.
+
+[ANALOGY]
+Think of it like a free throw after a shooting foul — high percentage but the pressure is enormous.
+
+[FOLLOW_UPS]
+["How often do penalties score?", "What counts as a foul in the box?", "What's a penalty shootout?"]
+
+Example (live match update):
+[FACT]
+Argentina are in control. France need two goals in 10 minutes — they're pushing everyone forward now and leaving space at the back.
+
+[FOLLOW_UPS]
+["What if France score?", "What are the comeback odds?", "Who's most likely to score?"]`;
 
 function parseCompanionResponse(rawText) {
-  const markerIndex = rawText.indexOf('[FOLLOW_UPS]');
-  if (markerIndex === -1) {
-    return { coreAnswer: rawText.trim(), followUps: [] };
-  }
-
-  const coreAnswer = rawText.slice(0, markerIndex).trim();
-  const afterMarker = rawText.slice(markerIndex + '[FOLLOW_UPS]'.length).trim();
-
-  let followUps = [];
   try {
-    const jsonStart = afterMarker.indexOf('[');
-    const jsonEnd = afterMarker.lastIndexOf(']');
-    if (jsonStart !== -1 && jsonEnd !== -1) {
-      followUps = JSON.parse(afterMarker.slice(jsonStart, jsonEnd + 1));
-    }
-  } catch {
-    followUps = [];
-  }
+    const factMarker = '[FACT]';
+    const analogyMarker = '[ANALOGY]';
+    const followUpsMarker = '[FOLLOW_UPS]';
 
-  return { coreAnswer, followUps };
+    const factIdx = rawText.indexOf(factMarker);
+    const analogyIdx = rawText.indexOf(analogyMarker);
+    const followUpsIdx = rawText.indexOf(followUpsMarker);
+
+    // No [FACT] marker — old format fallback
+    if (factIdx === -1) {
+      const oldIdx = rawText.indexOf(followUpsMarker);
+      if (oldIdx === -1) {
+        return { coreAnswer: rawText.trim(), analogy: null, followUps: [] };
+      }
+      let followUps = [];
+      try {
+        followUps = JSON.parse(rawText.substring(oldIdx + followUpsMarker.length).trim());
+      } catch(e) {}
+      return {
+        coreAnswer: rawText.substring(0, oldIdx).trim(),
+        analogy: null,
+        followUps,
+      };
+    }
+
+    // Get fact
+    const factEnd = analogyIdx !== -1
+      ? analogyIdx
+      : followUpsIdx !== -1
+        ? followUpsIdx
+        : rawText.length;
+    const coreAnswer = rawText.substring(factIdx + factMarker.length, factEnd).trim();
+
+    // Get analogy (optional)
+    let analogy = null;
+    if (analogyIdx !== -1) {
+      const analogyEnd = followUpsIdx !== -1 ? followUpsIdx : rawText.length;
+      const analogyText = rawText.substring(analogyIdx + analogyMarker.length, analogyEnd).trim();
+      if (analogyText.length > 10) {
+        analogy = analogyText;
+      }
+    }
+
+    // Get follow-ups
+    let followUps = ['Tell me more', 'Why does this matter?', 'What happens next?'];
+    if (followUpsIdx !== -1) {
+      try {
+        const parsed = JSON.parse(rawText.substring(followUpsIdx + followUpsMarker.length).trim());
+        if (Array.isArray(parsed) && parsed.length >= 3) {
+          followUps = parsed.slice(0, 3);
+        }
+      } catch(e) {}
+    }
+
+    return { coreAnswer, analogy, followUps };
+
+  } catch(err) {
+    return { coreAnswer: rawText.trim(), analogy: null, followUps: [] };
+  }
 }
 
 function buildUserContextString(userContext) {
@@ -159,13 +218,16 @@ router.post('/', async (req, res) => {
       messages,
     });
 
-    const { coreAnswer, followUps } = parseCompanionResponse(response.content[0].text);
+    const isLiveMode = !!(matchContext || liveContext?.homeTeam);
+    const { coreAnswer, analogy, followUps } = parseCompanionResponse(response.content[0].text);
 
     res.json({
       reply: coreAnswer,
+      analogy: analogy || null,
       followUps,
-      matchContext: activeMatch,
+      matchContext: isLiveMode ? activeMatch : null,
       signals: activeMatch?.derivedSignals || null,
+      mode: isLiveMode ? 'live' : 'general',
     });
   } catch (error) {
     console.error('Companion error:', error);

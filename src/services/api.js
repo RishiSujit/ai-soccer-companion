@@ -24,7 +24,14 @@ export const sendCompanionMessage = async (message, conversationHistory, matchCo
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ message, conversationHistory, matchContext, userContext }),
   });
-  return response.json();
+  const data = await response.json();
+  return {
+    reply: data.reply || data.response,
+    analogy: data.analogy || null,
+    followUps: data.followUps || [],
+    matchContext: data.matchContext,
+    signals: data.signals,
+  };
 };
 
 export const getPredictionOptions = async (matchId) => {

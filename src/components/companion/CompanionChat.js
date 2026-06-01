@@ -54,34 +54,44 @@ function ChatPanel({
       <div className="split-chat-feed">
         {messages.map((msg, i) => (
           <div key={i} className="companion-message" style={{ animation: 'slideUp 0.3s ease forwards' }}>
-            {msg.role === 'assistant' && (
-              <div className="msg-sender-label">
-                <div className="ai-avatar">AI</div>
-                <span>Companion</span>
-              </div>
-            )}
-            <div className={`onboarding-chat__bubble onboarding-chat__bubble--${msg.role}`}>
-              {msg.content}
-            </div>
-            {msg.role === 'assistant' && (
-              <div className="message-rating-row">
-                <button
-                  className={`rating-btn thumbs-up${ratings[i] === 'up' ? ' rated' : ''}`}
-                  onClick={() => onRating(i, 'up', msg.content)}
-                  disabled={!!ratings[i]}
-                  aria-label="Helpful"
-                >👍</button>
-                <button
-                  className={`rating-btn thumbs-down${ratings[i] === 'down' ? ' rated' : ''}`}
-                  onClick={() => onRating(i, 'down', msg.content)}
-                  disabled={!!ratings[i]}
-                  aria-label="Not helpful"
-                >👎</button>
-                {ratings[i] && (
-                  <span className="rating-thanks">
-                    {ratings[i] === 'up' ? 'Thanks!' : "Got it — we'll improve"}
-                  </span>
+            {msg.role === 'assistant' ? (
+              <div className="assistant-message-wrapper">
+                <div className="msg-sender-label">
+                  <div className="ai-avatar">AI</div>
+                  <span>Companion</span>
+                </div>
+                <div className="onboarding-chat__bubble onboarding-chat__bubble--assistant">
+                  {msg.content}
+                </div>
+                {msg.analogy && (
+                  <div className="analogy-bubble">
+                    <span className="analogy-icon">🏈</span>
+                    <span className="analogy-text">{msg.analogy}</span>
+                  </div>
                 )}
+                <div className="message-rating-row">
+                  <button
+                    className={`rating-btn thumbs-up${ratings[i] === 'up' ? ' rated' : ''}`}
+                    onClick={() => onRating(i, 'up', msg.content)}
+                    disabled={!!ratings[i]}
+                    aria-label="Helpful"
+                  >👍</button>
+                  <button
+                    className={`rating-btn thumbs-down${ratings[i] === 'down' ? ' rated' : ''}`}
+                    onClick={() => onRating(i, 'down', msg.content)}
+                    disabled={!!ratings[i]}
+                    aria-label="Not helpful"
+                  >👎</button>
+                  {ratings[i] && (
+                    <span className="rating-thanks">
+                      {ratings[i] === 'up' ? 'Thanks!' : "Got it — we'll improve"}
+                    </span>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="onboarding-chat__bubble onboarding-chat__bubble--user">
+                {msg.content}
               </div>
             )}
           </div>
@@ -201,13 +211,18 @@ function CompanionChat({ match, userContext, userId, onBack, preloadedQuestion }
     const updatedHistory = [...conversationHistory, { role: 'user', content: trimmed }];
 
     try {
-      const data = await sendCompanionMessage(trimmed, conversationHistory, match, userContext);
-      setMessages(prev => [...prev, { role: 'assistant', content: data.reply }]);
-      setConversationHistory([...updatedHistory, { role: 'assistant', content: data.reply }]);
-      if (data.matchContext) setCurrentMatchContext(data.matchContext);
-      if (data.signals) setCurrentSignals(data.signals);
-      if (data.followUps?.length > 0) {
-        setFollowUps(data.followUps);
+      const result = await sendCompanionMessage(trimmed, conversationHistory, match, userContext);
+      const assistantMessage = {
+        role: 'assistant',
+        content: result.reply,
+        analogy: result.analogy || null,
+      };
+      setMessages(prev => [...prev, assistantMessage]);
+      setConversationHistory([...updatedHistory, { role: 'assistant', content: result.reply }]);
+      if (result.matchContext) setCurrentMatchContext(result.matchContext);
+      if (result.signals) setCurrentSignals(result.signals);
+      if (result.followUps?.length > 0) {
+        setFollowUps(result.followUps);
         setShowFollowUps(true);
       }
     } catch {
