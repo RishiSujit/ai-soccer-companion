@@ -52,13 +52,13 @@ function AuthScreen({ initialMode, onAuthenticated, onGuest }) {
 
       if (data?.user && !data?.session) {
         // Email confirmation required — session won't exist until confirmed
-        await supabase
+        const { error: upsertErr } = await supabase
           .from('users')
           .upsert(
-            { id: data.user.id, email: email.trim(), auth_type: 'authenticated', display_name: displayName },
+            { id: data.user.id, email: email.trim(), auth_type: 'authenticated' },
             { onConflict: 'id' }
-          )
-          .catch(() => {});
+          );
+        if (upsertErr) console.error('User save error:', upsertErr);
         setSuccessMessage(
           `Welcome ${firstName}! Check your email at ${email.trim()} to confirm your account, then sign in.`
         );
@@ -66,13 +66,13 @@ function AuthScreen({ initialMode, onAuthenticated, onGuest }) {
       }
 
       if (data?.user) {
-        await supabase
+        const { error: upsertErr } = await supabase
           .from('users')
           .upsert(
-            { id: data.user.id, email: email.trim(), auth_type: 'authenticated', display_name: displayName },
+            { id: data.user.id, email: email.trim(), auth_type: 'authenticated' },
             { onConflict: 'id' }
-          )
-          .catch(() => {});
+          );
+        if (upsertErr) console.error('User save error:', upsertErr);
         onAuthenticated(data.user);
       } else {
         throw new Error('Sign up failed — no user returned');
@@ -81,7 +81,7 @@ function AuthScreen({ initialMode, onAuthenticated, onGuest }) {
       if (err.message?.includes('already registered')) {
         setError('This email is already registered. Try signing in instead.');
       } else {
-        setError(err.message || 'Sign up failed. Please try again.');
+        setError('Something went wrong. Please try again.');
       }
     } finally {
       setLoading(false);
