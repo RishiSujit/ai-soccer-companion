@@ -27,6 +27,8 @@
   border-bottom: 1px solid var(--border-subtle);
   flex-shrink: 0;
   width: 100%;
+  position: relative;
+  z-index: 100;
 }
 
 .topbar__logo {
@@ -2123,11 +2125,11 @@
   top: calc(100% + 8px);
   right: 0;
   background: var(--bg-surface);
-  border: 0.5px solid #2a2a3e;
+  border: 1px solid var(--border-medium);
   border-radius: var(--radius-sm);
   min-width: 180px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-  z-index: 100;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  z-index: 200;
   overflow: hidden;
 }
 
