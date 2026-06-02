@@ -399,7 +399,7 @@ function PredictionsGroupView({ userId, userName, userContext, isGuest, onShowAu
                   leaderboard.map((member, index) => (
                     <div
                       key={member.user_id || index}
-                      className={`lb-row2 ${member.user_id === userId ? 'lb-row-you' : ''}`}
+                      className={`lb-row2 leaderboard-row ${member.user_id === userId ? 'lb-row-you' : ''}`}
                     >
                       <div className={`lb-rank2 ${index === 0 ? 'g' : ''}`}>{index + 1}</div>
                       <div className="lb-av">{getInitials(member.display_name || 'Fan')}</div>

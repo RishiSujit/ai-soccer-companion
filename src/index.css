@@ -1,28 +1,72 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 :root {
-  --bg-primary:      #0a0a0f;
-  --bg-surface:      #13131f;
-  --bg-surface-alt:  #1a1a2e;
-  --accent:          #7cfc8e;
-  --accent-dim:      rgba(124, 252, 142, 0.12);
-  --accent-border:   rgba(124, 252, 142, 0.25);
-  --text-primary:    #e2e2f0;
-  --text-muted:      #8888aa;
-  --text-faint:      #5555aa;
-  --border:          rgba(255, 255, 255, 0.06);
-  --border-accent:   rgba(124, 252, 142, 0.2);
-  --radius-sm:       8px;
-  --radius-md:       12px;
-  --radius-lg:       16px;
+  /* Backgrounds */
+  --bg-base:     #050510;
+  --bg-surface:  #0c0c1e;
+  --bg-elevated: #121228;
+  --bg-hover:    #1a1a35;
+
+  /* Borders */
+  --border-subtle: rgba(255,255,255,0.06);
+  --border-medium: rgba(255,255,255,0.10);
+  --border-accent: rgba(0,255,135,0.25);
+
+  /* Brand */
+  --green:     #00ff87;
+  --green-dim: rgba(0,255,135,0.15);
+  --green-glow: rgba(0,255,135,0.08);
+  --gold:      #f5a623;
+  --gold-dim:  rgba(245,166,35,0.12);
+  --red:       #ff4d6d;
+
+  /* Text */
+  --text-primary:   #f0f0fa;
+  --text-secondary: #9494b8;
+  --text-muted:     #4a4a6a;
+  --text-green:     #00ff87;
+  --text-gold:      #f5c842;
+
+  /* Radius */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+
+  /* Shadows */
+  --shadow-card: 0 4px 24px rgba(0,0,0,0.4);
+  --shadow-glow: 0 0 40px rgba(0,255,135,0.08);
+  --shadow-gold: 0 0 30px rgba(245,166,35,0.10);
+
+  /* ── Backward-compat aliases (keep existing CSS working) ── */
+  --bg-primary:     var(--bg-base);
+  --bg-surface-alt: var(--bg-elevated);
+  --accent:         var(--green);
+  --accent-dim:     var(--green-dim);
+  --accent-border:  var(--border-accent);
+  --text-faint:     var(--text-muted);
+  --border:         var(--border-subtle);
+  --border-accent:  rgba(0,255,135,0.25);
 }
 
 *, *::before, *::after {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
 }
 
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(12px); }
+body {
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: 'Inter', -apple-system, 'Helvetica Neue', sans-serif;
+  overflow-x: hidden;
+}
+
+/* ── Keyframes ── */
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
@@ -31,20 +75,40 @@
   to   { opacity: 1; }
 }
 
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.45; transform: scale(0.85); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(8px) scale(0.9); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(0,255,135,0.10); }
+  50%       { box-shadow: 0 0 40px rgba(0,255,135,0.22); }
+}
+
 @keyframes popIn {
   0%   { opacity: 0; transform: scale(0.88); }
   60%  { transform: scale(1.04); }
   100% { opacity: 1; transform: scale(1); }
-}
-
-@keyframes shimmer {
-  from { background-position: -200% center; }
-  to   { background-position: 200% center; }
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0.4; }
 }
 
 @keyframes bounceIn {
@@ -54,11 +118,34 @@
   100% { transform: scale(1); }
 }
 
-body {
-  margin: 0;
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  font-family: 'Inter', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@keyframes dot-bounce {
+  0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
+  30%            { opacity: 1;   transform: translateY(-3px); }
 }
+
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Animation helpers ── */
+
+.animate-fade-up {
+  animation: fadeUp 0.4s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease forwards;
+}
+
+/* Staggered entry for card lists */
+.stagger-children > * {
+  opacity: 0;
+  animation: fadeUp 0.4s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+.stagger-children > *:nth-child(1) { animation-delay:   0ms; }
+.stagger-children > *:nth-child(2) { animation-delay:  60ms; }
+.stagger-children > *:nth-child(3) { animation-delay: 120ms; }
+.stagger-children > *:nth-child(4) { animation-delay: 180ms; }
+.stagger-children > *:nth-child(5) { animation-delay: 240ms; }
+.stagger-children > *:nth-child(6) { animation-delay: 300ms; }

@@ -246,7 +246,7 @@ function HomeScreen({ userContext, userId, onNavigate }) {
   };
 
   return (
-    <div className="home-screen">
+    <div className="home-screen stagger-children">
 
       {showBriefing && briefing && (
         <BriefingCard
