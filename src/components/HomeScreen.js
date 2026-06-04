@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, Fragment } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   getRecapForTeam,
   getHotTake,
@@ -8,6 +8,7 @@ import {
   getPreMatchBriefing,
   getTeamHeadline,
 } from '../services/api';
+import { GROUPS, OPENING_MATCHES } from '../lib/worldCupData';
 import BriefingCard from './BriefingCard';
 import './HomeScreen.css';
 
@@ -15,63 +16,27 @@ const FLAGS = {
   'Argentina': '🇦🇷', 'France': '🇫🇷', 'Brazil': '🇧🇷',
   'England': '🏴󠁧󠁢󠁥󠁮󠁧󠁿', 'Germany': '🇩🇪', 'Spain': '🇪🇸',
   'USA': '🇺🇸', 'Mexico': '🇲🇽', 'Portugal': '🇵🇹',
-  'Netherlands': '🇳🇱', 'Poland': '🇵🇱', 'Saudi Arabia': '🇸🇦',
-  'Canada': '🇨🇦', 'Croatia': '🇭🇷', 'Morocco': '🇲🇦',
-  'Japan': '🇯🇵', 'Senegal': '🇸🇳', 'Uruguay': '🇺🇾',
-  'Colombia': '🇨🇴', 'Australia': '🇦🇺',
-};
-
-
-const GROUP_STANDINGS = {
-  'Argentina': {
-    groupName: 'Group B',
-    teams: [
-      { pos: 1, flag: '🇦🇷', name: 'Argentina',    gd: '+7', pts: 9 },
-      { pos: 2, flag: '🇵🇱', name: 'Poland',       gd: '+1', pts: 4 },
-      { pos: 3, flag: '🇸🇦', name: 'Saudi Arabia', gd: '-3', pts: 3 },
-      { pos: 4, flag: '🇲🇽', name: 'Mexico',       gd: '-5', pts: 1 },
-    ],
-  },
-  'USA': {
-    groupName: 'Group C',
-    teams: [
-      { pos: 1, flag: '🇺🇸', name: 'USA',     gd: '+5', pts: 7 },
-      { pos: 2, flag: '🇺🇾', name: 'Uruguay', gd: '+2', pts: 5 },
-      { pos: 3, flag: '🇵🇦', name: 'Panama',  gd: '-2', pts: 3 },
-      { pos: 4, flag: '🇧🇴', name: 'Bolivia', gd: '-5', pts: 1 },
-    ],
-  },
-};
-
-const FALLBACK_RECAP = {
-  home_team: 'Argentina',
-  away_team: 'Poland',
-  home_score: 2,
-  away_score: 0,
-  bullets: [
-    "**Messi scored twice** — think a QB with a perfect completion rate in the red zone, impossible to stop when locked in",
-    "**Poland had a man sent off at the 67th minute** — like an NBA ejection; Argentina played 11 vs 10 for the final 23 minutes",
-    "**Argentina top Group B** with a perfect 9 points — they haven't allowed a single goal all tournament",
-  ],
+  'Netherlands': '🇳🇱', 'Japan': '🇯🇵', 'Morocco': '🇲🇦',
+  'Senegal': '🇸🇳', 'Uruguay': '🇺🇾', 'South Korea': '🇰🇷',
+  'Czechia': '🇨🇿', 'South Africa': '🇿🇦', 'Canada': '🇨🇦',
+  'Qatar': '🇶🇦', 'Switzerland': '🇨🇭', 'Paraguay': '🇵🇾',
+  'Australia': '🇦🇺', 'Türkiye': '🇹🇷', 'Ivory Coast': '🇨🇮',
+  'Ecuador': '🇪🇨', 'Curaçao': '🇨🇼', 'Sweden': '🇸🇪',
+  'Tunisia': '🇹🇳', 'Saudi Arabia': '🇸🇦', 'Cape Verde': '🇨🇻',
+  'Belgium': '🇧🇪', 'Egypt': '🇪🇬', 'Iran': '🇮🇷',
+  'New Zealand': '🇳🇿', 'Iraq': '🇮🇶', 'Norway': '🇳🇴',
+  'Haiti': '🇭🇹', 'Scotland': '🏴󠁧󠁢󠁳󠁣󠁴󠁿', 'Croatia': '🇭🇷',
+  'Ghana': '🇬🇭', 'Panama': '🇵🇦', 'Bosnia & Herzegovina': '🇧🇦',
 };
 
 const FALLBACK_HOT_TAKE = {
-  id: 'fallback-1',
-  question: "Will Messi win his second World Cup with Argentina?",
-  yes_label: "Destiny 🐐",
-  no_label: "Too old now",
-  yes_votes: 8420,
-  no_votes: 3201,
+  id: 'fallback-wc2026',
+  question: "Can a North American host (USA, Canada, or Mexico) reach the knockout stage?",
+  yes_label: "Home field advantage",
+  no_label: "Star power wins",
+  yes_votes: 6200,
+  no_votes: 3800,
 };
-
-const FALLBACK_BRACKET = [
-  { round: 'Group Stage',   status: 'FT',        home_team: 'Argentina', away_team: 'Poland',       home_score: 2,    away_score: 0,    match_date: '2026-06-12' },
-  { round: 'Group Stage',   status: 'FT',        home_team: 'Saudi Arabia', away_team: 'Argentina', home_score: 0,    away_score: 2,    match_date: '2026-06-16' },
-  { round: 'Round of 16',   status: 'scheduled', home_team: 'Argentina', away_team: 'TBD',          home_score: null, away_score: null, match_date: '2026-06-28' },
-  { round: 'Quarter-finals',status: 'scheduled', home_team: 'Argentina', away_team: 'TBD',          home_score: null, away_score: null, match_date: '2026-07-04' },
-  { round: 'Semi-finals',   status: 'scheduled', home_team: 'Argentina', away_team: 'TBD',          home_score: null, away_score: null, match_date: '2026-07-09' },
-  { round: 'Final',         status: 'scheduled', home_team: 'Argentina', away_team: 'TBD',          home_score: null, away_score: null, match_date: '2026-07-19', venue: 'MetLife Stadium, NJ' },
-];
 
 const parseBullet = (text) => {
   const parts = text.split('**');
@@ -95,7 +60,6 @@ function getDaysToKickoff() {
   );
 }
 
-
 function getOpponent(match, team) {
   if (match.home_team === team) return match.away_team || 'TBD';
   if (match.away_team === team) return match.home_team || 'TBD';
@@ -103,16 +67,55 @@ function getOpponent(match, team) {
   return match.homeTeam || 'TBD';
 }
 
-
 function getTeamFlag(team) {
-  const flags = {
-    'Argentina': '🇦🇷', 'France': '🇫🇷', 'Brazil': '🇧🇷',
-    'England': '🏴󠁧󠁢󠁥󠁮󠁧󠁿', 'USA': '🇺🇸', 'Germany': '🇩🇪',
-    'Spain': '🇪🇸', 'Portugal': '🇵🇹', 'Morocco': '🇲🇦',
-    'Mexico': '🇲🇽', 'Netherlands': '🇳🇱', 'Italy': '🇮🇹',
-    'Japan': '🇯🇵', 'Senegal': '🇸🇳', 'Croatia': '🇭🇷',
-  };
-  return flags[team] || '🌍';
+  return FLAGS[team] || '🌍';
+}
+
+function getUserGroup(teamName) {
+  if (!teamName) return 'A';
+  for (const [letter, group] of Object.entries(GROUPS)) {
+    if (group.teams.some(t =>
+      t.name === teamName ||
+      teamName.includes(t.name) ||
+      t.name.includes(teamName)
+    )) {
+      return letter;
+    }
+  }
+  return 'A';
+}
+
+function getPreTournamentBracket(teamName) {
+  const teamMatches = OPENING_MATCHES.filter(
+    m => m.homeTeam === teamName || m.awayTeam === teamName
+  );
+  const groupMatches = teamMatches.slice(0, 3).map(m => ({
+    round: 'Group Stage',
+    status: 'NS',
+    home_team: m.homeTeam,
+    away_team: m.awayTeam,
+    home_score: null,
+    away_score: null,
+    match_date: m.date,
+  }));
+  if (groupMatches.length === 0) {
+    groupMatches.push({
+      round: 'Group Stage',
+      status: 'NS',
+      home_team: teamName,
+      away_team: 'TBD',
+      home_score: null,
+      away_score: null,
+      match_date: '2026-06-11',
+    });
+  }
+  return [
+    ...groupMatches,
+    { round: 'Round of 16',   status: 'scheduled', home_team: teamName, away_team: 'TBD', home_score: null, away_score: null, match_date: '2026-06-28' },
+    { round: 'Quarter-finals',status: 'scheduled', home_team: teamName, away_team: 'TBD', home_score: null, away_score: null, match_date: '2026-07-04' },
+    { round: 'Semi-finals',   status: 'scheduled', home_team: teamName, away_team: 'TBD', home_score: null, away_score: null, match_date: '2026-07-09' },
+    { round: 'Final',         status: 'scheduled', home_team: teamName, away_team: 'TBD', home_score: null, away_score: null, match_date: '2026-07-19', venue: 'MetLife Stadium, NJ' },
+  ];
 }
 
 function HomeScreen({ userContext, userId, onNavigate }) {
@@ -129,11 +132,18 @@ function HomeScreen({ userContext, userId, onNavigate }) {
   const [teamHeadlines, setTeamHeadlines] = useState({});
   const touchStartX = useRef(null);
 
-  const team = userContext?.team || 'Argentina';
-  const firstName = team ? team.split(' ')[0] : 'Rishi';
+  const [selectedGroup, setSelectedGroup] = useState('A');
+
+  const team = userContext?.team || 'USA';
+  const firstName = team ? team.split(' ')[0] : 'Fan';
   const daysLeft = getDaysToKickoff();
-  const standingsData = GROUP_STANDINGS[team] || GROUP_STANDINGS['Argentina'];
   const teamFlag = FLAGS[team] ?? '🌍';
+
+  // Auto-select user's group on mount
+  useEffect(() => {
+    const userGroup = getUserGroup(userContext?.team);
+    setSelectedGroup(userGroup);
+  }, [userContext?.team]);
 
   useEffect(() => {
     Promise.all([
@@ -175,8 +185,8 @@ function HomeScreen({ userContext, userId, onNavigate }) {
 
   const featuredTeams = [
     team,
-    'Argentina', 'France', 'Brazil', 'England',
-    'USA', 'Germany', 'Spain', 'Portugal', 'Morocco',
+    'USA', 'Brazil', 'England', 'Germany',
+    'Spain', 'France', 'Portugal', 'Netherlands',
   ].filter((t, i, arr) => arr.indexOf(t) === i).slice(0, 8);
 
   useEffect(() => {
@@ -222,9 +232,8 @@ function HomeScreen({ userContext, userId, onNavigate }) {
     }
   };
 
-  const displayRecap = recap || FALLBACK_RECAP;
   const displayHotTake = hotTake || FALLBACK_HOT_TAKE;
-  const displayBracket = bracket.length ? bracket : FALLBACK_BRACKET;
+  const displayBracket = bracket.length ? bracket : getPreTournamentBracket(team);
 
   const bracketWithState = displayBracket.map((m, i) => {
     const prevDone = i === 0 || displayBracket[i - 1]?.status === 'FT';
@@ -244,6 +253,15 @@ function HomeScreen({ userContext, userId, onNavigate }) {
     dismissedFixtureId.current = briefing?.fixtureId;
     setShowBriefing(false);
   };
+
+  const currentGroup = GROUPS[selectedGroup];
+
+  // Next match for user's team from WC schedule
+  const todayStr = new Date().toISOString().split('T')[0];
+  const nextMatch = OPENING_MATCHES.find(m =>
+    m.date >= todayStr &&
+    (m.homeTeam === team || m.awayTeam === team)
+  );
 
   return (
     <div className="home-screen stagger-children">
@@ -318,65 +336,110 @@ function HomeScreen({ userContext, userId, onNavigate }) {
           <div className="tournament-stats-grid">
             <div className="tournament-stat">
               <div className="tournament-stat-value">
-                8<span className="tournament-stat-denom">/12</span>
+                0<span className="tournament-stat-denom">/0</span>
               </div>
               <div className="tournament-stat-label">Correct</div>
             </div>
             <div className="tournament-stat">
-              <div className="tournament-stat-value">#2</div>
+              <div className="tournament-stat-value">—</div>
               <div className="tournament-stat-label">Group Rank</div>
             </div>
             <div className="tournament-stat">
-              <div className="tournament-stat-value">4</div>
+              <div className="tournament-stat-value">0</div>
               <div className="tournament-stat-label">Watched</div>
             </div>
             <div className="tournament-stat">
-              <div className="tournament-stat-value">247</div>
+              <div className="tournament-stat-value">0</div>
               <div className="tournament-stat-label">Points</div>
             </div>
           </div>
-          <div className="tournament-accuracy-label">Prediction accuracy</div>
+          <div className="tournament-accuracy-label">Predictions open June 11</div>
           <div className="tournament-progress">
-            <div className="tournament-progress-fill" style={{ width: '67%' }} />
+            <div className="tournament-progress-fill" style={{ width: '0%' }} />
           </div>
-          <div className="tournament-accuracy-pct">67%</div>
+          <div className="tournament-accuracy-pct">—</div>
         </div>
 
       </div>
 
-      {/* ── SECTION 3: What You Missed + Talking Point ─── */}
+      {/* ── SECTION 3: Next Match + Talking Point ────────── */}
       <div className="home-grid-2">
 
-        <div className="home-card recap-card">
-          <div className="home-card-header-row">
-            <div className="home-card-label">WHAT YOU MISSED</div>
-            <div className="recap-new-badge">NEW RECAP</div>
+        {recap ? (
+          <div className="home-card recap-card">
+            <div className="home-card-header-row">
+              <div className="home-card-label">WHAT YOU MISSED</div>
+              <div className="recap-new-badge">NEW RECAP</div>
+            </div>
+            <div className="recap-match-row">
+              <span className="recap-flag">{FLAGS[recap.home_team] ?? '🌍'}</span>
+              <span className="recap-team-name">{recap.home_team}</span>
+              <span className="recap-score">{recap.home_score}–{recap.away_score}</span>
+              <span className="recap-team-name">{recap.away_team}</span>
+              <span className="recap-flag">{FLAGS[recap.away_team] ?? '🌍'}</span>
+            </div>
+            <ul className="recap-bullets">
+              {recap.bullets.map((bullet, i) => (
+                <li key={i} className="recap-bullet">
+                  <span className="recap-bullet-dot" />
+                  <span>{parseBullet(bullet)}</span>
+                </li>
+              ))}
+            </ul>
+            <button
+              className="home-cta-link"
+              onClick={() => onNavigate('companion', {
+                general: true,
+                preloadedQuestion: `Break down the ${recap.home_team} ${recap.home_score}–${recap.away_score} ${recap.away_team} match for me`,
+              })}
+            >
+              Ask Companion about this match →
+            </button>
           </div>
-          <div className="recap-match-row">
-            <span className="recap-flag">{FLAGS[displayRecap.home_team] ?? '🌍'}</span>
-            <span className="recap-team-name">{displayRecap.home_team}</span>
-            <span className="recap-score">{displayRecap.home_score}–{displayRecap.away_score}</span>
-            <span className="recap-team-name">{displayRecap.away_team}</span>
-            <span className="recap-flag">{FLAGS[displayRecap.away_team] ?? '🌍'}</span>
+        ) : (
+          <div className="home-card next-match-card">
+            <div className="home-card-label">NEXT MATCH</div>
+            {nextMatch ? (
+              <>
+                <div className="recap-match-row">
+                  <span className="recap-flag">{nextMatch.homeFlag}</span>
+                  <span className="recap-team-name">{nextMatch.homeTeam}</span>
+                  <span className="recap-score">vs</span>
+                  <span className="recap-team-name">{nextMatch.awayTeam}</span>
+                  <span className="recap-flag">{nextMatch.awayFlag}</span>
+                </div>
+                <div className="next-match-details">
+                  <span>Group {nextMatch.group}</span>
+                  <span>{nextMatch.kickoffET}</span>
+                  <span>{nextMatch.tvUS}</span>
+                </div>
+                {nextMatch.venue !== 'TBD' && (
+                  <div className="next-match-venue">{nextMatch.venue}, {nextMatch.city}</div>
+                )}
+                <button
+                  className="home-cta-link"
+                  onClick={() => onNavigate('companion', {
+                    general: true,
+                    preloadedQuestion: `Preview ${nextMatch.homeTeam} vs ${nextMatch.awayTeam} for me — what should I watch for?`,
+                  })}
+                >
+                  Get AI preview →
+                </button>
+              </>
+            ) : (
+              <div className="next-match-empty">
+                <div className="next-match-flag">{teamFlag}</div>
+                <div className="next-match-info">Tournament kicks off June 11</div>
+                <button
+                  className="home-cta-link"
+                  onClick={() => onNavigate('companion', { general: true })}
+                >
+                  Ask Companion anything →
+                </button>
+              </div>
+            )}
           </div>
-          <ul className="recap-bullets">
-            {displayRecap.bullets.map((bullet, i) => (
-              <li key={i} className="recap-bullet">
-                <span className="recap-bullet-dot" />
-                <span>{parseBullet(bullet)}</span>
-              </li>
-            ))}
-          </ul>
-          <button
-            className="home-cta-link"
-            onClick={() => onNavigate('companion', {
-              general: true,
-              preloadedQuestion: `Break down the ${displayRecap.home_team} ${displayRecap.home_score}–${displayRecap.away_score} ${displayRecap.away_team} match for me`,
-            })}
-          >
-            Ask Companion about this match →
-          </button>
-        </div>
+        )}
 
         <div className="home-card hottake-card">
           <div className="home-card-label">TODAY'S TALKING POINT</div>
@@ -464,40 +527,52 @@ function HomeScreen({ userContext, userId, onNavigate }) {
         </div>
 
         <div className="home-card standings-card">
-          <div className="home-card-label">{standingsData.groupName} STANDINGS</div>
-          <table className="standings-table">
-            <thead>
-              <tr className="standings-header-row">
-                <th>#</th>
-                <th className="standings-team-col">Team</th>
-                <th>GD</th>
-                <th>PTS</th>
-              </tr>
-            </thead>
-            <tbody>
-              {standingsData.teams.map((row, i) => (
-                <Fragment key={row.name}>
-                  <tr className={`standings-row ${row.name === team ? 'standings-row--user' : ''}`}>
-                    <td className="standings-pos">{row.pos}</td>
-                    <td className="standings-team-col">
-                      <span className="standings-flag">{row.flag}</span>
-                      <span className="standings-name">{row.name}</span>
-                    </td>
-                    <td className="standings-gd">{row.gd}</td>
-                    <td className="standings-pts">{row.pts}</td>
-                  </tr>
-                  {i === 1 && (
-                    <tr className="standings-qualify-row" key="qualify">
-                      <td colSpan={4}>
-                        <div className="standings-qualify-line" />
-                      </td>
-                    </tr>
-                  )}
-                </Fragment>
-              ))}
-            </tbody>
-          </table>
-          <div className="standings-footer">Top 2 advance · Qualify line shown</div>
+          <div className="home-card-label">GROUP STANDINGS</div>
+
+          {/* Group tabs A–L */}
+          <div className="group-tabs">
+            {Object.keys(GROUPS).map(letter => (
+              <button
+                key={letter}
+                className={`group-tab ${selectedGroup === letter ? 'active' : ''}`}
+                onClick={() => setSelectedGroup(letter)}
+              >
+                {letter}
+              </button>
+            ))}
+          </div>
+
+          <div className="group-standings-title">{currentGroup.name}</div>
+
+          <div className="group-standings-table">
+            <div className="group-standings-header">
+              <span>#</span>
+              <span>Team</span>
+              <span>GD</span>
+              <span>PTS</span>
+            </div>
+            {currentGroup.teams.map((t, i) => {
+              const isUserTeam = userContext?.team === t.name ||
+                userContext?.team?.includes(t.name) ||
+                t.name?.includes(userContext?.team || '');
+              return (
+                <div
+                  key={t.code}
+                  className={`group-standings-row ${isUserTeam ? 'user-team' : ''} ${i < 2 ? 'qualifying' : ''}`}
+                >
+                  <span className="gsr-rank">{i + 1}</span>
+                  <span className="gsr-team">
+                    {t.flag} {t.name}
+                    {t.isHost && <span className="host-badge">HOST</span>}
+                  </span>
+                  <span className="gsr-gd">—</span>
+                  <span className="gsr-pts">0</span>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="standings-footer">Top 2 advance · Group stage not started</div>
         </div>
 
       </div>
@@ -555,7 +630,6 @@ function HomeScreen({ userContext, userId, onNavigate }) {
         </div>
       </div>
 
-      {/* ── SECTION 7: Bottom padding ───────────────────── */}
       <div style={{ height: 24 }} />
 
     </div>

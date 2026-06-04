@@ -405,3 +405,72 @@
   border-color: #4444aa;
   color: #c8c8e8;
 }
+
+/* ── Date-grouped schedule (Upcoming tab) ─────────────────── */
+
+.ms-date-group {
+  margin: 0 16px 4px;
+}
+
+.ms-date-header {
+  font-size: 10px;
+  font-weight: 700;
+  color: #4444aa;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 14px 0 6px;
+}
+
+.ms-schedule-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 12px;
+  background: #0d0d1a;
+  border: 1px solid #1a1a2e;
+  border-radius: 10px;
+  margin-bottom: 6px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.ms-schedule-row:hover {
+  border-color: rgba(124,252,142,0.25);
+  background: #0a0a17;
+}
+
+.ms-srow__flag {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.ms-srow__center {
+  flex: 1;
+  min-width: 0;
+}
+
+.ms-srow__teams {
+  font-size: 13px;
+  font-weight: 600;
+  color: #f0f0fa;
+  font-family: 'Inter', sans-serif;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ms-srow__vs {
+  color: #4444aa;
+  font-weight: 400;
+  margin: 0 3px;
+}
+
+.ms-srow__meta {
+  font-size: 10px;
+  color: #4444aa;
+  margin-top: 3px;
+  font-family: 'Inter', sans-serif;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

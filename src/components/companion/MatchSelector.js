@@ -1,186 +1,173 @@
 import { useState, useEffect } from 'react';
 import { getLiveMatches } from '../../services/api';
+import { OPENING_MATCHES } from '../../lib/worldCupData';
 import './MatchSelector.css';
 
 const FLAGS = {
-  'Argentina':'🇦🇷','France':'🇫🇷','Brazil':'🇧🇷',
-  'England':'🏴󠁧󠁢󠁥󠁮󠁧󠁿','Germany':'🇩🇪','Spain':'🇪🇸',
-  'USA':'🇺🇸','Mexico':'🇲🇽','Portugal':'🇵🇹',
-  'Netherlands':'🇳🇱','Italy':'🇮🇹','Japan':'🇯🇵',
-  'Morocco':'🇲🇦','Senegal':'🇸🇳','Australia':'🇦🇺',
-  'Croatia':'🇭🇷','Uruguay':'🇺🇾','Colombia':'🇨🇴',
+  'Argentina': '🇦🇷', 'France': '🇫🇷', 'Brazil': '🇧🇷',
+  'England': '🏴󠁧󠁢󠁥󠁮󠁧󠁿', 'Germany': '🇩🇪', 'Spain': '🇪🇸',
+  'USA': '🇺🇸', 'Mexico': '🇲🇽', 'Portugal': '🇵🇹',
+  'Netherlands': '🇳🇱', 'Japan': '🇯🇵', 'Morocco': '🇲🇦',
+  'Senegal': '🇸🇳', 'Australia': '🇦🇺', 'Croatia': '🇭🇷',
+  'Uruguay': '🇺🇾', 'South Korea': '🇰🇷', 'Czechia': '🇨🇿',
+  'South Africa': '🇿🇦', 'Canada': '🇨🇦', 'Qatar': '🇶🇦',
+  'Switzerland': '🇨🇭', 'Bosnia & Herzegovina': '🇧🇦',
+  'Paraguay': '🇵🇾', 'Türkiye': '🇹🇷', 'Ivory Coast': '🇨🇮',
+  'Ecuador': '🇪🇨', 'Curaçao': '🇨🇼', 'Sweden': '🇸🇪',
+  'Tunisia': '🇹🇳', 'Saudi Arabia': '🇸🇦', 'Cape Verde': '🇨🇻',
+  'Belgium': '🇧🇪', 'Egypt': '🇪🇬', 'Iran': '🇮🇷',
+  'New Zealand': '🇳🇿', 'Iraq': '🇮🇶', 'Norway': '🇳🇴',
+  'Haiti': '🇭🇹', 'Scotland': '🏴󠁧󠁢󠁳󠁣󠁴󠁿', 'Ghana': '🇬🇭',
+  'Panama': '🇵🇦',
 };
 
-const FALLBACK_MATCHES = [
-  {
-    id: 'match-1',
-    homeTeam: 'Argentina', awayTeam: 'France',
-    homeScore: 2, awayScore: 1, minute: 67,
-    stage: 'Group B', status: 'live', kickoff: null,
-    homePlayers: [
-      { num: 1, name: 'Martínez', pos: 'GK' }, { num: 3, name: 'Tagliafico', pos: 'DEF' },
-      { num: 6, name: 'Romero', pos: 'DEF' }, { num: 13, name: 'Lisandro', pos: 'DEF' },
-      { num: 26, name: 'Molina', pos: 'DEF' }, { num: 5, name: 'Paredes', pos: 'MID' },
-      { num: 7, name: 'De Paul', pos: 'MID' }, { num: 20, name: 'Mac Allister', pos: 'MID' },
-      { num: 11, name: 'Di María', pos: 'FWD' }, { num: 9, name: 'Lautaro', pos: 'FWD' },
-      { num: 10, name: 'Messi', pos: 'FWD' },
-    ],
-    awayPlayers: [
-      { num: 1, name: 'Maignan', pos: 'GK' }, { num: 22, name: 'Theo H.', pos: 'DEF' },
-      { num: 5, name: 'Konaté', pos: 'DEF' }, { num: 4, name: 'Saliba', pos: 'DEF' },
-      { num: 2, name: 'Pavard', pos: 'DEF' }, { num: 8, name: 'Tchouaméni', pos: 'MID' },
-      { num: 14, name: 'Camavinga', pos: 'MID' }, { num: 11, name: 'Dembélé', pos: 'MID' },
-      { num: 10, name: 'Griezmann', pos: 'MID' }, { num: 7, name: 'Kolo Muani', pos: 'FWD' },
-      { num: 9, name: 'Mbappé', pos: 'FWD' },
-    ],
-    homeFormation: '4-3-3', awayFormation: '4-2-3-1',
-  },
-  {
-    id: 'match-2',
-    homeTeam: 'USA', awayTeam: 'Mexico',
-    homeScore: 0, awayScore: 0, minute: 23,
-    stage: 'Group D', status: 'live', kickoff: null,
-    homePlayers: [
-      { num: 1, name: 'Turner', pos: 'GK' }, { num: 2, name: 'Dest', pos: 'DEF' },
-      { num: 5, name: 'Ream', pos: 'DEF' }, { num: 6, name: 'Richards', pos: 'DEF' },
-      { num: 3, name: 'Robinson', pos: 'DEF' }, { num: 8, name: 'McKennie', pos: 'MID' },
-      { num: 4, name: 'Adams', pos: 'MID' }, { num: 7, name: 'Reyna', pos: 'MID' },
-      { num: 10, name: 'Pulisic', pos: 'FWD' }, { num: 9, name: 'Ferreira', pos: 'FWD' },
-      { num: 11, name: 'Weah', pos: 'FWD' },
-    ],
-    awayPlayers: [
-      { num: 1, name: 'Ochoa', pos: 'GK' }, { num: 2, name: 'Sánchez', pos: 'DEF' },
-      { num: 3, name: 'Moreno', pos: 'DEF' }, { num: 4, name: 'Montes', pos: 'DEF' },
-      { num: 23, name: 'Gallardo', pos: 'DEF' }, { num: 6, name: 'Herrera', pos: 'MID' },
-      { num: 8, name: 'Guardado', pos: 'MID' }, { num: 10, name: 'Lozano', pos: 'MID' },
-      { num: 11, name: 'Vega', pos: 'MID' }, { num: 7, name: 'Corona', pos: 'FWD' },
-      { num: 9, name: 'Jiménez', pos: 'FWD' },
-    ],
-    homeFormation: '4-3-3', awayFormation: '4-3-3',
-  },
-  {
-    id: 'match-3',
-    homeTeam: 'Brazil', awayTeam: 'Germany',
-    homeScore: null, awayScore: null, minute: null,
-    stage: 'Group A', status: 'NS', kickoff: 'Today · 9:00 PM ET',
-    homePlayers: [], awayPlayers: [],
-    homeFormation: 'TBA', awayFormation: 'TBA',
-  },
-  {
-    id: 'match-4',
-    homeTeam: 'Spain', awayTeam: 'Morocco',
-    homeScore: null, awayScore: null, minute: null,
-    stage: 'Group E', status: 'upcoming', kickoff: 'Tomorrow · 3:00 PM ET',
-    homePlayers: [], awayPlayers: [],
-    homeFormation: 'TBA', awayFormation: 'TBA',
-  },
-  {
-    id: 'match-5',
-    homeTeam: 'England', awayTeam: 'Portugal',
-    homeScore: 1, awayScore: 0, minute: null,
-    stage: 'Group C', status: 'FT', kickoff: null,
-    homePlayers: [], awayPlayers: [],
-    homeFormation: '4-3-3', awayFormation: '4-3-3',
-  },
-  {
-    id: 'match-6',
-    homeTeam: 'Netherlands', awayTeam: 'Japan',
-    homeScore: 2, awayScore: 2, minute: null,
-    stage: 'Group F', status: 'FT', kickoff: null,
-    homePlayers: [], awayPlayers: [],
-    homeFormation: '4-3-3', awayFormation: '4-2-3-1',
-  },
-];
+const FILTER_TABS = ['Live', 'Upcoming', 'Results'];
 
-const FILTER_TABS = ['Live', 'Today', 'Upcoming', 'Results'];
+const today = () => new Date().toISOString().split('T')[0];
 
-function filterMatches(matches, tab) {
-  if (tab === 'Live')     return matches.filter(m => m.status === 'live' || m.status === '1H' || m.status === '2H' || m.status === 'ET' || m.status === 'P');
-  if (tab === 'Today')    return matches.filter(m => m.status === 'NS');
-  if (tab === 'Upcoming') return matches.filter(m => m.status === 'upcoming' || m.status === 'scheduled' || m.status === 'TBD');
-  if (tab === 'Results')  return matches.filter(m => m.status === 'FT' || m.status === 'finished' || m.status === 'AET' || m.status === 'PEN');
-  return matches;
+function formatDateHeader(dateStr) {
+  const todayStr = today();
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const tomorrowStr = tomorrow.toISOString().split('T')[0];
+
+  if (dateStr === todayStr) return 'Today';
+  if (dateStr === tomorrowStr) return 'Tomorrow';
+
+  const d = new Date(dateStr + 'T12:00:00');
+  return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
 }
 
-function MatchCard({ match, onMatchSelected }) {
-  const isLive    = match.status === 'live' || ['1H','2H','ET','P'].includes(match.status);
-  const isResult  = match.status === 'FT' || ['finished','AET','PEN'].includes(match.status);
+function isLiveStatus(s) {
+  return s === 'live' || ['1H', '2H', 'ET', 'P', 'LIVE'].includes(s);
+}
 
+function isResultStatus(s) {
+  return s === 'FT' || ['finished', 'AET', 'PEN'].includes(s);
+}
+
+function LiveMatchCard({ match, onMatchSelected }) {
   return (
-    <div className={`ms-card ${isLive ? 'ms-card--live' : isResult ? 'ms-card--result' : 'ms-card--upcoming'}`}>
+    <div className="ms-card ms-card--live">
       <div className="ms-card__top">
-        {isLive ? (
-          <div className="ms-badge ms-badge--live">
-            <div className="ms-badge__dot" />
-            <span>Live</span>
-          </div>
-        ) : isResult ? (
-          <div className="ms-badge ms-badge--result">Final</div>
-        ) : (
-          <div className="ms-badge ms-badge--upcoming">Upcoming</div>
-        )}
+        <div className="ms-badge ms-badge--live">
+          <div className="ms-badge__dot" />
+          <span>Live</span>
+        </div>
         <div className="ms-card__stage">{match.stage}</div>
       </div>
-
       <div className="ms-card__teams">
         <div className="ms-card__team">
           <span className="ms-card__flag">{FLAGS[match.homeTeam] ?? '🌍'}</span>
           <span className="ms-card__team-name">{match.homeTeam}</span>
         </div>
         <div className="ms-card__score-col">
-          {isLive ? (
-            <>
-              <div className="ms-card__score-live">{match.homeScore} – {match.awayScore}</div>
-              <div className="ms-card__minute">{match.minute}'</div>
-            </>
-          ) : isResult ? (
-            <div className="ms-card__score-ft">{match.homeScore} – {match.awayScore}</div>
-          ) : (
-            <>
-              <div className="ms-card__vs">vs</div>
-              {match.kickoff && <div className="ms-card__kickoff-time">{match.kickoff}</div>}
-            </>
-          )}
+          <div className="ms-card__score-live">{match.homeScore} – {match.awayScore}</div>
+          <div className="ms-card__minute">{match.minute}'</div>
         </div>
         <div className="ms-card__team ms-card__team--right">
           <span className="ms-card__flag">{FLAGS[match.awayTeam] ?? '🌍'}</span>
           <span className="ms-card__team-name">{match.awayTeam}</span>
         </div>
       </div>
+      <button className="ms-card__cta ms-card__cta--live" onClick={() => onMatchSelected(match)}>
+        Watch with Companion →
+      </button>
+    </div>
+  );
+}
 
-      {(isLive || isResult) && (
-        <button
-          className={`ms-card__cta ${isLive ? 'ms-card__cta--live' : 'ms-card__cta--result'}`}
-          onClick={() => onMatchSelected(match)}
-        >
-          {isLive ? 'Watch with Companion →' : 'Ask about this match →'}
-        </button>
-      )}
+function ResultCard({ match, onMatchSelected }) {
+  return (
+    <div className="ms-card ms-card--result">
+      <div className="ms-card__top">
+        <div className="ms-badge ms-badge--result">Final</div>
+        <div className="ms-card__stage">{match.stage}</div>
+      </div>
+      <div className="ms-card__teams">
+        <div className="ms-card__team">
+          <span className="ms-card__flag">{FLAGS[match.homeTeam] ?? '🌍'}</span>
+          <span className="ms-card__team-name">{match.homeTeam}</span>
+        </div>
+        <div className="ms-card__score-col">
+          <div className="ms-card__score-ft">{match.homeScore} – {match.awayScore}</div>
+        </div>
+        <div className="ms-card__team ms-card__team--right">
+          <span className="ms-card__flag">{FLAGS[match.awayTeam] ?? '🌍'}</span>
+          <span className="ms-card__team-name">{match.awayTeam}</span>
+        </div>
+      </div>
+      <button className="ms-card__cta ms-card__cta--result" onClick={() => onMatchSelected(match)}>
+        Ask about this match →
+      </button>
+    </div>
+  );
+}
+
+function ScheduleMatchRow({ match, onMatchSelected }) {
+  const venueStr = match.venue && match.venue !== 'TBD'
+    ? `${match.venue}, ${match.city}`
+    : match.city && match.city !== 'TBD' ? match.city : null;
+
+  return (
+    <div className="ms-schedule-row" onClick={() => onMatchSelected({
+      id: match.id,
+      homeTeam: match.homeTeam,
+      awayTeam: match.awayTeam,
+      homeScore: null,
+      awayScore: null,
+      stage: `Group ${match.group}`,
+      status: 'NS',
+      kickoff: match.kickoffET,
+      general: false,
+    })}>
+      <span className="ms-srow__flag">{match.homeFlag}</span>
+      <div className="ms-srow__center">
+        <div className="ms-srow__teams">
+          {match.homeTeam} <span className="ms-srow__vs">vs</span> {match.awayTeam}
+        </div>
+        <div className="ms-srow__meta">
+          {match.isUSAGame && '🇺🇸 '}
+          Group {match.group} · {match.kickoffET} · {match.tvUS}
+          {venueStr && ` · ${venueStr}`}
+        </div>
+      </div>
+      <span className="ms-srow__flag">{match.awayFlag}</span>
     </div>
   );
 }
 
 function MatchSelector({ onMatchSelected }) {
-  const [matches, setMatches] = useState([]);
+  const [apiMatches, setApiMatches] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeFilter, setActiveFilter] = useState('Live');
+  const [activeFilter, setActiveFilter] = useState('Upcoming');
 
   useEffect(() => {
     getLiveMatches().then(data => {
       if (data?.matches?.length > 0) {
-        setMatches(data.matches);
-      } else {
-        setMatches(FALLBACK_MATCHES);
+        setApiMatches(data.matches);
+        const hasLive = data.matches.some(m => isLiveStatus(m.status));
+        if (hasLive) setActiveFilter('Live');
       }
       setLoading(false);
-    });
+    }).catch(() => setLoading(false));
   }, []);
 
-  const liveCount = matches.filter(m =>
-    m.status === 'live' || ['1H','2H','ET','P'].includes(m.status)
-  ).length;
+  const liveMatches  = apiMatches.filter(m => isLiveStatus(m.status));
+  const resultMatches = apiMatches.filter(m => isResultStatus(m.status));
+  const liveCount = liveMatches.length;
 
-  const filtered = filterMatches(matches, activeFilter);
+  // Upcoming schedule from worldCupData, grouped by date
+  const todayStr = today();
+  const matchesByDate = OPENING_MATCHES
+    .filter(m => m.date >= todayStr)
+    .reduce((acc, m) => {
+      if (!acc[m.date]) acc[m.date] = [];
+      acc[m.date].push(m);
+      return acc;
+    }, {});
+
+  const dateGroups = Object.entries(matchesByDate).slice(0, 4);
 
   return (
     <div className="match-selector">
@@ -216,18 +203,44 @@ function MatchSelector({ onMatchSelected }) {
         ))}
       </div>
 
-      {/* ── Match cards ────────────────────────────────────── */}
+      {/* ── Content ────────────────────────────────────────── */}
       <div className="ms-cards">
         {loading ? (
           <div className="ms-loading">Loading matches...</div>
-        ) : filtered.length === 0 ? (
-          <div className="ms-empty">
-            No {activeFilter.toLowerCase()} matches right now
-          </div>
+        ) : activeFilter === 'Live' ? (
+          liveMatches.length === 0 ? (
+            <div className="ms-empty">No live matches right now — check back at kickoff</div>
+          ) : (
+            liveMatches.map(m => (
+              <LiveMatchCard key={m.id} match={m} onMatchSelected={onMatchSelected} />
+            ))
+          )
+        ) : activeFilter === 'Results' ? (
+          resultMatches.length === 0 ? (
+            <div className="ms-empty">No results yet — tournament starts June 11</div>
+          ) : (
+            resultMatches.map(m => (
+              <ResultCard key={m.id} match={m} onMatchSelected={onMatchSelected} />
+            ))
+          )
         ) : (
-          filtered.map(match => (
-            <MatchCard key={match.id} match={match} onMatchSelected={onMatchSelected} />
-          ))
+          // Upcoming — date-grouped WC schedule
+          dateGroups.length === 0 ? (
+            <div className="ms-empty">No upcoming matches in schedule</div>
+          ) : (
+            dateGroups.map(([date, matches]) => (
+              <div key={date} className="ms-date-group">
+                <div className="ms-date-header">{formatDateHeader(date)}</div>
+                {matches.map(match => (
+                  <ScheduleMatchRow
+                    key={match.id}
+                    match={match}
+                    onMatchSelected={onMatchSelected}
+                  />
+                ))}
+              </div>
+            ))
+          )
         )}
       </div>
 
