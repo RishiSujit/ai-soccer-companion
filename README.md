@@ -192,7 +192,7 @@ Our architecture adds +8pts on live match context (Dataset 3) — exactly where 
 
 ## Product Metrics Framework
 
-Three-layer measurement system built before launch based on your mom's framework:
+Three-layer measurement system built before launch:
 
 **North Star Metric:**
 Companion questions per live match
@@ -235,6 +235,7 @@ Written before and during development:
 | [08 — AI Evaluation Framework](https://docs.google.com/document/d/1_grUoEPySFZ80QYdUc-l630ze5cAl2ii7E_AncbtbXU/edit) | Methodology, scoring rubric, quality gates |
 | [09 — Data Model](https://drive.google.com/file/d/1hIMUzRFCLgfpkhM4PCd2J1hWTK3sY7J8/view) | Full Supabase schema and relationships |
 | [Complete Project Summary](https://docs.google.com/document/d/1uQfhEcE4E9HU0UzunEZgIvn6LP8upkAKPSYW-DABaDU/edit) | Post-build summary with all results |
+| [Eval Framework & Results](https://docs.google.com/document/d/1DZodPFc3ANzi_ZOyrPdv6QydxB0PjuwH08RkWK6W6ac/edit) | Three-dataset eval methodology, LLM-as-judge setup, all three run results, gate analysis, interview answers |
 
 ---
 
