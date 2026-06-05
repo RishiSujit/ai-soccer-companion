@@ -33,6 +33,15 @@ app.use(cors({
 
 app.use(express.json());
 
+app.get('/health', (req, res) => {
+  res.json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    league: process.env.ACTIVE_LEAGUE_ID,
+    season: process.env.ACTIVE_SEASON,
+  });
+});
+
 app.use('/api/onboarding', require('./routes/onboarding'));
 app.use('/api/chat', require('./routes/companion'));
 app.use('/api/predictions', require('./routes/predictions'));
