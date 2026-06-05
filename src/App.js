@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import Dashboard from './components/Dashboard';
 import LandingPage from './components/LandingPage';
 import AuthScreen from './components/AuthScreen';
 import OnboardingChat from './components/onboarding/OnboardingChat';
@@ -350,6 +351,10 @@ function App() {
     if (match) setSelectedMatch(match);
     setView(v);
   };
+
+  if (window.location.pathname === '/dashboard') {
+    return <Dashboard />;
+  }
 
   if (authLoading) {
     return (
