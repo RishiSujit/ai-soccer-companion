@@ -6,9 +6,18 @@ const FLAGS = {
   'Argentina': '🇦🇷', 'France': '🇫🇷', 'Brazil': '🇧🇷',
   'England': '🏴󠁧󠁢󠁥󠁮󠁧󠁿', 'Germany': '🇩🇪', 'Spain': '🇪🇸',
   'USA': '🇺🇸', 'Mexico': '🇲🇽', 'Portugal': '🇵🇹',
-  'Netherlands': '🇳🇱', 'Italy': '🇮🇹', 'Japan': '🇯🇵',
-  'Morocco': '🇲🇦', 'Senegal': '🇸🇳', 'Australia': '🇦🇺',
-  'Croatia': '🇭🇷', 'Uruguay': '🇺🇾', 'Colombia': '🇨🇴',
+  'Netherlands': '🇳🇱', 'Japan': '🇯🇵', 'Morocco': '🇲🇦',
+  'Senegal': '🇸🇳', 'Australia': '🇦🇺', 'Croatia': '🇭🇷',
+  'Uruguay': '🇺🇾', 'South Korea': '🇰🇷', 'Czechia': '🇨🇿',
+  'South Africa': '🇿🇦', 'Canada': '🇨🇦', 'Qatar': '🇶🇦',
+  'Switzerland': '🇨🇭', 'Bosnia & Herzegovina': '🇧🇦',
+  'Paraguay': '🇵🇾', 'Türkiye': '🇹🇷', 'Ivory Coast': '🇨🇮',
+  'Ecuador': '🇪🇨', 'Curaçao': '🇨🇼', 'Sweden': '🇸🇪',
+  'Tunisia': '🇹🇳', 'Saudi Arabia': '🇸🇦', 'Cape Verde': '🇨🇻',
+  'Belgium': '🇧🇪', 'Egypt': '🇪🇬', 'Iran': '🇮🇷',
+  'New Zealand': '🇳🇿', 'Iraq': '🇮🇶', 'Norway': '🇳🇴',
+  'Haiti': '🇭🇹', 'Scotland': '🏴󠁧󠁢󠁳󠁣󠁴󠁿', 'Ghana': '🇬🇭',
+  'Panama': '🇵🇦',
 };
 
 function formatDate(dateStr) {
@@ -20,6 +29,14 @@ function formatKickoff(isoString) {
   return new Date(isoString).toLocaleTimeString('en-US', {
     hour: 'numeric', minute: '2-digit', timeZoneName: 'short',
   });
+}
+
+function getFirstKickoffLabel(matches) {
+  if (!matches?.length) return null;
+  // Prefer ET label from WC static cards
+  const sorted = [...matches].sort((a, b) => new Date(a.kickoff) - new Date(b.kickoff));
+  const first = sorted[0];
+  return first.kickoffET || formatKickoff(first.kickoff);
 }
 
 function getFirstKickoff(matches) {
@@ -187,16 +204,23 @@ function DailyCardView({ userId, userContext, isGuest, onShowAuth }) {
       <div className="dcv-matches-strip">
         <div className="dcv-matches-label">
           {firstKickoff
-            ? `Locks at first kickoff — ${formatKickoff(firstKickoff.toISOString())}`
+            ? `Locks at kickoff — ${getFirstKickoffLabel(card.matches)}`
             : 'Today\'s matches'
           }
         </div>
         <div className="dcv-matches-row">
           {card.matches.map((m, i) => (
             <div key={i} className="dcv-match-chip">
-              <span>{FLAGS[m.homeTeam] ?? '🌍'}</span>
-              <span className="dcv-match-chip-name">{m.homeTeam} vs {m.awayTeam}</span>
-              <span>{FLAGS[m.awayTeam] ?? '🌍'}</span>
+              <span>{m.homeFlag ?? FLAGS[m.homeTeam] ?? '🌍'}</span>
+              <div className="dcv-match-chip-body">
+                <span className="dcv-match-chip-name">{m.homeTeam} vs {m.awayTeam}</span>
+                {(m.kickoffET || m.tvUS) && (
+                  <span className="dcv-match-chip-meta">
+                    {m.kickoffET}{m.tvUS ? ` · ${m.tvUS}` : ''}
+                  </span>
+                )}
+              </div>
+              <span>{m.awayFlag ?? FLAGS[m.awayTeam] ?? '🌍'}</span>
             </div>
           ))}
         </div>

@@ -126,6 +126,50 @@ function parseCompanionResponse(rawText) {
   }
 }
 
+function shouldEnableWebSearch(message, matchContext) {
+  if (!message) return false;
+
+  const msg = message.toLowerCase();
+
+  const incidentKeywords = [
+    'why was that',
+    'why did',
+    'what happened with',
+    'why is he off',
+    'why were they',
+    'red card',
+    'why ruled out',
+    'why disallowed',
+    'why no goal',
+    'var review',
+    'var check',
+    'offside call',
+    'penalty reason',
+    'why a penalty',
+    'what was the foul',
+    'why did they stop',
+    'explain that call',
+    'what just happened',
+    'why is everyone',
+  ];
+
+  const hasIncidentQuestion = incidentKeywords.some(k => msg.includes(k));
+  if (hasIncidentQuestion) return true;
+
+  if (matchContext?.events?.length > 0) {
+    const currentMinute = matchContext.minute || 0;
+    const recentDramatic = matchContext.events.some(e => {
+      const elapsed = e.time?.elapsed || 0;
+      const isRecent = elapsed >= currentMinute - 10;
+      const isDramatic = ['Red Card', 'VAR', 'Missed Penalty'].includes(e.type);
+      return isRecent && isDramatic;
+    });
+    if (recentDramatic) return true;
+  }
+
+  return false;
+}
+
 function buildUserContextString(userContext) {
   if (!userContext || !userContext.knownSports?.length)
     return 'No user sports context available.';
@@ -201,25 +245,67 @@ router.post('/', async (req, res) => {
 
     const activeMatch = matchContext || liveContext;
 
-    const systemPrompt = COMPANION_SYSTEM_PROMPT_TEMPLATE
+    const isLiveMode = !!(matchContext || liveContext?.homeTeam);
+
+    const useWebSearch = shouldEnableWebSearch(
+      message,
+      isLiveMode ? activeMatch : null
+    );
+
+    if (useWebSearch) {
+      console.log('[Companion] Web search enabled for:', message.slice(0, 60));
+    }
+
+    let systemPrompt = COMPANION_SYSTEM_PROMPT_TEMPLATE
       .replace('{USER_CONTEXT}', buildUserContextString(userContext))
       .replace('{MATCH_CONTEXT}', buildMatchContextString(activeMatch))
       .replace('{RETRIEVED_KNOWLEDGE}', retrievedKnowledge);
+
+    if (useWebSearch) {
+      systemPrompt += `
+
+WEB SEARCH AVAILABLE:
+You have access to web search.
+For questions about specific incidents (red cards, VAR decisions, disallowed goals, penalties) search for the specific event to find journalist reporting on WHY it happened.
+
+Search query format: "[player name] [event type] [home team] [away team] 2026 reason"
+
+Then explain the real reason to Sam using your normal style — plain English, sports analogy, under 130 words.
+`;
+    }
 
     const messages = [
       ...conversationHistory,
       { role: 'user', content: message },
     ];
 
-    const response = await client.messages.create({
+    const apiParams = {
       model: 'claude-sonnet-4-5',
-      max_tokens: 350,
+      max_tokens: 600,
       system: systemPrompt,
       messages,
-    });
+    };
 
-    const isLiveMode = !!(matchContext || liveContext?.homeTeam);
-    const { coreAnswer, analogy, followUps } = parseCompanionResponse(response.content[0].text);
+    if (useWebSearch) {
+      apiParams.tools = [{
+        type: 'web_search_20250305',
+        name: 'web_search',
+      }];
+    }
+
+    const response = await client.messages.create(apiParams);
+
+    const rawResponse = response.content
+      .filter(block => block.type === 'text')
+      .map(block => block.text)
+      .join('');
+
+    if (!rawResponse) {
+      console.error('[Companion] No text in response:', JSON.stringify(response.content.map(b => b.type)));
+      return res.status(500).json({ error: 'No response generated' });
+    }
+
+    const { coreAnswer, analogy, followUps } = parseCompanionResponse(rawResponse);
 
     res.json({
       reply: coreAnswer,

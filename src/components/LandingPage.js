@@ -106,7 +106,7 @@ function LandingPage({ onShowAuth }) {
           <div className="lp-hero__right">
             <div className="lp-card">
               <div className="lp-card__header">
-                <span className="lp-card__teams">Argentina vs France</span>
+                <span className="lp-card__teams">USA vs Paraguay</span>
                 <div className="lp-card__live">
                   <div className="lp-card__dot" />
                   <span className="lp-card__live-label">Live</span>
@@ -123,7 +123,7 @@ function LandingPage({ onShowAuth }) {
                 <div className="lp-bubble lp-bubble--ai">
                   VAR review — like NFL replay. Ref is checking if the goal counts. Takes about 60 seconds then play resumes.
                 </div>
-                <div className="lp-bubble lp-bubble--user">is that good for Argentina?</div>
+                <div className="lp-bubble lp-bubble--user">is that good for USA?</div>
                 <div className="lp-typing">
                   <div className="lp-typing__dot" />
                   <div className="lp-typing__dot" />

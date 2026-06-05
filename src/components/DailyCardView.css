@@ -87,9 +87,21 @@
   border-color: var(--border-medium);
 }
 
+.dcv-match-chip-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
 .dcv-match-chip-name {
   color: var(--text-secondary);
   font-weight: 500;
+}
+
+.dcv-match-chip-meta {
+  font-size: 9px;
+  color: var(--text-muted);
+  font-weight: 400;
 }
 
 .dcv-fallback-note {
