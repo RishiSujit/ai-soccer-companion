@@ -1,5 +1,31 @@
-# AI Soccer Companion — World Cup 2026
-## CLAUDE.md — Project Briefing for Claude Code
+# AI Soccer Companion — CLAUDE.md
+
+This file provides context for Claude Code when working on this repo.
+
+## Project
+AI match companion for casual American fans watching World Cup 2026.
+Live at: ai-soccer-companion.vercel.app
+
+## Stack
+- Frontend: React (CRA) on Vercel
+- Backend: Express on Render
+- DB: Supabase
+- AI: Anthropic Claude Sonnet
+- Data: API-Football v3
+
+## Critical column names
+- users table: assigned_team (NOT team)
+- group_members: total_points (NOT points)
+
+## Key files
+- backend/lib/matchSignals.js (derived signals engine)
+- backend/routes/companion.js (AI companion)
+- backend/eval/ (evaluation framework)
+- src/lib/worldCupData.js (all 48 teams + fixtures)
+
+## Before every change
+Read the relevant file first.
+Never guess column names — check the Supabase schema.
 
 ---
 
