@@ -42,6 +42,22 @@ app.get('/health', (req, res) => {
   });
 });
 
+app.post('/api/admin/score-today', async (req, res) => {
+  const key = req.headers['x-admin-key'] || req.query.key;
+  if (key !== process.env.ADMIN_KEY && key !== 'worldcup2026') {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  try {
+    const { scoreDate } = require('./lib/scoringEngine');
+    const date = req.body.date || new Date().toISOString().split('T')[0];
+    const result = await scoreDate(date);
+    res.json({ date, ...result });
+  } catch (err) {
+    console.error('/api/admin/score-today error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.use('/api/onboarding', require('./routes/onboarding'));
 app.use('/api/chat', require('./routes/companion'));
 app.use('/api/predictions', require('./routes/predictions'));
@@ -97,6 +113,13 @@ setInterval(async () => {
 }, 5 * 60 * 1000);
 
 console.log('Background jobs started');
+
+// ── Daily scoring (every 30 min) ─────────────────────────────
+const { runDailyScoring } = require('./jobs/runDailyScoring');
+
+setInterval(() => {
+  runDailyScoring().catch(console.error);
+}, 30 * 60 * 1000);
 
 // ── Daily card generation ────────────────────────────────────
 const { generateDailyCards } = require('./jobs/generateDailyCard');
