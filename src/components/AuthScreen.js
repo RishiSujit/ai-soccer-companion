@@ -11,17 +11,10 @@ function AuthScreen({ initialMode, onAuthenticated, onGuest }) {
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
-  const [showToast, setShowToast] = useState(false);
-
   const switchMode = (newMode) => {
     setMode(newMode);
     setError(null);
     setSuccessMessage(null);
-  };
-
-  const handleGoogleClick = () => {
-    setShowToast(true);
-    setTimeout(() => setShowToast(false), 3000);
   };
 
   async function handleSignUp() {
@@ -237,19 +230,6 @@ function AuthScreen({ initialMode, onAuthenticated, onGuest }) {
           {loading ? 'Please wait...' : mode === 'signup' ? 'Create account →' : 'Sign in →'}
         </button>
 
-        {/* Divider */}
-        <div className="auth-divider">
-          <div className="auth-div-line" />
-          <span>OR</span>
-          <div className="auth-div-line" />
-        </div>
-
-        {/* Google (coming soon) */}
-        <button className="auth-google-btn" onClick={handleGoogleClick}>
-          <div className="auth-google-icon">G</div>
-          Continue with Google
-        </button>
-
         {/* Guest */}
         <span className="auth-guest-link" onClick={onGuest}>
           Continue as guest — limited features
@@ -276,12 +256,6 @@ function AuthScreen({ initialMode, onAuthenticated, onGuest }) {
 
       </div>
 
-      {/* Toast */}
-      {showToast && (
-        <div className="auth-toast">
-          Google sign-in coming soon! Use email for now.
-        </div>
-      )}
     </div>
   );
 }
