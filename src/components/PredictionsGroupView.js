@@ -14,7 +14,7 @@ function getInitials(name) {
   return name.slice(0, 2).toUpperCase();
 }
 
-function PredictionsGroupView({ userId, userName, userContext, isGuest, onShowAuth }) {
+function PredictionsGroupView({ userId, userName, userContext, isGuest, onShowAuth, onNavigate }) {
   const [group, setGroup] = useState(() => {
     if (!userId || isGuest) return null;
     try {
@@ -270,6 +270,9 @@ function PredictionsGroupView({ userId, userName, userContext, isGuest, onShowAu
             userContext={userContext}
             isGuest={isGuest}
             onShowAuth={onShowAuth}
+            onNavigateToCompanion={onNavigate
+              ? (question) => onNavigate('companion', { general: true, preloadedQuestion: question, fromPredictions: true })
+              : null}
           />
         </div>
 

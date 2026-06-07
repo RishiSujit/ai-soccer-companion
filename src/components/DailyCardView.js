@@ -44,7 +44,39 @@ function getFirstKickoff(matches) {
   return matches.map(m => new Date(m.kickoff)).sort((a, b) => a - b)[0];
 }
 
-function DailyCardView({ userId, userContext, isGuest, onShowAuth }) {
+function getAIPromptForQuestion(question, card) {
+  const q = (question.question || '').toLowerCase();
+  const homeTeam = card?.feature_match?.homeTeam || '';
+  const awayTeam = card?.feature_match?.awayTeam || '';
+
+  if (q.includes('red card')) {
+    return 'How often do red cards happen in World Cup matches?';
+  }
+  if (q.includes('total goals') || q.includes('how many goals')) {
+    return 'How many goals are typically scored in a World Cup group match?';
+  }
+  if (q.includes('most goals')) {
+    return "Which of today's matches is likely to be highest scoring?";
+  }
+  if (q.includes('match result') || q.includes('result?')) {
+    return `What are ${homeTeam}'s chances against ${awayTeam}?`;
+  }
+  if (q.includes('first half')) {
+    return `Does ${homeTeam} usually score early in matches?`;
+  }
+  if (q.includes('clean sheet')) {
+    return `How strong is ${homeTeam}'s defense going into this match?`;
+  }
+  if ((q.includes('will') && q.includes('score')) || q.includes('score?')) {
+    return 'Tell me about the key players to watch in this match';
+  }
+  if (question.type === 'bonus') {
+    return `How realistic is this parlay? ${homeTeam} win AND score?`;
+  }
+  return `Help me understand this prediction: ${question.question}`;
+}
+
+function DailyCardView({ userId, userContext, isGuest, onShowAuth, onNavigateToCompanion }) {
   const [card, setCard] = useState(null);
   const [answers, setAnswers] = useState({});
   const [bonusTaken, setBonusTaken] = useState(null);
@@ -237,15 +269,20 @@ function DailyCardView({ userId, userContext, isGuest, onShowAuth }) {
           <div className="dcv-section-title">Daily Questions</div>
           <div className="dcv-section-sub">Covering all matches today</div>
         </div>
-        {card.daily_questions.map(q => (
-          <QuestionBlock
-            key={q.id}
-            question={q}
-            selected={answers[q.id]}
-            locked={locked}
-            onSelect={opt => handleAnswer(q.id, opt)}
-          />
-        ))}
+        {card.daily_questions.map(q => {
+          const aiPrompt = onNavigateToCompanion ? getAIPromptForQuestion(q, card) : null;
+          return (
+            <QuestionBlock
+              key={q.id}
+              question={q}
+              selected={answers[q.id]}
+              locked={locked}
+              onSelect={opt => handleAnswer(q.id, opt)}
+              aiPrompt={aiPrompt}
+              onAskAI={aiPrompt ? () => onNavigateToCompanion(aiPrompt) : null}
+            />
+          );
+        })}
       </div>
 
       {/* ── Feature Match ───────────────────────────────────── */}
@@ -263,15 +300,20 @@ function DailyCardView({ userId, userContext, isGuest, onShowAuth }) {
             <div className="dcv-feature-reason">{card.feature_match.reason}</div>
           )}
         </div>
-        {card.feature_match.props.map(p => (
-          <QuestionBlock
-            key={p.id}
-            question={p}
-            selected={answers[p.id]}
-            locked={locked}
-            onSelect={opt => handleAnswer(p.id, opt)}
-          />
-        ))}
+        {card.feature_match.props.map(p => {
+          const aiPrompt = onNavigateToCompanion ? getAIPromptForQuestion(p, card) : null;
+          return (
+            <QuestionBlock
+              key={p.id}
+              question={p}
+              selected={answers[p.id]}
+              locked={locked}
+              onSelect={opt => handleAnswer(p.id, opt)}
+              aiPrompt={aiPrompt}
+              onAskAI={aiPrompt ? () => onNavigateToCompanion(aiPrompt) : null}
+            />
+          );
+        })}
       </div>
 
       {/* ── Bonus ───────────────────────────────────────────── */}
@@ -281,6 +323,18 @@ function DailyCardView({ userId, userContext, isGuest, onShowAuth }) {
           <div className="dcv-bonus-sub">High risk · High reward</div>
         </div>
         <div className="dcv-bonus-question">{card.bonus.question}</div>
+        {!locked && onNavigateToCompanion && (
+          <button
+            className="ask-ai-prompt ask-ai-bonus"
+            onClick={() => onNavigateToCompanion(
+              getAIPromptForQuestion({ question: card.bonus.question, type: 'bonus' }, card)
+            )}
+          >
+            <span className="ask-ai-icon">🤖</span>
+            <span className="ask-ai-text">Ask AI about this parlay</span>
+            <span className="ask-ai-arrow">→</span>
+          </button>
+        )}
         {locked ? (
           <div className="dcv-bonus-locked-state">
             {bonusTaken
@@ -341,13 +395,20 @@ function DailyCardView({ userId, userContext, isGuest, onShowAuth }) {
   );
 }
 
-function QuestionBlock({ question, selected, locked, onSelect }) {
+function QuestionBlock({ question, selected, locked, onSelect, onAskAI, aiPrompt }) {
   return (
     <div className="dcv-question">
       <div className="dcv-question-row">
         <div className="dcv-question-text">{question.question}</div>
         <div className="dcv-question-pts">+{question.points} pts</div>
       </div>
+      {!locked && onAskAI && aiPrompt && (
+        <button className="ask-ai-prompt" onClick={onAskAI}>
+          <span className="ask-ai-icon">🤖</span>
+          <span className="ask-ai-text">Ask AI — {aiPrompt}</span>
+          <span className="ask-ai-arrow">→</span>
+        </button>
+      )}
       <div className="dcv-options">
         {question.options.map(opt => (
           <button

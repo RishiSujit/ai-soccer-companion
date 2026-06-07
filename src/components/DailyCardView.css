@@ -509,3 +509,100 @@
   color: var(--text-muted);
   animation: fadeIn 0.3s ease forwards;
 }
+
+/* ── Ask AI prompts ── */
+
+.ask-ai-prompt {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  padding: 4px 0 10px;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  transition: opacity 0.15s ease;
+}
+
+.ask-ai-prompt:hover {
+  opacity: 0.8;
+}
+
+.ask-ai-icon {
+  font-size: 11px;
+  flex-shrink: 0;
+}
+
+.ask-ai-text {
+  font-size: 11px;
+  color: #9494b8;
+  flex: 1;
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ask-ai-arrow {
+  font-size: 11px;
+  color: #4a4a6a;
+  flex-shrink: 0;
+}
+
+.ask-ai-prompt:hover .ask-ai-text {
+  color: #00ff87;
+}
+
+.ask-ai-prompt:hover .ask-ai-arrow {
+  color: #00ff87;
+}
+
+.ask-ai-bonus {
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(245, 166, 35, 0.15) !important;
+  border-radius: 8px;
+  padding: 8px 12px !important;
+  margin-top: 8px;
+}
+
+.ask-ai-bonus .ask-ai-text {
+  color: #f5c842;
+  flex: none;
+}
+
+.ask-ai-bonus .ask-ai-arrow {
+  color: #f5c842;
+}
+
+.ask-ai-bonus:hover .ask-ai-text {
+  color: #ffe066;
+}
+
+.ask-ai-bonus:hover .ask-ai-arrow {
+  color: #ffe066;
+}
+
+/* ── Back to predictions bar (companion → predictions) ── */
+
+.back-to-predictions {
+  background: none;
+  border: none;
+  color: #9494b8;
+  font-size: 11px;
+  padding: 8px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.15s;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  width: 100%;
+  font-weight: 600;
+  font-family: inherit;
+}
+
+.back-to-predictions:hover {
+  color: #00ff87;
+}

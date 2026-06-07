@@ -94,6 +94,7 @@ function App() {
   const [isGuest, setIsGuest] = useState(false);
   const [authLoading, setAuthLoading] = useState(true);
   const [authMode, setAuthMode] = useState('signup');
+  const [companionSource, setCompanionSource] = useState(null);
 
   useEffect(() => {
     async function initAuth() {
@@ -338,12 +339,15 @@ function App() {
       if (!match) {
         setSelectedMatch(null);
         setCompanionPreloadedQuestion(null);
+        setCompanionSource(null);
       } else if (match?.general) {
         setSelectedMatch({ general: true });
         setCompanionPreloadedQuestion(match.preloadedQuestion || null);
+        setCompanionSource(match.fromPredictions ? 'predictions' : null);
       } else {
         setSelectedMatch(match);
         setCompanionPreloadedQuestion(null);
+        setCompanionSource(null);
       }
       setView('companion');
       return;
@@ -452,7 +456,14 @@ function App() {
             onBack={() => {
               setSelectedMatch(null);
               setCompanionPreloadedQuestion(null);
+              setCompanionSource(null);
             }}
+            onNavigateBack={companionSource === 'predictions' ? () => {
+              setSelectedMatch(null);
+              setCompanionPreloadedQuestion(null);
+              setCompanionSource(null);
+              setView('predictions');
+            } : null}
           />
         )}
         {view === 'predictions' && (
@@ -465,6 +476,7 @@ function App() {
               setAuthMode(mode);
               setView('auth');
             }}
+            onNavigate={handleNavigate}
           />
         )}
       </main>

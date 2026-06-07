@@ -150,7 +150,7 @@ function ChatPanel({
   );
 }
 
-function CompanionChat({ match, userContext, userId, onBack, preloadedQuestion }) {
+function CompanionChat({ match, userContext, userId, onBack, preloadedQuestion, onNavigateBack }) {
   const isGeneral = !match;
   const today = new Date().toISOString().split('T')[0];
   const chatStorageKey = match?.id
@@ -338,7 +338,12 @@ function CompanionChat({ match, userContext, userId, onBack, preloadedQuestion }
       <div className="companion-chat">
         <div className="companion-hero companion-hero--general">
           <div className="hero-top-row">
-            <button className="back-btn" onClick={onBack}>← Companion</button>
+            <button
+              className={onNavigateBack ? 'back-to-predictions' : 'back-btn'}
+              onClick={onNavigateBack || onBack}
+            >
+              {onNavigateBack ? '← Predictions' : '← Companion'}
+            </button>
             <div className="hero-general-title">World Cup 2026</div>
             <button className="clear-chat-btn" onClick={handleClearChat} title="Clear chat">↺</button>
           </div>
