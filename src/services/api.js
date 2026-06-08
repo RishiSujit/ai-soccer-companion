@@ -190,6 +190,26 @@ export const getPreMatchBriefing = async (userTeam, userSports) => {
   }
 };
 
+export const getMatchOdds = async (home, away, date) => {
+  try {
+    const params = new URLSearchParams({ home, away, ...(date ? { date } : {}) });
+    const res = await fetch(`${API_URL}/api/odds/match?${params}`);
+    return res.json();
+  } catch {
+    return { odds: null };
+  }
+};
+
+export const getLiveWinProbability = async (home, away, homeScore, awayScore, minute) => {
+  try {
+    const params = new URLSearchParams({ home, away, homeScore, awayScore, minute });
+    const res = await fetch(`${API_URL}/api/odds/live?${params}`);
+    return res.json();
+  } catch {
+    return { probability: null };
+  }
+};
+
 export const getBracketForTeam = async (team) => {
   try {
     const res = await fetch(`${API_URL}/api/home/bracket/${encodeURIComponent(team)}`);

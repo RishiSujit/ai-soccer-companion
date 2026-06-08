@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { sendCompanionMessage } from '../../services/api';
+import { sendCompanionMessage, getMatchOdds } from '../../services/api';
 import { supabase } from '../../lib/supabase';
 import PivotalMomentAlert from '../PivotalMomentAlert';
 import FormationPitch from './FormationPitch';
@@ -36,6 +36,89 @@ function getPillIcon(question) {
   if (q.includes('bar') || q.includes('friends') || q.includes('say') || q.includes('tell')) return '🍺';
   if (q.includes('how does') || q.includes('explain') || q.includes('what is') || q.includes('rule') || q.includes('var')) return '💡';
   return '💬';
+}
+
+function OddsInline({ match, matchOdds, oddsLoading, oddsError, oddsExpanded, setOddsExpanded, onAskAI }) {
+  if (!match?.homeTeam) return null;
+
+  return (
+    <div className="companion-odds-card">
+      {oddsLoading && (
+        <div className="companion-odds-loading">
+          <div className="odds-dot" /><div className="odds-dot" /><div className="odds-dot" />
+          <span>Fetching match odds...</span>
+        </div>
+      )}
+
+      {!oddsLoading && matchOdds && (
+        <>
+          <div className="companion-odds-header" onClick={() => setOddsExpanded(e => !e)}>
+            <div className="companion-odds-left">
+              <span className="companion-odds-icon">📊</span>
+              <span className="companion-odds-title">Match odds</span>
+            </div>
+            <div className="companion-odds-quickbar">
+              <div className="qbar-home" style={{ width: `${matchOdds.homeWinPct}%` }} title={`${match.homeTeam} ${matchOdds.homeWinPct}%`} />
+              <div className="qbar-draw" style={{ width: `${matchOdds.drawPct}%` }} title={`Draw ${matchOdds.drawPct}%`} />
+              <div className="qbar-away" style={{ width: `${matchOdds.awayWinPct}%` }} title={`${match.awayTeam} ${matchOdds.awayWinPct}%`} />
+            </div>
+            <div className="companion-odds-pcts">
+              <span className="pct-home">{matchOdds.homeWinPct}%</span>
+              <span className="pct-sep">·</span>
+              <span className="pct-draw">{matchOdds.drawPct}%</span>
+              <span className="pct-sep">·</span>
+              <span className="pct-away">{matchOdds.awayWinPct}%</span>
+            </div>
+            <span className="companion-odds-chevron">{oddsExpanded ? '▲' : '▼'}</span>
+          </div>
+
+          {oddsExpanded && (
+            <div className="companion-odds-detail">
+              <div className="odds-teams-row">
+                <span className="odds-team-label home">{match.homeTeam}</span>
+                <span className="odds-team-label draw">Draw</span>
+                <span className="odds-team-label away">{match.awayTeam}</span>
+              </div>
+              <div className="odds-values-row">
+                <span className={`odds-val ${matchOdds.homeOdds?.startsWith('-') ? 'fav' : 'dog'}`}>{matchOdds.homeOdds}</span>
+                <span className="odds-val draw-val">{matchOdds.drawOdds}</span>
+                <span className={`odds-val ${matchOdds.awayOdds?.startsWith('-') ? 'fav' : 'dog'}`}>{matchOdds.awayOdds}</span>
+              </div>
+              {matchOdds.totalGoalsLine && (
+                <div className="odds-total-row">
+                  <span className="odds-total-label">Total goals</span>
+                  <span className="odds-total-val">O{matchOdds.totalGoalsLine} {matchOdds.overOdds}</span>
+                  <span className="odds-total-sep">·</span>
+                  <span className="odds-total-val">U{matchOdds.totalGoalsLine} {matchOdds.underOdds}</span>
+                </div>
+              )}
+              <div className="odds-source">
+                via {matchOdds.source || 'major sportsbooks'} · 21+ to bet in most US states
+              </div>
+              <button
+                className="odds-ask-ai-btn"
+                onClick={() => {
+                  onAskAI(`Explain the odds for ${match.homeTeam} vs ${match.awayTeam} — ${match.homeTeam} at ${matchOdds.homeOdds}, Draw at ${matchOdds.drawOdds}, ${match.awayTeam} at ${matchOdds.awayOdds}. What does this mean in plain English?`);
+                  setOddsExpanded(false);
+                }}
+              >
+                🤖 Ask AI to explain these odds
+              </button>
+            </div>
+          )}
+        </>
+      )}
+
+      {!oddsLoading && oddsError && (
+        <button
+          className="companion-odds-unavailable"
+          onClick={() => onAskAI(`Who is favored to win ${match.homeTeam} vs ${match.awayTeam} and why?`)}
+        >
+          📊 Ask AI about match odds →
+        </button>
+      )}
+    </div>
+  );
 }
 
 function ChatPanel({
@@ -193,6 +276,11 @@ function CompanionChat({ match, userContext, userId, onBack, preloadedQuestion, 
     } catch {}
     return true;
   });
+  const [matchOdds, setMatchOdds] = useState(null);
+  const [oddsLoading, setOddsLoading] = useState(false);
+  const [oddsExpanded, setOddsExpanded] = useState(false);
+  const [oddsError, setOddsError] = useState(false);
+
   const lastEventIdRef = useRef(null);
   const preloadFiredRef = useRef(false);
 
@@ -243,6 +331,20 @@ function CompanionChat({ match, userContext, userId, onBack, preloadedQuestion, 
       return () => clearTimeout(timer);
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Fetch match odds whenever a specific match is selected
+  useEffect(() => {
+    if (!match?.homeTeam || !match?.awayTeam) { setMatchOdds(null); return; }
+    setOddsLoading(true);
+    setOddsError(false);
+    const matchDate = match.date || (match.kickoff ? match.kickoff.split('T')[0] : undefined);
+    getMatchOdds(match.homeTeam, match.awayTeam, matchDate)
+      .then(data => {
+        if (data.odds) { setMatchOdds(data.odds); } else { setOddsError(true); }
+      })
+      .catch(() => setOddsError(true))
+      .finally(() => setOddsLoading(false));
+  }, [match?.homeTeam, match?.awayTeam]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Persist chat to localStorage whenever messages update
   useEffect(() => {
@@ -438,6 +540,15 @@ function CompanionChat({ match, userContext, userId, onBack, preloadedQuestion, 
             <div className="split-panel-title">AI Companion</div>
             <button className="clear-chat-btn" onClick={handleClearChat} title="Clear chat">↺</button>
           </div>
+          <OddsInline
+            match={match}
+            matchOdds={matchOdds}
+            oddsLoading={oddsLoading}
+            oddsError={oddsError}
+            oddsExpanded={oddsExpanded}
+            setOddsExpanded={setOddsExpanded}
+            onAskAI={sendMessage}
+          />
           <ChatPanel {...chatProps} />
         </div>
       </div>
@@ -452,7 +563,20 @@ function CompanionChat({ match, userContext, userId, onBack, preloadedQuestion, 
         <div className="mobile-panel-content">
           {mobileTab === 'formation' && <div className="mobile-panel-scroll"><FormationPitch {...match} userContext={userContext} /></div>}
           {mobileTab === 'lineup' && <div className="mobile-panel-scroll"><LineupList {...match} userContext={userContext} /></div>}
-          {mobileTab === 'chat' && <ChatPanel {...chatProps} />}
+          {mobileTab === 'chat' && (
+            <>
+              <OddsInline
+                match={match}
+                matchOdds={matchOdds}
+                oddsLoading={oddsLoading}
+                oddsError={oddsError}
+                oddsExpanded={oddsExpanded}
+                setOddsExpanded={setOddsExpanded}
+                onAskAI={sendMessage}
+              />
+              <ChatPanel {...chatProps} />
+            </>
+          )}
         </div>
       </div>
 

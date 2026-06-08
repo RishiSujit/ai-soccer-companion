@@ -141,7 +141,6 @@ function MatchSelector({ onMatchSelected }) {
   const [apiMatches, setApiMatches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState('Upcoming');
-
   useEffect(() => {
     getLiveMatches().then(data => {
       if (data?.matches?.length > 0) {
@@ -152,6 +151,7 @@ function MatchSelector({ onMatchSelected }) {
       setLoading(false);
     }).catch(() => setLoading(false));
   }, []);
+
 
   const liveMatches  = apiMatches.filter(m => isLiveStatus(m.status));
   const resultMatches = apiMatches.filter(m => isResultStatus(m.status));

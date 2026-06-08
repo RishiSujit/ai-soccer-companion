@@ -424,6 +424,7 @@
 .ms-schedule-row {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 10px;
   padding: 11px 12px;
   background: #0d0d1a;
@@ -473,4 +474,58 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* ── Inline odds row (Upcoming tab) ──────────────────────── */
+
+.match-odds-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding-top: 7px;
+  margin-top: 1px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  flex-wrap: wrap;
+}
+
+.match-odds-label {
+  font-size: 9px;
+  font-weight: 700;
+  color: #4a4a6a;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-right: 2px;
+  font-family: 'Inter', sans-serif;
+}
+
+.match-odds-pill {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+  white-space: nowrap;
+  font-family: 'Inter', sans-serif;
+}
+
+.odds-home {
+  background: rgba(0, 255, 135, 0.08);
+  color: #7cfc8e;
+}
+
+.odds-draw {
+  background: rgba(74, 74, 106, 0.25);
+  color: #6666aa;
+}
+
+.odds-away {
+  background: rgba(55, 138, 221, 0.08);
+  color: #5599dd;
+}
+
+.match-odds-prob {
+  font-size: 9px;
+  color: #4a4a6a;
+  margin-left: auto;
+  font-family: 'Inter', sans-serif;
 }

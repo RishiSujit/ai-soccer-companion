@@ -531,6 +531,183 @@
   font-family: 'Inter', sans-serif;
 }
 
+/* ── Companion odds card (inside right panel) ────────────── */
+
+.companion-odds-card {
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  background: #0c0c1e;
+  flex-shrink: 0;
+}
+
+.companion-odds-loading {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 10px 14px;
+  font-size: 11px;
+  color: #4a4a6a;
+  font-family: 'Inter', sans-serif;
+}
+
+.odds-dot {
+  width: 4px; height: 4px;
+  background: #4a4a6a;
+  border-radius: 50%;
+  animation: pulse 1s ease-in-out infinite;
+}
+.odds-dot:nth-child(2) { animation-delay: 0.2s; }
+.odds-dot:nth-child(3) { animation-delay: 0.4s; }
+
+.companion-odds-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.companion-odds-header:hover { background: rgba(255,255,255,0.02); }
+
+.companion-odds-left {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+}
+.companion-odds-icon { font-size: 12px; }
+.companion-odds-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #9090b8;
+  white-space: nowrap;
+  font-family: 'Inter', sans-serif;
+}
+
+.companion-odds-quickbar {
+  flex: 1;
+  height: 5px;
+  border-radius: 3px;
+  overflow: hidden;
+  display: flex;
+  min-width: 60px;
+}
+.qbar-home { background: #7cfc8e; height: 100%; transition: width 0.5s ease; }
+.qbar-draw { background: #4a4a6a; height: 100%; transition: width 0.5s ease; }
+.qbar-away { background: #378add; height: 100%; transition: width 0.5s ease; }
+
+.companion-odds-pcts {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  flex-shrink: 0;
+  font-size: 10px;
+  font-family: 'Inter', sans-serif;
+}
+.pct-home { color: #7cfc8e; font-weight: 700; }
+.pct-draw { color: #9090b8; font-weight: 600; }
+.pct-away { color: #378add; font-weight: 700; }
+.pct-sep  { color: #2a2a4a; }
+
+.companion-odds-chevron { font-size: 9px; color: #4a4a6a; flex-shrink: 0; }
+
+.companion-odds-detail {
+  padding: 0 14px 12px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+}
+
+.odds-teams-row {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0 4px;
+}
+.odds-team-label {
+  font-size: 10px;
+  font-weight: 600;
+  flex: 1;
+  text-align: center;
+  font-family: 'Inter', sans-serif;
+}
+.odds-team-label.home { color: #7cfc8e; text-align: left; }
+.odds-team-label.draw { color: #9090b8; text-align: center; }
+.odds-team-label.away { color: #378add; text-align: right; }
+
+.odds-values-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.odds-val {
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  flex: 1;
+  text-align: center;
+  font-family: 'Inter', sans-serif;
+}
+.odds-val:first-child { text-align: left; }
+.odds-val:last-child  { text-align: right; }
+.odds-val.fav      { color: #f5a623; }
+.odds-val.dog      { color: #f0f0fa; }
+.odds-val.draw-val { color: #9090b8; }
+
+.odds-total-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  padding: 6px 10px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 6px;
+}
+.odds-total-label { font-size: 10px; color: #4a4a6a; font-weight: 600; font-family: 'Inter', sans-serif; }
+.odds-total-val   { font-size: 11px; color: #f0f0fa; font-weight: 700; font-family: 'Inter', sans-serif; }
+.odds-total-sep   { color: #2a2a4a; }
+
+.odds-source {
+  font-size: 9px;
+  color: #4a4a6a;
+  margin-bottom: 10px;
+  line-height: 1.5;
+  font-family: 'Inter', sans-serif;
+}
+
+.odds-ask-ai-btn {
+  width: 100%;
+  background: rgba(124, 252, 142, 0.06);
+  border: 1px solid rgba(124, 252, 142, 0.2);
+  border-radius: 8px;
+  padding: 9px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #7cfc8e;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Inter', sans-serif;
+}
+.odds-ask-ai-btn:hover { background: rgba(124, 252, 142, 0.1); }
+
+.companion-odds-unavailable {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 10px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #4a4a6a;
+  cursor: pointer;
+  text-align: left;
+  transition: color 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Inter', sans-serif;
+}
+.companion-odds-unavailable:hover { color: #9090b8; }
+
 /* ── Desktop split layout ─────────────────────────────────── */
 
 .companion-split {
