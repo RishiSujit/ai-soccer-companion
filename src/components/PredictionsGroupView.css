@@ -485,3 +485,57 @@
 
   .group-header-btns { flex-wrap: wrap; }
 }
+
+/* ── Group tabs ── */
+
+.group-tabs {
+  display: flex;
+  gap: 6px;
+  padding: 0 0 16px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 16px;
+}
+
+.group-tab {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-medium);
+  border-radius: 20px;
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  padding: 5px 14px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.group-tab:hover {
+  border-color: var(--border-accent);
+  color: var(--green);
+}
+
+.group-tab--active {
+  background: var(--green-dim);
+  border-color: var(--border-accent);
+  color: var(--green);
+}
+
+/* Member count inline in leaderboard header */
+
+.lb-section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.lb-member-count {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-weight: 400;
+  letter-spacing: 0;
+}

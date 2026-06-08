@@ -15,109 +15,120 @@ function getInitials(name) {
 }
 
 function PredictionsGroupView({ userId, userName, userContext, isGuest, onShowAuth, onNavigate }) {
-  const [group, setGroup] = useState(() => {
+  const cacheKey = userId ? `wcc_groups_${userId}` : null;
+
+  const [groups, setGroups] = useState(() => {
+    if (!userId || isGuest) return [];
+    try {
+      const cached = localStorage.getItem(`wcc_groups_${userId}`);
+      if (cached) return JSON.parse(cached);
+      // Migrate from old single-group key
+      const old = localStorage.getItem(`wcc_group_${userId}`);
+      if (old) return [JSON.parse(old)];
+    } catch {}
+    return [];
+  });
+
+  const [leaderboards, setLeaderboards] = useState({});
+
+  const [activeGroupId, setActiveGroupId] = useState(() => {
     if (!userId || isGuest) return null;
     try {
-      const cached = localStorage.getItem(`wcc_group_${userId}`);
-      return cached ? JSON.parse(cached) : null;
-    } catch { return null; }
+      const cached = localStorage.getItem(`wcc_groups_${userId}`);
+      if (cached) return JSON.parse(cached)[0]?.id || null;
+      const old = localStorage.getItem(`wcc_group_${userId}`);
+      if (old) return JSON.parse(old).id;
+    } catch {}
+    return null;
   });
-  const [leaderboard, setLeaderboard] = useState([]);
+
   const [groupPhase, setGroupPhase] = useState(() => {
     if (!userId || isGuest) return 'idle';
     try {
-      return localStorage.getItem(`wcc_group_${userId}`) ? 'joined' : 'loading';
+      const hasCache =
+        localStorage.getItem(`wcc_groups_${userId}`) ||
+        localStorage.getItem(`wcc_group_${userId}`);
+      return hasCache ? 'joined' : 'loading';
     } catch { return 'loading'; }
   });
 
-  // Group form state
   const [groupName, setGroupName] = useState('');
   const [inviteCode, setInviteCode] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [groupError, setGroupError] = useState(null);
   const [groupLoading, setGroupLoading] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const [copiedId, setCopiedId] = useState(null);
 
-  // Celebration state
   const [celebration, setCelebration] = useState({ show: false, message: '', points: 0 });
 
-  // Load existing group on mount
   useEffect(() => {
     if (!userId || isGuest) {
       setGroupPhase('idle');
       return;
     }
-    loadExistingGroup();
+    loadExistingGroups();
   }, [userId, isGuest]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Re-check group when user returns to tab
   useEffect(() => {
-    const handleVisibilityChange = () => {
+    const handleVisibility = () => {
       if (document.visibilityState === 'visible' && userId && !isGuest) {
-        loadExistingGroup();
+        loadExistingGroups();
       }
     };
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () => document.removeEventListener('visibilitychange', handleVisibility);
   }, [userId, isGuest]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  async function loadExistingGroup() {
+  async function loadExistingGroups() {
     try {
-      // Confirm session is active — anonymous/expired sessions return null silently
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         setGroupPhase(p => p === 'loading' ? 'idle' : p);
         return;
       }
 
-      // Use array query — maybeSingle() returns null on both empty AND RLS block,
-      // which would incorrectly wipe the cache. Array query lets us distinguish.
       const { data: memberships, error: memErr } = await supabase
         .from('group_members')
         .select('group_id, total_points')
         .eq('user_id', userId);
 
       if (memErr) {
-        // DB error — preserve cached group, only un-stick a loading spinner
         console.error('Membership query error:', memErr);
         setGroupPhase(p => p === 'loading' ? 'idle' : p);
         return;
       }
 
       if (!memberships?.length) {
-        // Confirmed: user has no memberships in DB — safe to clear
-        setGroup(null);
+        setGroups([]);
+        setLeaderboards({});
         setGroupPhase('idle');
-        setLeaderboard([]);
-        try { localStorage.removeItem(`wcc_group_${userId}`); } catch {}
+        try { localStorage.removeItem(cacheKey); } catch {}
         return;
       }
 
-      const membership = memberships[0];
+      // Fetch all group metadata in parallel
+      const groupResults = await Promise.all(
+        memberships.map(m =>
+          supabase.from('groups').select('*').eq('id', m.group_id).maybeSingle()
+        )
+      );
+      const loadedGroups = groupResults.map(r => r.data).filter(Boolean);
 
-      const { data: groupData, error: groupErr } = await supabase
-        .from('groups')
-        .select('*')
-        .eq('id', membership.group_id)
-        .maybeSingle();
-
-      if (groupErr || !groupData) {
-        // Group fetch failed — preserve cached state
-        setGroupPhase(p => p === 'loading' ? 'idle' : p);
-        return;
-      }
-
-      setGroup(groupData);
+      setGroups(loadedGroups);
       setGroupPhase('joined');
+      setActiveGroupId(prev =>
+        prev && loadedGroups.some(g => g.id === prev) ? prev : loadedGroups[0]?.id || null
+      );
+
       try {
-        localStorage.setItem(`wcc_group_${userId}`, JSON.stringify({
-          id: groupData.id, name: groupData.name, invite_code: groupData.invite_code,
-        }));
+        localStorage.setItem(cacheKey, JSON.stringify(
+          loadedGroups.map(g => ({ id: g.id, name: g.name, invite_code: g.invite_code }))
+        ));
       } catch {}
-      loadLeaderboard(membership.group_id);
+
+      for (const g of loadedGroups) loadLeaderboard(g.id);
     } catch (err) {
-      console.error('Group load error:', err);
-      // Network / unexpected error — preserve cached group, don't wipe state
+      console.error('Groups load error:', err);
       setGroupPhase(p => p === 'loading' ? 'idle' : p);
     }
   }
@@ -129,13 +140,23 @@ function PredictionsGroupView({ userId, userName, userContext, isGuest, onShowAu
         .select('user_id, display_name, total_points')
         .eq('group_id', groupId)
         .order('total_points', { ascending: false });
-      if (!error && data) setLeaderboard(data);
-    } catch {
-      // Fail silently
-    }
+      if (!error && data) {
+        setLeaderboards(prev => ({ ...prev, [groupId]: data }));
+      }
+    } catch {}
   }
 
-  // ── Group handlers ───────────────────────────────────────
+  function saveGroupsToCache(updatedGroups) {
+    try {
+      if (updatedGroups.length > 0) {
+        localStorage.setItem(cacheKey, JSON.stringify(
+          updatedGroups.map(g => ({ id: g.id, name: g.name, invite_code: g.invite_code }))
+        ));
+      } else {
+        localStorage.removeItem(cacheKey);
+      }
+    } catch {}
+  }
 
   async function handleCreate(e) {
     e.preventDefault();
@@ -147,14 +168,14 @@ function PredictionsGroupView({ userId, userName, userContext, isGuest, onShowAu
       if (data.error) {
         setGroupError(data.error);
       } else {
-        setGroup(data.group);
+        const newGroup = data.group;
+        const updated = [...groups, newGroup];
+        setGroups(updated);
+        saveGroupsToCache(updated);
+        setActiveGroupId(newGroup.id);
         setGroupPhase('joined');
-        try {
-          localStorage.setItem(`wcc_group_${userId}`, JSON.stringify({
-            id: data.group.id, name: data.group.name, invite_code: data.group.invite_code,
-          }));
-        } catch {}
-        loadLeaderboard(data.group.id);
+        setGroupName('');
+        loadLeaderboard(newGroup.id);
       }
     } catch {
       setGroupError('Failed to create group. Try again.');
@@ -173,14 +194,16 @@ function PredictionsGroupView({ userId, userName, userContext, isGuest, onShowAu
       if (data.error) {
         setGroupError(data.error);
       } else {
-        setGroup(data.group);
+        const newGroup = data.group;
+        const alreadyIn = groups.some(g => g.id === newGroup.id);
+        const updated = alreadyIn ? groups : [...groups, newGroup];
+        setGroups(updated);
+        saveGroupsToCache(updated);
+        setActiveGroupId(newGroup.id);
         setGroupPhase('joined');
-        try {
-          localStorage.setItem(`wcc_group_${userId}`, JSON.stringify({
-            id: data.group.id, name: data.group.name, invite_code: data.group.invite_code,
-          }));
-        } catch {}
-        loadLeaderboard(data.group.id);
+        setInviteCode('');
+        setDisplayName('');
+        loadLeaderboard(newGroup.id);
       }
     } catch {
       setGroupError('Failed to join group. Try again.');
@@ -189,41 +212,55 @@ function PredictionsGroupView({ userId, userName, userContext, isGuest, onShowAu
     }
   }
 
-  function handleCopyInvite() {
+  function handleCopyInvite(group) {
     navigator.clipboard.writeText(group.invite_code);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setCopiedId(group.id);
+    setTimeout(() => setCopiedId(null), 2000);
   }
 
-  async function handleLeaveGroup() {
-    if (!window.confirm('Leave this group?')) return;
+  async function handleLeaveGroup(groupToLeave) {
+    if (!window.confirm(`Leave "${groupToLeave.name}"?`)) return;
     try {
       await supabase
         .from('group_members')
         .delete()
         .eq('user_id', userId)
-        .eq('group_id', group.id);
-      setGroup(null);
-      setLeaderboard([]);
-      setGroupPhase('idle');
-      try { localStorage.removeItem(`wcc_group_${userId}`); } catch {};
-    } catch {
-      // Fail silently
-    }
+        .eq('group_id', groupToLeave.id);
+
+      const updated = groups.filter(g => g.id !== groupToLeave.id);
+      setGroups(updated);
+      saveGroupsToCache(updated);
+
+      setLeaderboards(prev => {
+        const next = { ...prev };
+        delete next[groupToLeave.id];
+        return next;
+      });
+
+      if (updated.length === 0) {
+        setGroupPhase('idle');
+        setActiveGroupId(null);
+      } else if (activeGroupId === groupToLeave.id) {
+        setActiveGroupId(updated[0].id);
+      }
+    } catch {}
   }
 
-  const dismissCelebration = () => {
-    setCelebration(prev => ({ ...prev, show: false }));
-  };
+  function cancelForm() {
+    setGroupError(null);
+    setGroupPhase(groups.length > 0 ? 'joined' : 'idle');
+  }
+
+  const activeGroup = groups.find(g => g.id === activeGroupId);
+  const activeLeaderboard = activeGroupId ? (leaderboards[activeGroupId] || []) : [];
 
   return (
     <div className="predictions-page">
-
       <CelebrationOverlay
         show={celebration.show}
         message={celebration.message}
         points={celebration.points}
-        onDismiss={dismissCelebration}
+        onDismiss={() => setCelebration(prev => ({ ...prev, show: false }))}
       />
 
       {/* ── Page header ──────────────────────────────────── */}
@@ -233,15 +270,14 @@ function PredictionsGroupView({ userId, userName, userContext, isGuest, onShowAu
           <div className="predictions-subtitle">Daily card · Compete with your group</div>
         </div>
         <div className="predictions-header-right">
-          {groupPhase === 'joined' && group ? (
-            <div className="group-pill">
-              <span className="group-pill__name">{group.name}</span>
-              <span className="group-pill__code">{group.invite_code}</span>
-              <button className="group-pill__invite" onClick={handleCopyInvite}>
-                {copied ? 'Copied!' : 'Invite'}
-              </button>
-            </div>
-          ) : (
+          {groupPhase === 'joined' && groups.length > 0 ? (
+            <button
+              className="group-header-btn"
+              onClick={() => { setGroupPhase('joining'); setGroupError(null); setInviteCode(''); setDisplayName(''); }}
+            >
+              + Join another group
+            </button>
+          ) : groupPhase !== 'joined' ? (
             <div className="group-header-btns">
               <button
                 className="group-header-btn"
@@ -256,7 +292,7 @@ function PredictionsGroupView({ userId, userName, userContext, isGuest, onShowAu
                 → Join group
               </button>
             </div>
-          )}
+          ) : null}
         </div>
       </div>
 
@@ -280,7 +316,7 @@ function PredictionsGroupView({ userId, userName, userContext, isGuest, onShowAu
         <div className="predictions-right">
 
           {groupPhase === 'loading' && (
-            <div className="pgv-loading">Loading group...</div>
+            <div className="pgv-loading">Loading groups...</div>
           )}
 
           {groupPhase === 'idle' && (
@@ -324,11 +360,7 @@ function PredictionsGroupView({ userId, userName, userContext, isGuest, onShowAu
               >
                 {groupLoading ? 'Creating...' : 'Create Group'}
               </button>
-              <button
-                className="group-form__cancel"
-                type="button"
-                onClick={() => { setGroupPhase('idle'); setGroupError(null); }}
-              >
+              <button className="group-form__cancel" type="button" onClick={cancelForm}>
                 Cancel
               </button>
             </form>
@@ -363,60 +395,74 @@ function PredictionsGroupView({ userId, userName, userContext, isGuest, onShowAu
               >
                 {groupLoading ? 'Joining...' : 'Join Group'}
               </button>
-              <button
-                className="group-form__cancel"
-                type="button"
-                onClick={() => { setGroupPhase('idle'); setGroupError(null); }}
-              >
+              <button className="group-form__cancel" type="button" onClick={cancelForm}>
                 Cancel
               </button>
             </form>
           )}
 
-          {groupPhase === 'joined' && group && (
+          {groupPhase === 'joined' && groups.length > 0 && (
             <div className="group-joined">
-              <div className="group-joined-header">
-                <div>
-                  <div className="group-joined-name">{group.name}</div>
-                  <div className="group-joined-sub">
-                    {leaderboard.length} member{leaderboard.length !== 1 ? 's' : ''}
-                  </div>
-                </div>
+
+              {/* Group tabs */}
+              <div className="group-tabs">
+                {groups.map(g => (
+                  <button
+                    key={g.id}
+                    className={`group-tab ${activeGroupId === g.id ? 'group-tab--active' : ''}`}
+                    onClick={() => setActiveGroupId(g.id)}
+                  >
+                    {g.name}
+                  </button>
+                ))}
               </div>
 
-              <div className="invite-bar">
-                <div>
-                  <div className="invite-label">INVITE CODE</div>
-                  <div className="invite-code-display">{group.invite_code}</div>
-                </div>
-                <div className="copy-btn" onClick={handleCopyInvite}>
-                  {copied ? 'Copied!' : 'Copy code'}
-                </div>
-              </div>
-
-              <div className="leaderboard-section">
-                <div className="lb-section-title">Leaderboard</div>
-                {leaderboard.length === 0 ? (
-                  <div className="lb-empty">No predictions locked in yet. Be the first!</div>
-                ) : (
-                  leaderboard.map((member, index) => (
-                    <div
-                      key={member.user_id || index}
-                      className={`lb-row2 leaderboard-row ${member.user_id === userId ? 'lb-row-you' : ''}`}
-                    >
-                      <div className={`lb-rank2 ${index === 0 ? 'g' : ''}`}>{index + 1}</div>
-                      <div className="lb-av">{getInitials(member.display_name || 'Fan')}</div>
-                      <div className="lb-nm">
-                        {member.display_name || 'Fan'}
-                        {member.user_id === userId && <span className="you-tag">you</span>}
-                      </div>
-                      <div className="lb-pt">{member.total_points || 0}</div>
+              {activeGroup && (
+                <>
+                  <div className="invite-bar">
+                    <div>
+                      <div className="invite-label">INVITE CODE</div>
+                      <div className="invite-code-display">{activeGroup.invite_code}</div>
                     </div>
-                  ))
-                )}
-              </div>
+                    <div className="copy-btn" onClick={() => handleCopyInvite(activeGroup)}>
+                      {copiedId === activeGroup.id ? 'Copied!' : 'Copy code'}
+                    </div>
+                  </div>
 
-              <div className="leave-group" onClick={handleLeaveGroup}>Leave group</div>
+                  <div className="leaderboard-section">
+                    <div className="lb-section-title">
+                      Leaderboard
+                      {activeLeaderboard.length > 0 && (
+                        <span className="lb-member-count">
+                          {activeLeaderboard.length} member{activeLeaderboard.length !== 1 ? 's' : ''}
+                        </span>
+                      )}
+                    </div>
+                    {activeLeaderboard.length === 0 ? (
+                      <div className="lb-empty">No predictions locked in yet. Be the first!</div>
+                    ) : (
+                      activeLeaderboard.map((member, index) => (
+                        <div
+                          key={member.user_id || index}
+                          className={`lb-row2 leaderboard-row ${member.user_id === userId ? 'lb-row-you' : ''}`}
+                        >
+                          <div className={`lb-rank2 ${index === 0 ? 'g' : ''}`}>{index + 1}</div>
+                          <div className="lb-av">{getInitials(member.display_name || 'Fan')}</div>
+                          <div className="lb-nm">
+                            {member.display_name || 'Fan'}
+                            {member.user_id === userId && <span className="you-tag">you</span>}
+                          </div>
+                          <div className="lb-pt">{member.total_points || 0}</div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+
+                  <div className="leave-group" onClick={() => handleLeaveGroup(activeGroup)}>
+                    Leave {activeGroup.name}
+                  </div>
+                </>
+              )}
             </div>
           )}
         </div>
