@@ -76,7 +76,7 @@ function getAIPromptForQuestion(question, card) {
   return `Help me understand this prediction: ${question.question}`;
 }
 
-function DailyCardView({ userId, userContext, isGuest, onShowAuth, onNavigateToCompanion }) {
+function DailyCardView({ userId, userContext, isGuest, onShowAuth, onNavigateToCompanion, onAfterLock }) {
   const [card, setCard] = useState(null);
   const [answers, setAnswers] = useState({});
   const [bonusTaken, setBonusTaken] = useState(null);
@@ -154,6 +154,7 @@ function DailyCardView({ userId, userContext, isGuest, onShowAuth, onNavigateToC
       if (result.success) {
         setLocked(true);
         if (draftKey) try { localStorage.removeItem(draftKey); } catch {}
+        if (onAfterLock) setTimeout(onAfterLock, 1500);
       }
     } catch {
       // Fail silently

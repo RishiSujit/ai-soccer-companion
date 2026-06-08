@@ -66,6 +66,7 @@ function PredictionsGroupView({ userId, userName, userContext, isGuest, onShowAu
   const [joinError, setJoinError] = useState('');
 
   const [celebration, setCelebration] = useState({ show: false, message: '', points: 0 });
+  const [activeTab, setActiveTab] = useState('predictions');
 
   useEffect(() => {
     if (!userId || isGuest) {
@@ -180,6 +181,7 @@ function PredictionsGroupView({ userId, userName, userContext, isGuest, onShowAu
         saveGroupsToCache(updated);
         setActiveGroupId(newGroup.id);
         setGroupPhase('joined');
+        setActiveTab('group');
         setGroupName('');
         loadLeaderboard(newGroup.id);
       }
@@ -207,6 +209,7 @@ function PredictionsGroupView({ userId, userName, userContext, isGuest, onShowAu
         saveGroupsToCache(updated);
         setActiveGroupId(newGroup.id);
         setGroupPhase('joined');
+        setActiveTab('group');
         setInviteCode('');
         setDisplayName('');
         loadLeaderboard(newGroup.id);
@@ -284,6 +287,7 @@ function PredictionsGroupView({ userId, userName, userContext, isGuest, onShowAu
         setActiveGroupId(newGroup.id);
         setShowJoinInput(false);
         setJoinCode('');
+        setActiveTab('group');
         loadLeaderboard(newGroup.id);
       }
     } catch {
@@ -306,6 +310,7 @@ function PredictionsGroupView({ userId, userName, userContext, isGuest, onShowAu
         setActiveGroupId(newGroup.id);
         setShowCreateInput(false);
         setNewGroupName('');
+        setActiveTab('group');
         loadLeaderboard(newGroup.id);
       }
     } catch {
@@ -331,7 +336,7 @@ function PredictionsGroupView({ userId, userName, userContext, isGuest, onShowAu
           <div className="predictions-title">Predictions</div>
           <div className="predictions-subtitle">Daily card · Compete with your group</div>
         </div>
-        <div className="predictions-header-right">
+        <div className="predictions-header-right pred-header-desktop-only">
           {groupPhase !== 'joined' && (
             <div className="group-header-btns">
               <button
@@ -351,16 +356,36 @@ function PredictionsGroupView({ userId, userName, userContext, isGuest, onShowAu
         </div>
       </div>
 
+      {/* ── Mobile tab bar ───────────────────────────────── */}
+      <div className="pred-tab-bar">
+        <button
+          className={`pred-tab ${activeTab === 'predictions' ? 'active' : ''}`}
+          onClick={() => setActiveTab('predictions')}
+        >
+          📋 Predictions
+        </button>
+        <button
+          className={`pred-tab ${activeTab === 'group' ? 'active' : ''}`}
+          onClick={() => setActiveTab('group')}
+        >
+          👥 My Group
+          {groups.length > 0 && (
+            <span className="pred-tab-badge">{groups.length}</span>
+          )}
+        </button>
+      </div>
+
       {/* ── Two column grid ──────────────────────────────── */}
       <div className="predictions-grid">
 
         {/* LEFT — Daily card */}
-        <div className="predictions-left">
+        <div className={`predictions-left ${activeTab !== 'predictions' ? 'pred-hidden-mobile' : ''}`}>
           <DailyCardView
             userId={userId}
             userContext={userContext}
             isGuest={isGuest}
             onShowAuth={onShowAuth}
+            onAfterLock={() => setActiveTab('group')}
             onNavigateToCompanion={onNavigate
               ? (question) => onNavigate('companion', { general: true, preloadedQuestion: question, fromPredictions: true })
               : null}
@@ -368,31 +393,32 @@ function PredictionsGroupView({ userId, userName, userContext, isGuest, onShowAu
         </div>
 
         {/* RIGHT — Group section */}
-        <div className="predictions-right">
+        <div className={`predictions-right ${activeTab !== 'group' ? 'pred-hidden-mobile' : ''}`}>
 
           {groupPhase === 'loading' && (
             <div className="pgv-loading">Loading groups...</div>
           )}
 
           {groupPhase === 'idle' && (
-            <>
+            <div className="no-group-screen">
+              <div className="no-group-icon">👥</div>
+              <div className="no-group-title">Compete with friends</div>
+              <div className="no-group-desc">
+                Create a group and share your invite code — see who picks the most winners across the whole tournament.
+              </div>
               <button
-                className="group-card group-card--primary"
+                className="no-group-create"
                 onClick={() => { setGroupPhase('creating'); setGroupError(null); }}
               >
-                <div className="group-card__icon">+</div>
-                <div className="group-card__title">Create a Group</div>
-                <div className="group-card__desc">Start a new group and invite friends with a code</div>
+                + Create a group
               </button>
               <button
-                className="group-card"
+                className="no-group-join"
                 onClick={() => { setGroupPhase('joining'); setGroupError(null); }}
               >
-                <div className="group-card__icon">→</div>
-                <div className="group-card__title">Join a Group</div>
-                <div className="group-card__desc">Enter an invite code to join a friend's group</div>
+                → Enter an invite code
               </button>
-            </>
+            </div>
           )}
 
           {groupPhase === 'creating' && (

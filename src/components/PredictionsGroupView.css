@@ -462,28 +462,121 @@
   line-height: 1.5;
 }
 
+/* ── Mobile tab bar ── */
+
+.pred-tab-bar {
+  display: flex;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-subtle);
+  position: sticky;
+  top: 52px;
+  z-index: 40;
+  flex-shrink: 0;
+}
+
+.pred-tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 46px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.15s ease;
+}
+
+.pred-tab.active {
+  color: var(--text-primary);
+}
+
+.pred-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 15%;
+  right: 15%;
+  height: 2px;
+  background: var(--green);
+  border-radius: 2px 2px 0 0;
+  box-shadow: 0 0 8px var(--green);
+}
+
+.pred-tab-badge {
+  background: var(--green-dim);
+  color: var(--green);
+  font-size: 10px;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 10px;
+  border: 1px solid var(--border-accent);
+}
+
+/* Hide/show columns based on active tab (mobile only) */
+
+.pred-hidden-mobile { display: none; }
+
+/* Hide header create/join buttons on mobile — tab handles it */
+@media (max-width: 899px) {
+  .pred-header-desktop-only { display: none; }
+}
+
 /* ── Mobile ── */
 
-@media (max-width: 767px) {
+@media (max-width: 899px) {
   .predictions-header { padding: 14px 16px 10px; }
 
-  .predictions-grid { grid-template-columns: 1fr; }
+  .predictions-grid {
+    grid-template-columns: 1fr;
+    display: block;
+  }
 
   .predictions-left {
-    padding: 14px 16px 0;
+    padding: 0;
     border-right: none;
-    border-bottom: 1px solid var(--border-subtle);
     height: auto;
     overflow-y: visible;
   }
 
   .predictions-right {
-    padding: 14px 16px 32px;
+    padding: 0;
     height: auto;
     overflow-y: visible;
   }
 
   .group-header-btns { flex-wrap: wrap; }
+}
+
+/* ── Desktop: restore two-col, hide tab bar ── */
+
+@media (min-width: 900px) {
+  .pred-tab-bar { display: none; }
+
+  .pred-hidden-mobile { display: block !important; }
+
+  .predictions-grid {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+  }
+
+  .predictions-left {
+    padding: 18px 16px 32px 24px;
+    border-right: 1px solid var(--border-subtle);
+    overflow-y: auto;
+    height: 100%;
+  }
+
+  .predictions-right {
+    padding: 18px 24px 32px 16px;
+    overflow-y: auto;
+    height: 100%;
+  }
 }
 
 /* ── Group tabs ── */
@@ -689,4 +782,147 @@
   color: #ff4d6d;
   text-align: center;
   padding: 2px 0;
+}
+
+/* ── No-group empty state ── */
+
+.no-group-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+  min-height: 400px;
+}
+
+.no-group-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.no-group-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.03em;
+  margin-bottom: 10px;
+}
+
+.no-group-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  max-width: 280px;
+  margin-bottom: 28px;
+}
+
+.no-group-create {
+  width: 100%;
+  max-width: 280px;
+  background: var(--green);
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 14px;
+  font-size: 14px;
+  font-weight: 800;
+  font-family: 'Inter', sans-serif;
+  color: #020d06;
+  cursor: pointer;
+  margin-bottom: 10px;
+  transition: all 0.15s ease;
+}
+
+.no-group-create:hover {
+  background: #00e87a;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(0,255,135,0.3);
+}
+
+.no-group-join {
+  width: 100%;
+  max-width: 280px;
+  background: transparent;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.no-group-join:hover {
+  border-color: var(--border-accent);
+  color: var(--green);
+}
+
+/* ── Mobile touch target improvements ── */
+
+@media (max-width: 899px) {
+  /* Bigger group tab switcher pills */
+  .group-tab {
+    min-height: 40px;
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+
+  /* Leaderboard rows easier to read */
+  .lb-row2 {
+    padding: 14px 16px;
+    min-height: 56px;
+  }
+
+  .lb-pt {
+    font-size: 20px;
+    font-weight: 900;
+  }
+
+  .lb-nm {
+    font-size: 14px;
+  }
+
+  /* Larger invite code */
+  .invite-code-display {
+    font-size: 32px;
+    font-weight: 900;
+    letter-spacing: 0.15em;
+  }
+
+  /* Copy button full width on mobile */
+  .invite-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .copy-btn {
+    width: 100%;
+    padding: 14px;
+    font-size: 14px;
+    font-weight: 700;
+    text-align: center;
+    border-radius: var(--radius-sm);
+  }
+
+  /* Inputs large enough to avoid iOS zoom */
+  .join-inline-input,
+  .group-form__input {
+    min-height: 48px;
+    font-size: 16px;
+    padding: 12px 16px;
+  }
+
+  .join-inline-submit,
+  .join-inline-cancel {
+    min-height: 48px;
+    font-size: 14px;
+  }
+
+  .group-form__submit,
+  .group-form__cancel {
+    min-height: 48px;
+  }
 }

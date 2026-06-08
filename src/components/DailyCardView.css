@@ -584,6 +584,45 @@
   color: #ffe066;
 }
 
+/* ── Mobile: sticky lock button, larger option tap targets ── */
+
+@media (max-width: 899px) {
+  .dcv-lock-area {
+    position: sticky;
+    bottom: 0;
+    background: var(--bg-base);
+    padding: 12px 16px 20px;
+    border-top: 1px solid var(--border-subtle);
+    z-index: 10;
+    margin: 0;
+  }
+
+  .dcv-option {
+    min-height: 44px;
+    font-size: 12px;
+    padding: 10px 8px;
+    flex: 1 1 calc(33% - 6px);
+    min-width: 80px;
+    text-align: center;
+  }
+
+  .dcv-section {
+    padding: 16px 16px 4px;
+  }
+
+  .dcv-header {
+    padding: 16px 16px 12px;
+  }
+
+  .dcv-matches-strip {
+    padding: 0 16px 14px;
+  }
+
+  .dcv-bonus-section {
+    margin: 14px 16px;
+  }
+}
+
 /* ── Back to predictions bar (companion → predictions) ── */
 
 .back-to-predictions {
