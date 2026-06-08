@@ -110,6 +110,27 @@ router.post('/join', async (req, res) => {
   }
 });
 
+// POST /api/groups/leave
+router.post('/leave', async (req, res) => {
+  try {
+    const { userId, groupId } = req.body;
+    if (!userId || !groupId) {
+      return res.status(400).json({ error: 'userId and groupId required' });
+    }
+    const { error } = await supabase
+      .from('group_members')
+      .delete()
+      .eq('user_id', userId)
+      .eq('group_id', groupId);
+    if (error) throw error;
+    console.log('[Groups] User', userId, 'left group', groupId);
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Leave group error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // GET /api/groups/:groupId/leaderboard
 router.get('/:groupId/leaderboard', async (req, res) => {
   try {

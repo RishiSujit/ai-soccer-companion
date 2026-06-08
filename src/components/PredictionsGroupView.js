@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react';
-import {
-  createGroup,
-  joinGroup,
-} from '../services/api';
+import { createGroup, joinGroup } from '../services/api';
 import { supabase } from '../lib/supabase';
 import DailyCardView from './DailyCardView';
 import CelebrationOverlay from './CelebrationOverlay';
 import './PredictionsGroupView.css';
+
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
 
 function getInitials(name) {
   const parts = name.trim().split(' ');
@@ -228,11 +227,16 @@ function PredictionsGroupView({ userId, userName, userContext, isGuest, onShowAu
   async function handleLeaveGroup(groupToLeave) {
     if (!window.confirm(`Leave "${groupToLeave.name}"?`)) return;
     try {
-      await supabase
-        .from('group_members')
-        .delete()
-        .eq('user_id', userId)
-        .eq('group_id', groupToLeave.id);
+      const res = await fetch(`${API_URL}/api/groups/leave`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, groupId: groupToLeave.id }),
+      });
+      const data = await res.json();
+      if (data.error) {
+        console.error('Leave error:', data.error);
+        return;
+      }
 
       const updated = groups.filter(g => g.id !== groupToLeave.id);
       setGroups(updated);
@@ -250,7 +254,9 @@ function PredictionsGroupView({ userId, userName, userContext, isGuest, onShowAu
       } else if (activeGroupId === groupToLeave.id) {
         setActiveGroupId(updated[0].id);
       }
-    } catch {}
+    } catch (err) {
+      console.error('handleLeaveGroup error:', err);
+    }
   }
 
   function cancelForm() {
