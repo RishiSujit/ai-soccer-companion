@@ -111,7 +111,8 @@ function getPreTournamentBracket(teamName) {
   }
   return [
     ...groupMatches,
-    { round: 'Round of 16',   status: 'scheduled', home_team: teamName, away_team: 'TBD', home_score: null, away_score: null, match_date: '2026-06-28' },
+    { round: 'Round of 32',   status: 'scheduled', home_team: teamName, away_team: 'TBD', home_score: null, away_score: null, match_date: '2026-06-27' },
+    { round: 'Round of 16',   status: 'scheduled', home_team: teamName, away_team: 'TBD', home_score: null, away_score: null, match_date: '2026-07-01' },
     { round: 'Quarter-finals',status: 'scheduled', home_team: teamName, away_team: 'TBD', home_score: null, away_score: null, match_date: '2026-07-04' },
     { round: 'Semi-finals',   status: 'scheduled', home_team: teamName, away_team: 'TBD', home_score: null, away_score: null, match_date: '2026-07-09' },
     { round: 'Final',         status: 'scheduled', home_team: teamName, away_team: 'TBD', home_score: null, away_score: null, match_date: '2026-07-19', venue: 'MetLife Stadium, NJ' },
@@ -523,7 +524,7 @@ function HomeScreen({ userContext, userId, onNavigate }) {
               );
             })}
           </div>
-          <div className="bracket-footer">48-team format · Group stage → knockout</div>
+          <div className="bracket-footer">48-team format · Group stage → Round of 32 → knockout</div>
         </div>
 
         <div className="home-card standings-card">
@@ -572,7 +573,7 @@ function HomeScreen({ userContext, userId, onNavigate }) {
             })}
           </div>
 
-          <div className="standings-footer">Top 2 advance · Group stage not started</div>
+          <div className="standings-footer">Top 2 + 8 best 3rd-place advance to Round of 32 · Group stage not started</div>
         </div>
 
       </div>

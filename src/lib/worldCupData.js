@@ -100,19 +100,19 @@ export const GROUPS = {
   J: {
     name: 'Group J',
     teams: [
-      { name: 'Argentina',   flag: '🇦🇷', code: 'ARG' },
-      { name: 'South Africa', flag: '🇿🇦', code: 'RSA' },
-      { name: 'TBD',         flag: '🏳️', code: 'TBD' },
-      { name: 'TBD',         flag: '🏳️', code: 'TBD' },
+      { name: 'Argentina', flag: '🇦🇷', code: 'ARG' },
+      { name: 'Algeria',   flag: '🇩🇿', code: 'ALG' },
+      { name: 'Austria',   flag: '🇦🇹', code: 'AUT' },
+      { name: 'Jordan',    flag: '🇯🇴', code: 'JOR' },
     ],
   },
   K: {
     name: 'Group K',
     teams: [
-      { name: 'Portugal', flag: '🇵🇹', code: 'POR' },
-      { name: 'TBD',      flag: '🏳️', code: 'TBD' },
-      { name: 'TBD',      flag: '🏳️', code: 'TBD' },
-      { name: 'TBD',      flag: '🏳️', code: 'TBD' },
+      { name: 'Portugal',   flag: '🇵🇹', code: 'POR' },
+      { name: 'DR Congo',   flag: '🇨🇩', code: 'COD' },
+      { name: 'Uzbekistan', flag: '🇺🇿', code: 'UZB' },
+      { name: 'Colombia',   flag: '🇨🇴', code: 'COL' },
     ],
   },
   L: {
@@ -374,6 +374,24 @@ export const OPENING_MATCHES = [
     tvUS: 'FS1',
   },
 ];
+
+export const TOURNAMENT_FORMAT = {
+  totalTeams: 48,
+  groupStage: {
+    groups: 12,
+    teamsPerGroup: 4,
+    advanceDirect: 2,
+    advanceThirdPlace: 8,
+    description: 'Top 2 from each group + 8 best third-place teams advance',
+  },
+  knockoutRounds: [
+    { name: 'Round of 32', teams: 32, approxDate: '2026-06-27' },
+    { name: 'Round of 16', teams: 16, approxDate: '2026-07-01' },
+    { name: 'Quarter-finals', teams: 8, approxDate: '2026-07-04' },
+    { name: 'Semi-finals', teams: 4, approxDate: '2026-07-09' },
+    { name: 'Final', teams: 2, date: '2026-07-19', venue: 'MetLife Stadium, NJ' },
+  ],
+};
 
 export const getMatchesForDate = (date) =>
   OPENING_MATCHES.filter(m => m.date === date);
