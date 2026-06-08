@@ -59,6 +59,13 @@ function PredictionsGroupView({ userId, userName, userContext, isGuest, onShowAu
   const [groupLoading, setGroupLoading] = useState(false);
   const [copiedId, setCopiedId] = useState(null);
 
+  // Inline join/create state (shown inside the group panel when already in groups)
+  const [showJoinInput, setShowJoinInput] = useState(false);
+  const [showCreateInput, setShowCreateInput] = useState(false);
+  const [joinCode, setJoinCode] = useState('');
+  const [newGroupName, setNewGroupName] = useState('');
+  const [joinError, setJoinError] = useState('');
+
   const [celebration, setCelebration] = useState({ show: false, message: '', points: 0 });
 
   useEffect(() => {
@@ -251,6 +258,55 @@ function PredictionsGroupView({ userId, userName, userContext, isGuest, onShowAu
     setGroupPhase(groups.length > 0 ? 'joined' : 'idle');
   }
 
+  // Inline join from within the joined panel — no display name prompt, reuse existing
+  async function handleJoinGroup() {
+    if (!joinCode.trim()) return;
+    setJoinError('');
+    const myDisplayName = Object.values(leaderboards)
+      .flat()
+      .find(m => m.user_id === userId)?.display_name || userName || 'Fan';
+    try {
+      const data = await joinGroup(userId, joinCode.trim(), myDisplayName);
+      if (data.error) {
+        setJoinError(data.error || 'Invalid code — check and try again');
+      } else {
+        const newGroup = data.group;
+        const alreadyIn = groups.some(g => g.id === newGroup.id);
+        const updated = alreadyIn ? groups : [...groups, newGroup];
+        setGroups(updated);
+        saveGroupsToCache(updated);
+        setActiveGroupId(newGroup.id);
+        setShowJoinInput(false);
+        setJoinCode('');
+        loadLeaderboard(newGroup.id);
+      }
+    } catch {
+      setJoinError('Something went wrong — try again');
+    }
+  }
+
+  // Inline create from within the joined panel
+  async function handleCreateGroup() {
+    if (!newGroupName.trim()) return;
+    try {
+      const data = await createGroup(userId, newGroupName.trim());
+      if (data.error) {
+        setJoinError(data.error);
+      } else {
+        const newGroup = data.group;
+        const updated = [...groups, newGroup];
+        setGroups(updated);
+        saveGroupsToCache(updated);
+        setActiveGroupId(newGroup.id);
+        setShowCreateInput(false);
+        setNewGroupName('');
+        loadLeaderboard(newGroup.id);
+      }
+    } catch {
+      setJoinError('Failed to create group — try again');
+    }
+  }
+
   const activeGroup = groups.find(g => g.id === activeGroupId);
   const activeLeaderboard = activeGroupId ? (leaderboards[activeGroupId] || []) : [];
 
@@ -270,14 +326,7 @@ function PredictionsGroupView({ userId, userName, userContext, isGuest, onShowAu
           <div className="predictions-subtitle">Daily card · Compete with your group</div>
         </div>
         <div className="predictions-header-right">
-          {groupPhase === 'joined' && groups.length > 0 ? (
-            <button
-              className="group-header-btn"
-              onClick={() => { setGroupPhase('joining'); setGroupError(null); setInviteCode(''); setDisplayName(''); }}
-            >
-              + Join another group
-            </button>
-          ) : groupPhase !== 'joined' ? (
+          {groupPhase !== 'joined' && (
             <div className="group-header-btns">
               <button
                 className="group-header-btn"
@@ -292,7 +341,7 @@ function PredictionsGroupView({ userId, userName, userContext, isGuest, onShowAu
                 → Join group
               </button>
             </div>
-          ) : null}
+          )}
         </div>
       </div>
 
@@ -460,6 +509,70 @@ function PredictionsGroupView({ userId, userName, userContext, isGuest, onShowAu
 
                   <div className="leave-group" onClick={() => handleLeaveGroup(activeGroup)}>
                     Leave {activeGroup.name}
+                  </div>
+
+                  {/* ── Inline join / create another group ── */}
+                  <div className="add-group-section">
+                    <div className="add-group-divider"><span>join or create another</span></div>
+
+                    {showJoinInput ? (
+                      <div className="join-inline-form">
+                        <input
+                          type="text"
+                          className="join-inline-input"
+                          placeholder="Invite code (e.g. ABC123)"
+                          value={joinCode}
+                          onChange={e => setJoinCode(e.target.value.toUpperCase())}
+                          maxLength={8}
+                          autoFocus
+                        />
+                        <div className="join-inline-actions">
+                          <button
+                            className="join-inline-submit"
+                            onClick={handleJoinGroup}
+                            disabled={joinCode.length < 4}
+                          >Join</button>
+                          <button
+                            className="join-inline-cancel"
+                            onClick={() => { setShowJoinInput(false); setJoinCode(''); setJoinError(''); }}
+                          >Cancel</button>
+                        </div>
+                        {joinError && <div className="join-inline-error">{joinError}</div>}
+                      </div>
+                    ) : (
+                      <button className="add-group-btn" onClick={() => { setShowJoinInput(true); setShowCreateInput(false); }}>
+                        → Join another group
+                      </button>
+                    )}
+
+                    {showCreateInput ? (
+                      <div className="join-inline-form">
+                        <input
+                          type="text"
+                          className="join-inline-input"
+                          placeholder="New group name"
+                          value={newGroupName}
+                          onChange={e => setNewGroupName(e.target.value)}
+                          maxLength={30}
+                          autoFocus
+                        />
+                        <div className="join-inline-actions">
+                          <button
+                            className="join-inline-submit"
+                            onClick={handleCreateGroup}
+                            disabled={newGroupName.length < 2}
+                          >Create</button>
+                          <button
+                            className="join-inline-cancel"
+                            onClick={() => { setShowCreateInput(false); setNewGroupName(''); setJoinError(''); }}
+                          >Cancel</button>
+                        </div>
+                      </div>
+                    ) : (
+                      <button className="add-group-btn secondary" onClick={() => { setShowCreateInput(true); setShowJoinInput(false); }}>
+                        + Create a new group
+                      </button>
+                    )}
                   </div>
                 </>
               )}
