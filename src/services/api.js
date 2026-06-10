@@ -243,6 +243,21 @@ export const getTeamSquad = async (team, opponent, date) => {
   }
 };
 
+export const getMatchPredictions = async (matches) => {
+  try {
+    const res = await fetch(`${API_URL}/api/predictions/scores`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ matches }),
+    });
+    const data = await res.json();
+    return data.predictions || {};
+  } catch (err) {
+    console.error('Predictions error:', err);
+    return {};
+  }
+};
+
 export const getBracketForTeam = async (team) => {
   try {
     const res = await fetch(`${API_URL}/api/home/bracket/${encodeURIComponent(team)}`);

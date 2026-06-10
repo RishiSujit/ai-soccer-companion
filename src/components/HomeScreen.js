@@ -7,6 +7,7 @@ import {
   voteOnHotTake,
   getPreMatchBriefing,
   getTeamHeadline,
+  getMatchPredictions,
 } from '../services/api';
 import { GROUPS, OPENING_MATCHES } from '../lib/worldCupData';
 import BriefingCard from './BriefingCard';
@@ -134,6 +135,7 @@ function HomeScreen({ userContext, userId, onNavigate }) {
   const touchStartX = useRef(null);
 
   const [selectedGroup, setSelectedGroup] = useState('A');
+  const [nextMatchPred, setNextMatchPred] = useState(null);
 
   const team = userContext?.team || 'USA';
   const firstName = team ? team.split(' ')[0] : 'Fan';
@@ -233,6 +235,20 @@ function HomeScreen({ userContext, userId, onNavigate }) {
     }
   };
 
+  const watchabilityColor = (score) => {
+    if (score >= 8) return '#00ff87';
+    if (score >= 6) return '#f5a623';
+    return '#9494b8';
+  };
+
+  const watchabilityLabel = (score) => {
+    if (score >= 9) return 'Must watch';
+    if (score >= 8) return 'Great game';
+    if (score >= 6) return 'Worth watching';
+    if (score >= 4) return 'Competitive';
+    return 'May be one-sided';
+  };
+
   const displayHotTake = hotTake || FALLBACK_HOT_TAKE;
   const displayBracket = bracket.length ? bracket : getPreTournamentBracket(team);
 
@@ -263,6 +279,20 @@ function HomeScreen({ userContext, userId, onNavigate }) {
     m.date >= todayStr &&
     (m.homeTeam === team || m.awayTeam === team)
   );
+
+  useEffect(() => {
+    if (!nextMatch) return;
+    getMatchPredictions([{
+      homeTeam: nextMatch.homeTeam,
+      awayTeam: nextMatch.awayTeam,
+      group: `Group ${nextMatch.group}`,
+      date: nextMatch.date,
+    }]).then(preds => {
+      const key = `${nextMatch.homeTeam}-${nextMatch.awayTeam}`;
+      setNextMatchPred(preds[key] || null);
+    }).catch(() => {});
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nextMatch?.homeTeam, nextMatch?.awayTeam]);
 
   return (
     <div className="home-screen stagger-children">
@@ -416,6 +446,24 @@ function HomeScreen({ userContext, userId, onNavigate }) {
                 </div>
                 {nextMatch.venue !== 'TBD' && (
                   <div className="next-match-venue">{nextMatch.venue}, {nextMatch.city}</div>
+                )}
+                {nextMatchPred && (
+                  <div className="home-match-pred">
+                    <div className="home-pred-score">
+                      Predicted: {nextMatch.homeTeam}{' '}
+                      <strong>{nextMatchPred.homeScore}–{nextMatchPred.awayScore}</strong>
+                      {' '}{nextMatch.awayTeam}
+                    </div>
+                    <div
+                      className="home-pred-watch"
+                      style={{ color: watchabilityColor(nextMatchPred.watchability) }}
+                    >
+                      ⚡ {watchabilityLabel(nextMatchPred.watchability)} · {nextMatchPred.watchability}/10
+                    </div>
+                    {nextMatchPred.keyFactor && (
+                      <div className="home-pred-factor">Key: {nextMatchPred.keyFactor}</div>
+                    )}
+                  </div>
                 )}
                 <button
                   className="home-cta-link"

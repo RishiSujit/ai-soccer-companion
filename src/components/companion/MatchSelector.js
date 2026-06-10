@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getLiveMatches } from '../../services/api';
+import { getLiveMatches, getMatchPredictions } from '../../services/api';
 import { OPENING_MATCHES } from '../../lib/worldCupData';
 import './MatchSelector.css';
 
@@ -104,7 +104,7 @@ function ResultCard({ match, onMatchSelected }) {
   );
 }
 
-function ScheduleMatchRow({ match, onMatchSelected }) {
+function ScheduleMatchRow({ match, pred, predsLoading, onMatchSelected }) {
   const venueStr = match.venue && match.venue !== 'TBD'
     ? `${match.venue}, ${match.city}`
     : match.city && match.city !== 'TBD' ? match.city : null;
@@ -131,16 +131,47 @@ function ScheduleMatchRow({ match, onMatchSelected }) {
           Group {match.group} · {match.kickoffET} · {match.tvUS}
           {venueStr && ` · ${venueStr}`}
         </div>
+        {pred ? (
+          <div className="match-prediction">
+            <div className="pred-score-row">
+              <span className="pred-label">Predicted</span>
+              <span className="pred-score">
+                {match.homeTeam.split(' ')[0]}{' '}
+                <span className="pred-score-num">{pred.homeScore}–{pred.awayScore}</span>
+                {' '}{match.awayTeam.split(' ')[0]}
+              </span>
+              <span className="pred-watch" style={{ color: watchabilityColor(pred.watchability) }}>
+                ⚡{pred.watchability}/10
+              </span>
+            </div>
+            {pred.headline && (
+              <div className="pred-headline">"{pred.headline}"</div>
+            )}
+          </div>
+        ) : predsLoading ? (
+          <div className="pred-loading-row">
+            <div className="pred-shimmer" />
+          </div>
+        ) : null}
       </div>
       <span className="ms-srow__flag">{match.awayFlag}</span>
     </div>
   );
 }
 
+const watchabilityColor = (score) => {
+  if (score >= 8) return '#00ff87';
+  if (score >= 6) return '#f5a623';
+  return '#9494b8';
+};
+
 function MatchSelector({ onMatchSelected }) {
   const [apiMatches, setApiMatches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState('Upcoming');
+  const [predictions, setPredictions] = useState({});
+  const [predsLoading, setPredsLoading] = useState(false);
+
   useEffect(() => {
     getLiveMatches().then(data => {
       if (data?.matches?.length > 0) {
@@ -151,6 +182,29 @@ function MatchSelector({ onMatchSelected }) {
       setLoading(false);
     }).catch(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    const fetchPredictions = async () => {
+      setPredsLoading(true);
+      const todayStr = new Date().toISOString().split('T')[0];
+      const upcoming = OPENING_MATCHES
+        .filter(m => m.date >= todayStr)
+        .slice(0, 12)
+        .map(m => ({
+          homeTeam: m.homeTeam,
+          awayTeam: m.awayTeam,
+          group: `Group ${m.group}`,
+          date: m.date,
+        }));
+      if (!upcoming.length) { setPredsLoading(false); return; }
+      const preds = await getMatchPredictions(upcoming);
+      setPredictions(preds);
+      setPredsLoading(false);
+    };
+    fetchPredictions();
+  }, []);
+
+  const getPred = (homeTeam, awayTeam) => predictions[`${homeTeam}-${awayTeam}`] || null;
 
 
   const liveMatches  = apiMatches.filter(m => isLiveStatus(m.status));
@@ -228,18 +282,25 @@ function MatchSelector({ onMatchSelected }) {
           dateGroups.length === 0 ? (
             <div className="ms-empty">No upcoming matches in schedule</div>
           ) : (
-            dateGroups.map(([date, matches]) => (
-              <div key={date} className="ms-date-group">
-                <div className="ms-date-header">{formatDateHeader(date)}</div>
-                {matches.map(match => (
-                  <ScheduleMatchRow
-                    key={match.id}
-                    match={match}
-                    onMatchSelected={onMatchSelected}
-                  />
-                ))}
+            <>
+              {dateGroups.map(([date, matches]) => (
+                <div key={date} className="ms-date-group">
+                  <div className="ms-date-header">{formatDateHeader(date)}</div>
+                  {matches.map(match => (
+                    <ScheduleMatchRow
+                      key={match.id}
+                      match={match}
+                      pred={getPred(match.homeTeam, match.awayTeam)}
+                      predsLoading={predsLoading}
+                      onMatchSelected={onMatchSelected}
+                    />
+                  ))}
+                </div>
+              ))}
+              <div className="pred-disclaimer">
+                Predicted scores are for entertainment only — upsets happen in every World Cup
               </div>
-            ))
+            </>
           )
         )}
       </div>

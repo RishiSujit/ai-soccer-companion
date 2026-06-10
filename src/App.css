@@ -3519,3 +3519,114 @@
   font-family: 'Inter', sans-serif;
 }
 
+/* ── MATCH PREDICTIONS ── */
+
+.match-prediction {
+  padding: 8px 0 4px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  margin-top: 6px;
+}
+
+.pred-score-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.pred-label {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--text-muted, #6666aa);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  flex-shrink: 0;
+}
+
+.pred-score {
+  font-size: 12px;
+  color: var(--text-secondary, #9494b8);
+  flex: 1;
+}
+
+.pred-score-num {
+  font-weight: 900;
+  color: var(--text-primary, #e8e8ff);
+  font-size: 13px;
+  letter-spacing: -0.02em;
+}
+
+.pred-watch {
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.pred-headline {
+  font-size: 10px;
+  color: var(--text-muted, #6666aa);
+  font-style: italic;
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+.pred-loading-row {
+  padding: 8px 0 4px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  margin-top: 6px;
+}
+
+.pred-shimmer {
+  height: 10px;
+  width: 70%;
+  background: linear-gradient(
+    90deg,
+    #1a1a35 25%,
+    #252548 50%,
+    #1a1a35 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 5px;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.pred-disclaimer {
+  font-size: 9px;
+  color: var(--text-muted, #6666aa);
+  text-align: center;
+  padding: 8px 16px 4px;
+  font-style: italic;
+}
+
+/* Home screen prediction */
+.home-match-pred {
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.home-pred-score {
+  font-size: 13px;
+  color: var(--text-secondary, #9494b8);
+  margin-bottom: 4px;
+}
+
+.home-pred-watch {
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 3px;
+}
+
+.home-pred-factor {
+  font-size: 10px;
+  color: var(--text-muted, #6666aa);
+  font-style: italic;
+}
+
