@@ -164,6 +164,28 @@ export const getMyDailyPrediction = async (userId) => {
   }
 };
 
+export const saveProgress = async (userId, answers, bonusTaken) => {
+  try {
+    const res = await fetch(`${API_URL}/api/daily-card/save-progress`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, answers, bonusTaken }),
+    });
+    return res.json();
+  } catch {
+    return { success: false };
+  }
+};
+
+export const unlockPrediction = async (userId) => {
+  const res = await fetch(`${API_URL}/api/daily-card/unlock`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ userId }),
+  });
+  return res.json();
+};
+
 export const getTeamHeadline = async (team, userSports) => {
   try {
     const sports = Array.isArray(userSports) ? userSports.join(',') : userSports || 'NFL,NBA';

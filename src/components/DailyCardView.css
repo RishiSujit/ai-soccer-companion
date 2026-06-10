@@ -412,15 +412,22 @@
   box-shadow: none;
 }
 
-/* ── Locked summary ── */
+/* ── Lock status (locked / auto-locked) ── */
 
-.dcv-locked-summary {
-  margin: 18px 24px 0;
+.dcv-lock-status-locked {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   background: var(--green-dim);
   border: 1px solid var(--border-accent);
   border-radius: var(--radius-md);
   padding: 14px 18px;
   animation: fadeUp 0.35s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+
+.dcv-lock-icon {
+  font-size: 18px;
+  flex-shrink: 0;
 }
 
 .dcv-locked-label {
@@ -433,6 +440,35 @@
 .dcv-locked-pts {
   font-size: 11px;
   color: var(--text-muted);
+}
+
+.dcv-lock-countdown {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-align: center;
+  margin-bottom: 6px;
+  letter-spacing: 0.02em;
+}
+
+.dcv-unlock-btn {
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  padding: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
+  margin-top: 8px;
+}
+
+.dcv-unlock-btn:hover {
+  color: var(--text-secondary);
+  border-color: var(--border-accent);
 }
 
 /* ── Guest lock ── */

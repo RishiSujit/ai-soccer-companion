@@ -111,6 +111,85 @@ router.post('/submit', async (req, res) => {
   }
 });
 
+// POST /api/daily-card/save-progress
+// Upserts answers without locking — does NOT set or clear locked_at
+router.post('/save-progress', async (req, res) => {
+  try {
+    const { userId, answers, bonusTaken } = req.body;
+    if (!userId) return res.status(400).json({ error: 'userId required' });
+
+    const today = new Date().toISOString().split('T')[0];
+
+    const { data: existing } = await supabase
+      .from('daily_predictions')
+      .select('id, locked_at')
+      .eq('user_id', userId)
+      .eq('date', today)
+      .maybeSingle();
+
+    if (existing) {
+      await supabase
+        .from('daily_predictions')
+        .update({ answers: answers || {}, bonus_taken: bonusTaken || false })
+        .eq('user_id', userId)
+        .eq('date', today);
+    } else {
+      await supabase
+        .from('daily_predictions')
+        .insert({ user_id: userId, date: today, answers: answers || {}, bonus_taken: bonusTaken || false });
+    }
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Save progress error:', err.message);
+    res.status(500).json({ error: 'Failed to save progress' });
+  }
+});
+
+// POST /api/daily-card/unlock
+// Clears locked_at only if kickoff has not passed
+router.post('/unlock', async (req, res) => {
+  try {
+    const { userId } = req.body;
+    if (!userId) return res.status(400).json({ error: 'userId required' });
+
+    const today = new Date().toISOString().split('T')[0];
+
+    const wcCard = WC_PREDICTION_CARDS[today];
+    const matchesForCheck = wcCard?.matches ?? null;
+    if (matchesForCheck?.length > 0) {
+      const firstKickoff = matchesForCheck.map(m => new Date(m.kickoff)).sort((a, b) => a - b)[0];
+      if (new Date() >= firstKickoff) {
+        return res.status(400).json({ error: 'Cannot unlock — first match has started' });
+      }
+    } else {
+      const { data: dbCard } = await supabase
+        .from('daily_prediction_cards')
+        .select('matches')
+        .eq('date', today)
+        .single();
+      if (dbCard?.matches?.length > 0) {
+        const firstKickoff = dbCard.matches.map(m => new Date(m.kickoff)).sort((a, b) => a - b)[0];
+        if (new Date() >= firstKickoff) {
+          return res.status(400).json({ error: 'Cannot unlock — first match has started' });
+        }
+      }
+    }
+
+    const { error } = await supabase
+      .from('daily_predictions')
+      .update({ locked_at: null })
+      .eq('user_id', userId)
+      .eq('date', today);
+
+    if (error) throw error;
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Unlock error:', err.message);
+    res.status(500).json({ error: 'Failed to unlock' });
+  }
+});
+
 // GET /api/daily-card/my-prediction
 router.get('/my-prediction', async (req, res) => {
   try {

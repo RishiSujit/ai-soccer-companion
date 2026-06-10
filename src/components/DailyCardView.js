@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { getDailyCard, submitDailyCard, getMyDailyPrediction } from '../services/api';
+import { useState, useEffect, useRef } from 'react';
+import { getDailyCard, submitDailyCard, getMyDailyPrediction, saveProgress, unlockPrediction } from '../services/api';
 import './DailyCardView.css';
 
 const FLAGS = {
@@ -81,12 +81,27 @@ function DailyCardView({ userId, userContext, isGuest, onShowAuth, onNavigateToC
   const [answers, setAnswers] = useState({});
   const [bonusTaken, setBonusTaken] = useState(null);
   const [locked, setLocked] = useState(false);
+  const [isAutoLocked, setIsAutoLocked] = useState(false);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [fromFallback, setFromFallback] = useState(false);
+  const cardRef = useRef(null);
 
   const today = new Date().toISOString().split('T')[0];
   const draftKey = userId ? `wcc_draft_${userId}_${today}` : null;
+
+  function checkAutoLock(currentCard) {
+    const c = currentCard || cardRef.current;
+    if (!c?.matches?.length) return false;
+    const now = new Date();
+    const firstKickoff = c.matches.map(m => new Date(m.kickoff)).sort((a, b) => a - b)[0];
+    if (firstKickoff && now >= firstKickoff) {
+      setLocked(true);
+      setIsAutoLocked(true);
+      return true;
+    }
+    return false;
+  }
 
   useEffect(() => {
     async function load() {
@@ -97,15 +112,20 @@ function DailyCardView({ userId, userContext, isGuest, onShowAuth, onNavigateToC
           userId ? getMyDailyPrediction(userId) : Promise.resolve({ prediction: null }),
         ]);
 
+        let loadedCard = null;
         if (cardRes.card) {
           setCard(cardRes.card);
+          cardRef.current = cardRes.card;
+          loadedCard = cardRes.card;
           setFromFallback(cardRes.fromFallback);
         }
 
         if (predRes.prediction) {
           setAnswers(predRes.prediction.answers || {});
-          setBonusTaken(predRes.prediction.bonus_taken || false);
-          setLocked(true);
+          setBonusTaken(predRes.prediction.bonus_taken ?? null);
+          if (predRes.prediction.locked_at) {
+            setLocked(true);
+          }
           if (draftKey) try { localStorage.removeItem(draftKey); } catch {}
         } else if (draftKey) {
           try {
@@ -117,6 +137,9 @@ function DailyCardView({ userId, userContext, isGuest, onShowAuth, onNavigateToC
             }
           } catch {}
         }
+
+        // Auto-lock if kickoff already passed (regardless of prediction state)
+        checkAutoLock(loadedCard);
       } catch {
         // Fail silently — UI will show loading state resolved
       }
@@ -125,6 +148,20 @@ function DailyCardView({ userId, userContext, isGuest, onShowAuth, onNavigateToC
     load();
   }, [userId]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Re-check auto-lock every 60 seconds in case tab is open at kickoff time
+  useEffect(() => {
+    if (locked) return;
+    const interval = setInterval(() => {
+      checkAutoLock();
+    }, 60 * 1000);
+    return () => clearInterval(interval);
+  }, [locked]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  function persistProgress(currentAnswers, currentBonus) {
+    if (!userId || isGuest) return;
+    saveProgress(userId, currentAnswers, currentBonus || false).catch(() => {});
+  }
+
   function handleAnswer(questionId, option) {
     if (locked) return;
     const newAnswers = { ...answers, [questionId]: option };
@@ -132,6 +169,7 @@ function DailyCardView({ userId, userContext, isGuest, onShowAuth, onNavigateToC
     if (draftKey) try {
       localStorage.setItem(draftKey, JSON.stringify({ answers: newAnswers, bonusTaken }));
     } catch {}
+    persistProgress(newAnswers, bonusTaken);
   }
 
   function handleBonus(take) {
@@ -144,10 +182,11 @@ function DailyCardView({ userId, userContext, isGuest, onShowAuth, onNavigateToC
     if (draftKey) try {
       localStorage.setItem(draftKey, JSON.stringify({ answers: newAnswers, bonusTaken: take }));
     } catch {}
+    persistProgress(newAnswers, take);
   }
 
   async function handleLock() {
-    if (!userId || submitting || locked) return;
+    if (!userId || submitting || locked || isAutoLocked) return;
     setSubmitting(true);
     try {
       const result = await submitDailyCard(userId, answers, bonusTaken || false);
@@ -160,6 +199,18 @@ function DailyCardView({ userId, userContext, isGuest, onShowAuth, onNavigateToC
       // Fail silently
     }
     setSubmitting(false);
+  }
+
+  async function handleUnlock() {
+    if (isAutoLocked) return;
+    try {
+      const result = await unlockPrediction(userId);
+      if (result.success) {
+        setLocked(false);
+      }
+    } catch {
+      // Fail silently
+    }
   }
 
   function calculatePointsPossible() {
@@ -370,28 +421,52 @@ function DailyCardView({ userId, userContext, isGuest, onShowAuth, onNavigateToC
       </div>
 
       {/* ── Lock button ─────────────────────────────────────── */}
-      {locked ? (
-        <div className="dcv-locked-summary">
-          <div className="dcv-locked-label">Card locked ✓ — check back tonight</div>
-          <div className="dcv-locked-pts">
-            {pointsPossible} pts on the line
-            {bonusTaken ? ' · Bonus included' : ''}
+      <div className="dcv-lock-area">
+        {isAutoLocked ? (
+          <div className="dcv-lock-status-locked">
+            <span className="dcv-lock-icon">🔒</span>
+            <div>
+              <div className="dcv-locked-label">Locked at kickoff</div>
+              {pointsPossible > 0 && (
+                <div className="dcv-locked-pts">{pointsPossible} pts on the line{bonusTaken ? ' · Bonus included' : ''}</div>
+              )}
+            </div>
           </div>
-        </div>
-      ) : (
-        <div className="dcv-lock-area">
-          {pointsPossible > 0 && (
-            <div className="dcv-pts-running">{pointsPossible} pts selected</div>
-          )}
-          <button
-            className="dcv-lock-btn"
-            onClick={handleLock}
-            disabled={!hasAnyAnswer() || submitting}
-          >
-            {submitting ? 'Locking...' : `Lock in today's card →`}
-          </button>
-        </div>
-      )}
+        ) : locked ? (
+          <>
+            <div className="dcv-lock-status-locked">
+              <span className="dcv-lock-icon">🔒</span>
+              <div>
+                <div className="dcv-locked-label">Predictions locked ✓</div>
+                {pointsPossible > 0 && (
+                  <div className="dcv-locked-pts">{pointsPossible} pts on the line{bonusTaken ? ' · Bonus included' : ''}</div>
+                )}
+              </div>
+            </div>
+            <button className="dcv-unlock-btn" onClick={handleUnlock}>
+              Unlock to edit
+            </button>
+          </>
+        ) : (
+          <>
+            {firstKickoff && (
+              <div className="dcv-lock-countdown">
+                Locks at kickoff — {getFirstKickoffLabel(card.matches)}
+              </div>
+            )}
+            {pointsPossible > 0 && (
+              <div className="dcv-pts-running">{pointsPossible} pts selected</div>
+            )}
+            <button
+              className="dcv-lock-btn"
+              onClick={handleLock}
+              disabled={!hasAnyAnswer() || submitting}
+            >
+              {submitting ? 'Locking...' : hasAnyAnswer() ? `🔒 Lock in ${Object.keys(answers).filter(k => answers[k]).length} picks` : 'Make picks to lock in'}
+            </button>
+          </>
+        )}
+      </div>
     </div>
   );
 }
