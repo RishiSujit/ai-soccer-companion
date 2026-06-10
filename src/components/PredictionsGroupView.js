@@ -3,6 +3,7 @@ import { createGroup, joinGroup } from '../services/api';
 import { supabase } from '../lib/supabase';
 import DailyCardView from './DailyCardView';
 import CelebrationOverlay from './CelebrationOverlay';
+import PredictionHistory from './PredictionHistory';
 import './PredictionsGroupView.css';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
@@ -356,27 +357,40 @@ function PredictionsGroupView({ userId, userName, userContext, isGuest, onShowAu
         </div>
       </div>
 
-      {/* ── Mobile tab bar ───────────────────────────────── */}
+      {/* ── Tab bar ──────────────────────────────────────── */}
       <div className="pred-tab-bar">
         <button
           className={`pred-tab ${activeTab === 'predictions' ? 'active' : ''}`}
           onClick={() => setActiveTab('predictions')}
         >
-          📋 Predictions
+          📋 Picks
         </button>
         <button
           className={`pred-tab ${activeTab === 'group' ? 'active' : ''}`}
           onClick={() => setActiveTab('group')}
         >
-          👥 My Group
+          👥 Group
           {groups.length > 0 && (
             <span className="pred-tab-badge">{groups.length}</span>
           )}
         </button>
+        <button
+          className={`pred-tab ${activeTab === 'history' ? 'active' : ''}`}
+          onClick={() => setActiveTab('history')}
+        >
+          📊 History
+        </button>
       </div>
 
+      {/* ── History pane ─────────────────────────────────── */}
+      {activeTab === 'history' && (
+        <div className="pred-tab-content">
+          <PredictionHistory userId={userId} />
+        </div>
+      )}
+
       {/* ── Two column grid ──────────────────────────────── */}
-      <div className="predictions-grid">
+      <div className={`predictions-grid ${activeTab === 'history' ? 'pred-grid-hidden' : ''}`}>
 
         {/* LEFT — Daily card */}
         <div className={`predictions-left ${activeTab !== 'predictions' ? 'pred-hidden-mobile' : ''}`}>
