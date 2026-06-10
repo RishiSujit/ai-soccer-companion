@@ -3003,3 +3003,519 @@
   font-family: 'Inter', sans-serif;
 }
 
+/* ── LINEUP ── */
+.lineup-container {
+  padding: 0 4px;
+}
+
+.lineup-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 16px;
+  gap: 12px;
+  color: #8888aa;
+}
+
+.lineup-loading p {
+  font-size: 13px;
+  margin: 0;
+}
+
+.lineup-loading-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.lineup-loading-dots span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4a4a6a;
+  animation: lineup-dot-bounce 1.2s infinite ease-in-out;
+}
+
+.lineup-loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+.lineup-loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes lineup-dot-bounce {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+  40% { transform: scale(1); opacity: 1; }
+}
+
+.lineup-team-switch {
+  display: flex;
+  gap: 8px;
+  padding: 8px 0 12px;
+}
+
+.lineup-team-btn {
+  flex: 1;
+  padding: 10px 8px;
+  border-radius: 8px;
+  border: 1px solid #2a2a3a;
+  background: transparent;
+  color: #8888aa;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  font-family: 'Inter', sans-serif;
+}
+
+.lineup-team-btn.active {
+  background: #1a1a2e;
+  border-color: #00ff87;
+  color: #e8e8ff;
+}
+
+.lineup-squad-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0 4px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #1a1a2e;
+}
+
+.lineup-formation {
+  font-size: 13px;
+  font-weight: 700;
+  color: #00ff87;
+  font-family: 'Inter', sans-serif;
+}
+
+.lineup-coach {
+  font-size: 12px;
+  color: #6666aa;
+  font-family: 'Inter', sans-serif;
+}
+
+.lineup-section-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #4a4a6a;
+  padding: 10px 0 6px;
+  font-family: 'Inter', sans-serif;
+}
+
+.lineup-players-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.lineup-player-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #1e1e2e;
+  background: #0d0d1a;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
+  text-align: left;
+  width: 100%;
+  min-height: 44px;
+}
+
+.lineup-player-card:hover,
+.lineup-player-card:active {
+  background: #1a1a2e;
+  border-color: #2e2e4e;
+}
+
+.lineup-player-card.key-star {
+  border-color: #f5a62366;
+  background: #1a0d00;
+}
+
+.lineup-player-card.key-star:hover {
+  background: #221100;
+  border-color: #f5a623;
+}
+
+.lineup-player-card.sub {
+  opacity: 0.75;
+}
+
+.lpc-number {
+  width: 24px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #4a4a6a;
+  text-align: right;
+  flex-shrink: 0;
+  font-family: 'Inter', sans-serif;
+}
+
+.lpc-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.lpc-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #e8e8ff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: 'Inter', sans-serif;
+}
+
+.lpc-pos {
+  font-size: 11px;
+  color: #6666aa;
+  font-family: 'Inter', sans-serif;
+  margin-top: 1px;
+}
+
+.lpc-star {
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.lineup-unavailable {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 16px;
+  gap: 8px;
+  text-align: center;
+}
+
+.lineup-unavail-icon {
+  font-size: 32px;
+  margin-bottom: 4px;
+}
+
+.lineup-unavail-text {
+  font-size: 15px;
+  font-weight: 600;
+  color: #8888aa;
+  font-family: 'Inter', sans-serif;
+}
+
+.lineup-unavail-sub {
+  font-size: 12px;
+  color: #4a4a6a;
+  font-family: 'Inter', sans-serif;
+}
+
+/* ── FIFA CARD ── */
+.fifa-card-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.fifa-card {
+  width: 100%;
+  max-width: 320px;
+  background: #0a0a18;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid #2a2a3a;
+  animation: countUp 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes countUp {
+  from { transform: scale(0.85) translateY(20px); opacity: 0; }
+  to   { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.fifa-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+}
+
+.fifa-card-pos {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  font-family: 'Inter', sans-serif;
+}
+
+.fifa-card-number {
+  font-size: 28px;
+  font-weight: 900;
+  font-family: 'Inter', sans-serif;
+}
+
+.fifa-card-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 4px;
+  line-height: 1;
+  opacity: 0.8;
+  transition: opacity 0.15s;
+}
+
+.fifa-card-close:hover { opacity: 1; }
+
+.fifa-card-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 80px;
+}
+
+.fifa-avatar-placeholder {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: currentColor;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 900;
+  font-family: 'Inter', sans-serif;
+  color: #0a0a18;
+}
+
+.fifa-card-name {
+  text-align: center;
+  font-size: 18px;
+  font-weight: 800;
+  color: #e8e8ff;
+  padding: 4px 16px 2px;
+  font-family: 'Inter', sans-serif;
+}
+
+.fifa-card-team {
+  text-align: center;
+  font-size: 13px;
+  color: #8888aa;
+  padding: 0 16px 8px;
+  font-family: 'Inter', sans-serif;
+}
+
+.fifa-star-badge {
+  text-align: center;
+  font-size: 12px;
+  color: #f5a623;
+  font-weight: 600;
+  padding: 4px 16px;
+  font-family: 'Inter', sans-serif;
+}
+
+.fifa-card-stats {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  border-top: 1px solid #1a1a2e;
+  border-bottom: 1px solid #1a1a2e;
+  margin: 8px 0;
+}
+
+.fifa-stat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 4px;
+  border-right: 1px solid #1a1a2e;
+}
+
+.fifa-stat:last-child { border-right: none; }
+
+.fifa-stat-value {
+  font-size: 18px;
+  font-weight: 900;
+  color: #e8e8ff;
+  font-family: 'Inter', sans-serif;
+  line-height: 1;
+}
+
+.fifa-stat-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #4a4a6a;
+  margin-top: 3px;
+  font-family: 'Inter', sans-serif;
+}
+
+.fifa-card-club {
+  text-align: center;
+  font-size: 13px;
+  color: #8888aa;
+  padding: 4px 16px;
+  font-family: 'Inter', sans-serif;
+}
+
+.fifa-card-position-full {
+  text-align: center;
+  font-size: 11px;
+  color: #4a4a6a;
+  padding: 2px 16px 8px;
+  font-family: 'Inter', sans-serif;
+}
+
+.fifa-star-reason {
+  margin: 8px 16px;
+  padding: 10px 12px;
+  background: #f5a62311;
+  border-left: 3px solid #f5a623;
+  border-radius: 0 6px 6px 0;
+  font-size: 12px;
+  color: #c8a870;
+  font-style: italic;
+  font-family: 'Inter', sans-serif;
+  line-height: 1.5;
+}
+
+.fifa-card-dismiss {
+  display: block;
+  width: calc(100% - 32px);
+  margin: 12px 16px 16px;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #2a2a3a;
+  background: #1a1a2e;
+  color: #8888aa;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: background 0.15s, color 0.15s;
+}
+
+.fifa-card-dismiss:hover {
+  background: #2a2a3e;
+  color: #e8e8ff;
+}
+
+/* ── LIVE LINEUP (existing companion view) ── */
+.lineup-list {
+  display: flex;
+  gap: 8px;
+}
+
+.lineup-col {
+  flex: 1;
+  min-width: 0;
+}
+
+.lineup-col__header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 0 8px;
+  border-bottom: 1px solid #1a1a2e;
+  margin-bottom: 6px;
+}
+
+.lineup-col__flag {
+  font-size: 16px;
+}
+
+.lineup-col__team {
+  font-size: 12px;
+  font-weight: 700;
+  color: #c8c8e8;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: 'Inter', sans-serif;
+}
+
+.lineup-col__formation {
+  font-size: 11px;
+  color: #4a4a6a;
+  font-family: 'Inter', sans-serif;
+}
+
+.lineup-group {
+  margin-bottom: 8px;
+}
+
+.lineup-group__label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #3a3a5a;
+  margin-bottom: 4px;
+  font-family: 'Inter', sans-serif;
+}
+
+.lineup-player {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 2px;
+  border-radius: 4px;
+}
+
+.lineup-player--clickable {
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.lineup-player--clickable:hover {
+  background: #1a1a2e;
+}
+
+.lineup-player__num {
+  font-size: 10px;
+  color: #3a3a5a;
+  width: 14px;
+  text-align: right;
+  flex-shrink: 0;
+  font-family: 'Inter', sans-serif;
+}
+
+.lineup-player__name {
+  font-size: 11px;
+  color: #c8c8e8;
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: 'Inter', sans-serif;
+}
+
+.lineup-player__badge {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 4px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  font-family: 'Inter', sans-serif;
+}
+
+.lineup-badge--gk  { background: #f5a62322; color: #f5a623; }
+.lineup-badge--def { background: #378ADD22; color: #378ADD; }
+.lineup-badge--mid { background: #00ff8722; color: #00ff87; }
+.lineup-badge--fwd { background: #ff4d6d22; color: #ff4d6d; }
+
+.lineup-empty {
+  padding: 20px;
+  text-align: center;
+  color: #4a4a6a;
+  font-size: 13px;
+  font-family: 'Inter', sans-serif;
+}
+

@@ -232,6 +232,17 @@ export const getLiveWinProbability = async (home, away, homeScore, awayScore, mi
   }
 };
 
+export const getTeamSquad = async (team, opponent, date) => {
+  try {
+    const params = new URLSearchParams({ team, ...(opponent && { opponent }), ...(date && { date }) });
+    const res = await fetch(`${API_URL}/api/lineups/squad?${params}`);
+    const data = await res.json();
+    return data.squad || null;
+  } catch {
+    return null;
+  }
+};
+
 export const getBracketForTeam = async (team) => {
   try {
     const res = await fetch(`${API_URL}/api/home/bracket/${encodeURIComponent(team)}`);

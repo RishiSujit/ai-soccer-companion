@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { sendCompanionMessage, getMatchOdds } from '../../services/api';
+import { sendCompanionMessage, getMatchOdds, getTeamSquad } from '../../services/api';
 import { supabase } from '../../lib/supabase';
 import PivotalMomentAlert from '../PivotalMomentAlert';
 import FormationPitch from './FormationPitch';
@@ -236,6 +236,7 @@ function ChatPanel({
 function CompanionChat({ match, userContext, userId, onBack, preloadedQuestion, onNavigateBack }) {
   const isGeneral = !match;
   const today = new Date().toISOString().split('T')[0];
+  const isUpcoming = !!(match && !match.isLive && (match.status === 'NS' || (!match.minute && (match.homeScore === null || match.homeScore === undefined))));
   const chatStorageKey = match?.id
     ? `wcc_chat_${match.id}_${userId}`
     : `wcc_chat_general_${userId}_${today}`;
@@ -260,7 +261,10 @@ function CompanionChat({ match, userContext, userId, onBack, preloadedQuestion, 
   });
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [mobileTab, setMobileTab] = useState('formation');
+  const [mobileTab, setMobileTab] = useState(isUpcoming ? 'lineup' : 'formation');
+  const [homeSquad, setHomeSquad] = useState(null);
+  const [awaySquad, setAwaySquad] = useState(null);
+  const [squadLoading, setSquadLoading] = useState(false);
   const [followUps, setFollowUps] = useState([]);
   const [showFollowUps, setShowFollowUps] = useState(false);
   const [tappedIndex, setTappedIndex] = useState(null);
@@ -344,6 +348,33 @@ function CompanionChat({ match, userContext, userId, onBack, preloadedQuestion, 
       })
       .catch(() => setOddsError(true))
       .finally(() => setOddsLoading(false));
+  }, [match?.homeTeam, match?.awayTeam]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Default to Lineup tab for upcoming, Pitch for live — update when match changes
+  useEffect(() => {
+    if (!match) return;
+    const upcoming = !match.isLive && (match.status === 'NS' || (!match.minute && (match.homeScore === null || match.homeScore === undefined)));
+    setMobileTab(upcoming ? 'lineup' : 'formation');
+  }, [match?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Fetch squads for upcoming matches via Claude web search
+  useEffect(() => {
+    if (!match?.homeTeam || !match?.awayTeam) return;
+    const upcoming = !match.isLive && (match.status === 'NS' || (!match.minute && (match.homeScore === null || match.homeScore === undefined)));
+    if (!upcoming) return;
+
+    setSquadLoading(true);
+    setHomeSquad(null);
+    setAwaySquad(null);
+
+    const matchDate = match.date || (match.kickoff ? match.kickoff.split('T')[0] : undefined);
+    Promise.all([
+      getTeamSquad(match.homeTeam, match.awayTeam, matchDate),
+      getTeamSquad(match.awayTeam, match.homeTeam, matchDate),
+    ]).then(([home, away]) => {
+      setHomeSquad(home);
+      setAwaySquad(away);
+    }).catch(() => {}).finally(() => setSquadLoading(false));
   }, [match?.homeTeam, match?.awayTeam]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Persist chat to localStorage whenever messages update
@@ -523,7 +554,7 @@ function CompanionChat({ match, userContext, userId, onBack, preloadedQuestion, 
       <div className="companion-split">
         <div className="split-left">
           <div className="split-panel-header">
-            <div className="split-panel-title">Live formation</div>
+            <div className="split-panel-title">{isUpcoming ? 'Squad preview' : 'Live formation'}</div>
             <div className="split-panel-tabs">
               <button className={mobileTab !== 'lineup' ? 'active' : ''} onClick={() => setMobileTab('formation')}>Pitch</button>
               <button className={mobileTab === 'lineup' ? 'active' : ''} onClick={() => setMobileTab('lineup')}>Lineup</button>
@@ -531,7 +562,7 @@ function CompanionChat({ match, userContext, userId, onBack, preloadedQuestion, 
           </div>
           <div className="split-left-content">
             {mobileTab === 'lineup'
-              ? <LineupList {...match} userContext={userContext} />
+              ? <LineupList {...match} userContext={userContext} homeSquad={homeSquad} awaySquad={awaySquad} squadLoading={squadLoading} isUpcoming={isUpcoming} />
               : <FormationPitch {...match} userContext={userContext} />}
           </div>
         </div>
@@ -562,7 +593,7 @@ function CompanionChat({ match, userContext, userId, onBack, preloadedQuestion, 
         </div>
         <div className="mobile-panel-content">
           {mobileTab === 'formation' && <div className="mobile-panel-scroll"><FormationPitch {...match} userContext={userContext} /></div>}
-          {mobileTab === 'lineup' && <div className="mobile-panel-scroll"><LineupList {...match} userContext={userContext} /></div>}
+          {mobileTab === 'lineup' && <div className="mobile-panel-scroll"><LineupList {...match} userContext={userContext} homeSquad={homeSquad} awaySquad={awaySquad} squadLoading={squadLoading} isUpcoming={isUpcoming} /></div>}
           {mobileTab === 'chat' && (
             <>
               <OddsInline
