@@ -66,7 +66,8 @@ async function testBackendHealth() {
     'REACT_APP_SUPABASE_URL',
     'SUPABASE_SERVICE_ROLE_KEY',
     'ANTHROPIC_API_KEY',
-    'API_FOOTBALL_KEY',
+    'LIVESCORE_API_KEY',
+    'LIVESCORE_API_SECRET',
   ];
 
   for (const key of required) {
@@ -442,33 +443,17 @@ async function testSportsAPI() {
   section('8. SPORTS API CONNECTION');
 
   try {
-    const axios = require('axios');
+    const { getTodayFixtures } = require('../lib/livescoreApi');
+    const fixtures = await getTodayFixtures();
 
-    const { data } = await axios.get(
-      'https://v3.football.api-sports.io/status',
-      {
-        headers: { 'x-apisports-key': process.env.API_FOOTBALL_KEY },
-        timeout: 5000,
-      }
-    );
-
-    if (data.response) {
-      pass('API-Football connected');
-
-      const requests = data.response.requests;
-      const remaining = (requests?.limit_day || 100) - (requests?.current || 0);
-
-      if (remaining > 20) {
-        pass(`API quota OK: ${remaining} requests remaining today`);
-      } else {
-        fail('API quota', `Only ${remaining} requests left today — risk of hitting limit`);
-      }
+    if (Array.isArray(fixtures)) {
+      pass(`livescore-api.com connected (competition_id=${process.env.LIVESCORE_COMPETITION_ID || '362'})`);
+      pass(`Today's fixtures returned: ${fixtures.length} matches`);
     } else {
-      fail('API-Football response', 'Unexpected response shape');
+      fail('livescore-api response', 'Unexpected response shape');
     }
-
   } catch (err) {
-    fail('API-Football connection', err.message);
+    fail('livescore-api connection', err.message);
   }
 }
 
@@ -510,18 +495,18 @@ async function testHomeRoutes() {
 async function testPreLaunchChecklist() {
   section('10. PRE-LAUNCH CHECKLIST');
 
-  const leagueId = process.env.ACTIVE_LEAGUE_ID;
-  if (leagueId === '1') {
-    pass('ACTIVE_LEAGUE_ID = 1 (World Cup) ✅');
+  const compId = process.env.LIVESCORE_COMPETITION_ID;
+  if (compId === '362') {
+    pass('LIVESCORE_COMPETITION_ID = 362 (World Cup 2026) ✅');
   } else {
-    fail('ACTIVE_LEAGUE_ID must be 1', `Currently set to ${leagueId} — change to 1 before June 11`);
+    fail('LIVESCORE_COMPETITION_ID must be 362', `Currently set to ${compId}`);
   }
 
-  const season = process.env.ACTIVE_SEASON;
-  if (season === '2026') {
-    pass('ACTIVE_SEASON = 2026 ✅');
+  const lsKey = process.env.LIVESCORE_API_KEY;
+  if (lsKey) {
+    pass('LIVESCORE_API_KEY set ✅');
   } else {
-    fail('ACTIVE_SEASON must be 2026', `Currently set to ${season} — change to 2026 before June 11`);
+    fail('LIVESCORE_API_KEY missing', 'Set in .env and Render dashboard');
   }
 
   const testMode = process.env.REACT_APP_TEST_MATCH_ENABLED;

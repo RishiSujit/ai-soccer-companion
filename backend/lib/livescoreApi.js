@@ -105,6 +105,33 @@ async function getUpcomingFixtures(daysAhead = 7) {
   }));
 }
 
+async function getFixturesInRange(dateFrom, dateTo) {
+  const data = await call('/fixtures/matches.json', {
+    competition_id: COMP,
+    date_from: dateFrom,
+    date_to: dateTo,
+  });
+  if (!data?.data?.fixtures) return [];
+
+  return data.data.fixtures.map(f => ({
+    id: String(f.id),
+    homeTeam: f.home_name,
+    awayTeam: f.away_name,
+    home_name: f.home_name,
+    away_name: f.away_name,
+    status: 'NS',
+    kickoff: toISOKickoff(f.date, f.time),
+    kickoffET: convertToET(f.date, f.time),
+    date: f.date,
+    time: f.time,
+    stage: inferStage(f.round),
+    venue: f.location || '',
+    homeFlag: getFlagEmoji(f.home_name),
+    awayFlag: getFlagEmoji(f.away_name),
+    isLive: false,
+  }));
+}
+
 async function getFixturesForDate(date) {
   const data = await call('/fixtures/matches.json', {
     competition_id: COMP,
@@ -259,6 +286,7 @@ module.exports = {
   getLiveMatches,
   getTodayFixtures,
   getUpcomingFixtures,
+  getFixturesInRange,
   getFixturesForDate,
   getFinishedMatches,
   getMatchEvents,

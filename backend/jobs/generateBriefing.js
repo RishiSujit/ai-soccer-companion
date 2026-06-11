@@ -1,7 +1,6 @@
 'use strict';
 
 const Anthropic = require('@anthropic-ai/sdk');
-const axios = require('axios');
 require('dotenv').config();
 
 const anthropic = new Anthropic({

@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const axios = require('axios');
 const { client } = require('../lib/anthropic');
 
 const cardCache = {};
@@ -102,46 +101,29 @@ router.post('/', async (req, res) => {
     });
   }
 
-  // Step 1 — Fetch real stats from API-Football
+  // Step 1 — Fetch real stats via web search
   let realData = null;
   try {
-    const response = await axios.get(
-      'https://v3.football.api-sports.io/players',
-      {
-        params: { search: playerName, season: season || 2024 },
-        headers: { 'x-apisports-key': process.env.API_FOOTBALL_KEY },
-        timeout: 5000,
+    const searchResponse = await client.messages.create({
+      model: 'claude-sonnet-4-5',
+      max_tokens: 400,
+      tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+      messages: [{
+        role: 'user',
+        content: `Look up current World Cup 2026 stats and career stats for ${playerName} who plays for ${team}. Return a JSON object with: name, age, nationality, club, position, goals (career or World Cup), assists, appearances, keyTraits (array of 2-3 strings). Return ONLY the JSON, no other text.`,
+      }],
+    });
+
+    const textBlock = searchResponse.content.find(b => b.type === 'text');
+    if (textBlock?.text) {
+      const clean = textBlock.text.replace(/```json/g, '').replace(/```/g, '').trim();
+      const jsonMatch = clean.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        realData = JSON.parse(jsonMatch[0]);
       }
-    );
-
-    const player = response.data.response?.[0];
-    const stats = player?.statistics?.[0];
-
-    if (player && stats) {
-      realData = {
-        name: player?.player?.name,
-        age: player?.player?.age,
-        nationality: player?.player?.nationality,
-        height: player?.player?.height,
-        weight: player?.player?.weight,
-        rating: stats?.games?.rating,
-        appearances: stats?.games?.appearences,
-        goals: stats?.goals?.total,
-        assists: stats?.goals?.assists,
-        shotsOnTarget: stats?.shots?.on,
-        totalShots: stats?.shots?.total,
-        passAccuracy: stats?.passes?.accuracy,
-        keyPasses: stats?.passes?.key,
-        dribbleSuccess: stats?.dribbles?.success,
-        dribbleAttempts: stats?.dribbles?.attempts,
-        yellowCards: stats?.cards?.yellow,
-        redCards: stats?.cards?.red,
-        position: stats?.games?.position,
-      };
     }
   } catch (err) {
-    // API-Football down or player not found — Claude uses its own knowledge
-    console.error('API-Football lookup failed, falling back to Claude knowledge:', err.message);
+    console.error('Player web lookup failed, using Claude knowledge:', err.message);
   }
 
   // Step 2 — Generate card with Claude

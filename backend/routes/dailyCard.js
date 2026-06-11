@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { createClient } = require('@supabase/supabase-js');
 const { generateDailyCards } = require('../jobs/generateDailyCard');
-const { WC_PREDICTION_CARDS } = require('../lib/wcPredictionCards');
+const { getUpcomingFixtures } = require('../lib/livescoreApi');
 require('dotenv').config();
 
 const supabase = createClient(
@@ -15,12 +15,6 @@ router.get('/today', async (req, res) => {
   try {
     const today = new Date().toISOString().split('T')[0];
 
-    // Use static WC card for opening week — highest priority
-    if (WC_PREDICTION_CARDS[today]) {
-      console.log('[DailyCard] Using static WC card for:', today);
-      return res.json({ card: WC_PREDICTION_CARDS[today], fromFallback: false, isWorldCup: true });
-    }
-
     let { data: card } = await supabase
       .from('daily_prediction_cards')
       .select('*')
@@ -28,7 +22,7 @@ router.get('/today', async (req, res) => {
       .single();
 
     if (!card) {
-      console.log('No card for today — generating...');
+      console.log('[DailyCard] No card for today — generating...');
       await generateDailyCards();
 
       const { data: newCard } = await supabase
@@ -41,14 +35,14 @@ router.get('/today', async (req, res) => {
     }
 
     if (!card) {
-      return res.json({ card: getPreTournamentCard(today), fromFallback: true });
+      return res.json({ card: await getPreTournamentCard(today), fromFallback: true });
     }
 
     res.json({ card, fromFallback: false });
   } catch (err) {
     console.error('Daily card error:', err.message);
     const today = new Date().toISOString().split('T')[0];
-    res.json({ card: getPreTournamentCard(today), fromFallback: true });
+    res.json({ card: await getPreTournamentCard(today), fromFallback: true });
   }
 });
 
@@ -63,29 +57,18 @@ router.post('/submit', async (req, res) => {
 
     const today = new Date().toISOString().split('T')[0];
 
-    // Check kickoff from static WC card first, then DB
-    const wcCard = WC_PREDICTION_CARDS[today];
-    const matchesForLockCheck = wcCard?.matches ?? null;
+    // Check kickoff from DB card
+    const { data: dbCard } = await supabase
+      .from('daily_prediction_cards')
+      .select('matches')
+      .eq('date', today)
+      .single();
 
-    if (!matchesForLockCheck) {
-      const { data: dbCard } = await supabase
-        .from('daily_prediction_cards')
-        .select('matches')
-        .eq('date', today)
-        .single();
-      if (dbCard?.matches?.length > 0) {
-        const firstKickoff = dbCard.matches
-          .map(m => new Date(m.kickoff))
-          .sort((a, b) => a - b)[0];
-        if (new Date() >= firstKickoff) {
-          return res.status(400).json({ error: 'Card locked — first match has started' });
-        }
-      }
-    } else if (matchesForLockCheck.length > 0) {
-      const firstKickoff = matchesForLockCheck
+    if (dbCard?.matches?.length > 0) {
+      const firstKickoff = dbCard.matches
         .map(m => new Date(m.kickoff))
         .sort((a, b) => a - b)[0];
-      if (new Date() >= firstKickoff) {
+      if (firstKickoff && new Date() >= firstKickoff) {
         return res.status(400).json({ error: 'Card locked — first match has started' });
       }
     }
@@ -112,7 +95,6 @@ router.post('/submit', async (req, res) => {
 });
 
 // POST /api/daily-card/save-progress
-// Upserts answers without locking — does NOT set or clear locked_at
 router.post('/save-progress', async (req, res) => {
   try {
     const { userId, answers, bonusTaken } = req.body;
@@ -147,7 +129,6 @@ router.post('/save-progress', async (req, res) => {
 });
 
 // POST /api/daily-card/unlock
-// Clears locked_at only if kickoff has not passed
 router.post('/unlock', async (req, res) => {
   try {
     const { userId } = req.body;
@@ -155,24 +136,18 @@ router.post('/unlock', async (req, res) => {
 
     const today = new Date().toISOString().split('T')[0];
 
-    const wcCard = WC_PREDICTION_CARDS[today];
-    const matchesForCheck = wcCard?.matches ?? null;
-    if (matchesForCheck?.length > 0) {
-      const firstKickoff = matchesForCheck.map(m => new Date(m.kickoff)).sort((a, b) => a - b)[0];
-      if (new Date() >= firstKickoff) {
+    const { data: dbCard } = await supabase
+      .from('daily_prediction_cards')
+      .select('matches')
+      .eq('date', today)
+      .single();
+
+    if (dbCard?.matches?.length > 0) {
+      const firstKickoff = dbCard.matches
+        .map(m => new Date(m.kickoff))
+        .sort((a, b) => a - b)[0];
+      if (firstKickoff && new Date() >= firstKickoff) {
         return res.status(400).json({ error: 'Cannot unlock — first match has started' });
-      }
-    } else {
-      const { data: dbCard } = await supabase
-        .from('daily_prediction_cards')
-        .select('matches')
-        .eq('date', today)
-        .single();
-      if (dbCard?.matches?.length > 0) {
-        const firstKickoff = dbCard.matches.map(m => new Date(m.kickoff)).sort((a, b) => a - b)[0];
-        if (new Date() >= firstKickoff) {
-          return res.status(400).json({ error: 'Cannot unlock — first match has started' });
-        }
       }
     }
 
@@ -211,20 +186,40 @@ router.get('/my-prediction', async (req, res) => {
   }
 });
 
-// Pre-tournament fallback for dates with no AI-generated card.
-// Shows the nearest upcoming WC match rather than fake data.
-function getPreTournamentCard(date) {
-  // Find the nearest static WC card to show as preview
-  const wcDates = Object.keys(WC_PREDICTION_CARDS).sort();
-  const nearest = wcDates.find(d => d >= date) || wcDates[0];
-  const previewCard = WC_PREDICTION_CARDS[nearest];
+// Fallback: pull the nearest upcoming fixture from live API to show as preview
+async function getPreTournamentCard(date) {
+  try {
+    // Check DB for a future card first
+    const { data: futureCard } = await supabase
+      .from('daily_prediction_cards')
+      .select('*')
+      .gte('date', date)
+      .order('date', { ascending: true })
+      .limit(1)
+      .maybeSingle();
 
-  return {
-    ...previewCard,
-    date,
-    _isPreview: true,
-    _previewFor: nearest,
-  };
+    if (futureCard) {
+      return { ...futureCard, _isPreview: true, _previewFor: futureCard.date };
+    }
+
+    // Otherwise build a minimal card from the next upcoming fixture
+    const fixtures = await getUpcomingFixtures(7);
+    if (!fixtures.length) return null;
+
+    const f = fixtures[0];
+    return {
+      date,
+      matches: [{ homeTeam: f.homeTeam, awayTeam: f.awayTeam, kickoff: f.kickoff, kickoffET: f.kickoffET, venue: f.venue, stage: f.stage }],
+      daily_questions: [],
+      feature_match: { homeTeam: f.homeTeam, awayTeam: f.awayTeam, stage: f.stage, venue: f.venue, props: [] },
+      bonus: null,
+      _isPreview: true,
+      _previewFor: f.date,
+    };
+  } catch (err) {
+    console.error('getPreTournamentCard error:', err.message);
+    return null;
+  }
 }
 
 module.exports = router;

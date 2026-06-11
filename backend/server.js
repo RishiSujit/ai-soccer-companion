@@ -37,8 +37,8 @@ app.get('/health', (req, res) => {
   res.json({
     status: 'ok',
     timestamp: new Date().toISOString(),
-    league: process.env.ACTIVE_LEAGUE_ID,
-    season: process.env.ACTIVE_SEASON,
+    competition_id: process.env.LIVESCORE_COMPETITION_ID || '362',
+    api: 'livescore-api.com',
   });
 });
 

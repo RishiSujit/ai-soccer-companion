@@ -1,13 +1,11 @@
 const { createClient } = require('@supabase/supabase-js');
-const axios = require('axios');
+const { getFinishedMatches } = require('../lib/livescoreApi');
 require('dotenv').config();
 
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
-const API_KEY = process.env.API_FOOTBALL_KEY;
-const BASE_URL = 'https://v3.football.api-sports.io';
 
 async function scoreCard(date) {
   console.log(`\nScoring card for ${date}`);
@@ -23,17 +21,7 @@ async function scoreCard(date) {
     return;
   }
 
-  const res = await axios.get(`${BASE_URL}/fixtures`, {
-    params: {
-      league: process.env.ACTIVE_LEAGUE_ID || 1,
-      season: process.env.ACTIVE_SEASON || 2026,
-      date,
-      status: 'FT',
-    },
-    headers: { 'x-apisports-key': API_KEY },
-  });
-
-  const finishedMatches = res.data.response || [];
+  const finishedMatches = await getFinishedMatches(date);
 
   const totalMatches = card.matches.length;
   if (finishedMatches.length < totalMatches) {
@@ -78,14 +66,13 @@ async function scoreCard(date) {
 function buildActualResults(matches, card) {
   const results = {};
   let totalGoals = 0;
-  let hasRedCard = false;
   const matchGoals = {};
 
   matches.forEach(m => {
-    const home = m.teams.home.name;
-    const away = m.teams.away.name;
-    const homeGoals = m.goals.home || 0;
-    const awayGoals = m.goals.away || 0;
+    const home = m.home_name;
+    const away = m.away_name;
+    const homeGoals = parseInt(m.score) || 0;
+    const awayGoals = parseInt(m.away_score) || 0;
     const goals = homeGoals + awayGoals;
 
     totalGoals += goals;
@@ -101,21 +88,20 @@ function buildActualResults(matches, card) {
 
   results.totalGoals = totalGoals;
   results.mostGoalsMatch = mostGoalsMatch;
-  results.hasRedCard = hasRedCard;
+  results.hasRedCard = false;
   results.matchGoals = matchGoals;
 
-  const featureMatch = card.feature_match;
-  const fm = matches.find(m =>
-    m.teams.home.name === featureMatch.homeTeam ||
-    m.teams.away.name === featureMatch.homeTeam
+  const fm = card.feature_match;
+  const fmFixture = matches.find(m =>
+    m.home_name === fm?.homeTeam || m.away_name === fm?.homeTeam
   );
-  if (fm) {
-    const homeGoals = fm.goals.home || 0;
-    const awayGoals = fm.goals.away || 0;
+  if (fmFixture && fm) {
+    const h = parseInt(fmFixture.score) || 0;
+    const a = parseInt(fmFixture.away_score) || 0;
     results.featureResult =
-      homeGoals > awayGoals ? `${featureMatch.homeTeam} win` :
-      awayGoals > homeGoals ? `${featureMatch.awayTeam} win` : 'Draw';
-    results.featureGoals = homeGoals + awayGoals;
+      h > a ? `${fm.homeTeam} win` :
+      a > h ? `${fm.awayTeam} win` : 'Draw';
+    results.featureGoals = h + a;
   }
 
   return results;
@@ -146,7 +132,7 @@ function calculatePoints(answers, bonusTaken, results, card) {
     if (correct) total += q.points;
   });
 
-  card.feature_match.props.forEach(p => {
+  card.feature_match?.props?.forEach(p => {
     const userAnswer = answers[p.id];
     if (!userAnswer) return;
 
@@ -161,7 +147,6 @@ function calculatePoints(answers, bonusTaken, results, card) {
         (userAnswer === '4+' && goals >= 4)
       );
     }
-    // fm2 (player prop) requires events API — skip for now
 
     if (correct) total += p.points;
   });
