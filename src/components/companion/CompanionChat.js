@@ -5,14 +5,6 @@ import PivotalMomentAlert from '../PivotalMomentAlert';
 import FormationPitch from './FormationPitch';
 import LineupList from './LineupList';
 
-const FLAGS = {
-  'Argentina':'🇦🇷','France':'🇫🇷','Brazil':'🇧🇷',
-  'England':'🏴󠁧󠁢󠁥󠁮󠁧󠁿','Germany':'🇩🇪','Spain':'🇪🇸',
-  'USA':'🇺🇸','Mexico':'🇲🇽','Portugal':'🇵🇹',
-  'Netherlands':'🇳🇱','Italy':'🇮🇹','Japan':'🇯🇵',
-  'Morocco':'🇲🇦','Senegal':'🇸🇳','Australia':'🇦🇺',
-  'Croatia':'🇭🇷','Uruguay':'🇺🇾','Colombia':'🇨🇴',
-};
 
 const MATCH_OPENING = "I'm your match companion for this game. Ask me anything — rules, players, what just happened. I'll explain it in plain English.";
 const GENERAL_OPENING = "Hey! I'm your World Cup 2026 companion. Ask me anything — rules, players, how the tournament works, or what's been happening. What's on your mind?";
