@@ -92,6 +92,17 @@ export const getLiveMatches = async () => {
   }
 };
 
+export const getUpcomingMatches = async () => {
+  try {
+    const response = await fetch(`${API_URL}/api/matches/upcoming`);
+    if (!response.ok) throw new Error('Failed');
+    return response.json();
+  } catch (err) {
+    console.error('getUpcomingMatches error:', err);
+    return { matches: [] };
+  }
+};
+
 export const getRecapForTeam = async (team) => {
   try {
     const res = await fetch(`${API_URL}/api/home/recap/${encodeURIComponent(team)}`);
