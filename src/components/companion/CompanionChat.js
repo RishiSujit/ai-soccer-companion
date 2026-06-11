@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { sendCompanionMessage, getMatchOdds, getTeamSquad } from '../../services/api';
+import { sendCompanionMessage, getMatchOdds, getTeamSquad, getLiveMatches } from '../../services/api';
 import { supabase } from '../../lib/supabase';
 import PivotalMomentAlert from '../PivotalMomentAlert';
 import FormationPitch from './FormationPitch';
@@ -280,6 +280,7 @@ function CompanionChat({ match, userContext, userId, onBack, preloadedQuestion, 
     } catch {}
     return true;
   });
+  const [liveMatch, setLiveMatch] = useState(match);
   const [matchOdds, setMatchOdds] = useState(null);
   const [oddsLoading, setOddsLoading] = useState(false);
   const [oddsExpanded, setOddsExpanded] = useState(false);
@@ -287,6 +288,24 @@ function CompanionChat({ match, userContext, userId, onBack, preloadedQuestion, 
 
   const lastEventIdRef = useRef(null);
   const preloadFiredRef = useRef(false);
+
+  // Poll live score every 60s when in live match mode
+  useEffect(() => {
+    if (!match?.isLive) return;
+
+    const pollScore = () => {
+      getLiveMatches().then(data => {
+        const updated = data?.matches?.find(
+          m => m.matchId === match.matchId || m.id === match.id
+        );
+        if (updated) setLiveMatch(updated);
+      }).catch(() => {});
+    };
+
+    pollScore();
+    const interval = setInterval(pollScore, 60000);
+    return () => clearInterval(interval);
+  }, [match?.matchId, match?.isLive]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const sendMessage = async (text) => {
     const trimmed = text.trim();
@@ -303,7 +322,8 @@ function CompanionChat({ match, userContext, userId, onBack, preloadedQuestion, 
     const updatedHistory = [...conversationHistory, { role: 'user', content: trimmed }];
 
     try {
-      const result = await sendCompanionMessage(trimmed, conversationHistory, match, userContext);
+      const contextToSend = currentMatchContext || liveMatch || match;
+      const result = await sendCompanionMessage(trimmed, conversationHistory, contextToSend, userContext);
       const assistantMessage = {
         role: 'assistant',
         content: result.reply,
@@ -527,24 +547,24 @@ function CompanionChat({ match, userContext, userId, onBack, preloadedQuestion, 
           <button className="back-btn" onClick={onBack}>← Change match</button>
           <div className="hero-stage-tag">
             <div className="live-indicator" />
-            {match.stage}{match.minute ? ` · ${match.minute}'` : ''}
+            {match.stage}{(liveMatch.minute ?? match.minute) ? ` · ${liveMatch.minute ?? match.minute}'` : ''}
           </div>
           <div className="hero-minute-badge">
-            {match.minute ? `${match.minute}'` : match.status}
+            {(liveMatch.minute ?? match.minute) ? `${liveMatch.minute ?? match.minute}'` : match.status}
           </div>
         </div>
         <div className="hero-score-row">
           <div className="hero-team">
-            <div className="hero-flag">{FLAGS[match.homeTeam] ?? '🌍'}</div>
+            <div className="hero-flag">{match.homeFlag || '🌍'}</div>
             <div className="hero-name">{match.homeTeam}</div>
           </div>
           <div className="hero-scores">
-            <span className="hero-score-n">{match.homeScore ?? '–'}</span>
+            <span className="hero-score-n">{(liveMatch.homeScore ?? match.homeScore) ?? '–'}</span>
             <span className="hero-score-div">–</span>
-            <span className="hero-score-n">{match.awayScore ?? '–'}</span>
+            <span className="hero-score-n">{(liveMatch.awayScore ?? match.awayScore) ?? '–'}</span>
           </div>
           <div className="hero-team">
-            <div className="hero-flag">{FLAGS[match.awayTeam] ?? '🌍'}</div>
+            <div className="hero-flag">{match.awayFlag || '🌍'}</div>
             <div className="hero-name">{match.awayTeam}</div>
           </div>
         </div>

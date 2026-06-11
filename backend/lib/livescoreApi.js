@@ -52,7 +52,7 @@ async function getLiveMatches() {
         minute: isLive ? parseInt(m.time) || 0 : null,
         status: m.status,
         isLive,
-        stage: inferStage(m.competition?.name),
+        stage: 'Group Stage',
         venue: m.location || '',
         homeFlag: getFlagEmoji(m.home.name),
         awayFlag: getFlagEmoji(m.away.name),
@@ -181,15 +181,15 @@ async function getFinishedMatches(date) {
 }
 
 async function getMatchEvents(matchId) {
-  const data = await call('/matches/events.json', { match_id: matchId });
+  const data = await call('/scores/events.json', { id: matchId });
   if (!data?.data?.event) return [];
 
   return data.data.event.map(e => ({
-    type: e.type,
+    type: e.event,
     minute: e.time,
     player: { name: e.player },
     team: { name: e.home_away === 'h' ? 'home' : 'away' },
-    detail: e.extra || e.type,
+    detail: e.info || e.event,
   }));
 }
 

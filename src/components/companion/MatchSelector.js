@@ -146,16 +146,11 @@ function ScheduleMatchRow({ match, pred, predsLoading, onMatchSelected }) {
 
   return (
     <div className="ms-schedule-row" onClick={() => onMatchSelected({
-      id: match.id,
-      homeTeam: match.homeTeam,
-      awayTeam: match.awayTeam,
+      ...match,
       homeScore: null,
       awayScore: null,
-      stage: match.stage,
-      status: 'NS',
-      kickoff: match.kickoff,
-      venue: match.venue,
-      general: false,
+      isLive: false,
+      status: match.status || 'NS',
     })}>
       <span className="ms-srow__flag">{flag(match, 'home')}</span>
       <div className="ms-srow__center">
@@ -210,20 +205,29 @@ function MatchSelector({ onMatchSelected }) {
   const [predictions, setPredictions]       = useState({});
   const [predsLoading, setPredsLoading]     = useState(false);
 
-  // Load live matches — auto-switch tab if any are truly live
+  // Load live matches — auto-switch tab if any are truly live; poll every 60s
   useEffect(() => {
-    getLiveMatches().then(data => {
-      const matches = data?.matches || [];
-      const live    = matches.filter(m => isLiveStatus(m.status) && m.isLive);
-      const preKick = matches.filter(m => isLiveStatus(m.status) && !m.isLive);
-      const results = matches.filter(m => isResultStatus(m.status));
+    let mounted = true;
 
-      setLiveMatches([...live, ...preKick]);
-      setResultMatches(results);
+    const fetchLive = (initial = false) => {
+      getLiveMatches().then(data => {
+        if (!mounted) return;
+        const matches = data?.matches || [];
+        const live    = matches.filter(m => isLiveStatus(m.status) && m.isLive);
+        const preKick = matches.filter(m => isLiveStatus(m.status) && !m.isLive);
+        const results = matches.filter(m => isResultStatus(m.status));
 
-      if (live.length > 0) setActiveFilter('Live');
-      setLoading(false);
-    }).catch(() => setLoading(false));
+        setLiveMatches([...live, ...preKick]);
+        setResultMatches(results);
+
+        if (live.length > 0) setActiveFilter('Live');
+        if (initial) setLoading(false);
+      }).catch(() => { if (mounted && initial) setLoading(false); });
+    };
+
+    fetchLive(true);
+    const interval = setInterval(() => fetchLive(false), 60000);
+    return () => { mounted = false; clearInterval(interval); };
   }, []);
 
   // Load upcoming schedule from live API
