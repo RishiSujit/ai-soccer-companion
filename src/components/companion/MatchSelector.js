@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getLiveMatches, getUpcomingMatches, getMatchPredictions } from '../../services/api';
+import { getLiveMatches, getUpcomingMatches, getMatchPredictions, getResultMatches } from '../../services/api';
 import './MatchSelector.css';
 
 const FLAGS = {
@@ -234,6 +234,17 @@ function MatchSelector({ onMatchSelected }) {
   useEffect(() => {
     getUpcomingMatches().then(data => {
       setUpcomingMatches(data?.matches || []);
+    }).catch(() => {});
+  }, []);
+
+  // Load finished matches from history API (persists after live feed drops them)
+  useEffect(() => {
+    getResultMatches().then(data => {
+      const results = data?.matches || [];
+      if (results.length > 0) {
+        setResultMatches(results);
+        setActiveFilter('Results');
+      }
     }).catch(() => {});
   }, []);
 

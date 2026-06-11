@@ -259,25 +259,26 @@ router.post('/', async (req, res) => {
 
     const isLiveMode = !!(matchContext || liveContext?.homeTeam);
 
-    // Fetch live events directly — frontend matchContext never carries recentEventsText
+    // Fetch events for both live AND finished matches
     let eventsContext = activeMatch?.recentEventsText || liveContext?.recentEventsText || '';
-    if ((!eventsContext || eventsContext === 'No events yet') && activeMatch?.isLive === true) {
-      const matchId = activeMatch?.matchId || activeMatch?.id;
-      if (matchId) {
-        try {
-          const events = await getMatchEvents(matchId);
-          if (events?.length) {
-            eventsContext = events.slice(-10).map(e => {
+    const matchId = activeMatch?.matchId || activeMatch?.id;
+    if ((!eventsContext || eventsContext === 'No events yet') && matchId) {
+      try {
+        const events = await getMatchEvents(matchId);
+        if (events?.length) {
+          eventsContext = events
+            .filter(e => ['GOAL', 'GOAL_PENALTY', 'OWN_GOAL', 'RED_CARD', 'YELLOW_CARD'].includes(e.type))
+            .slice(-15)
+            .map(e => {
               const team = e.isHome ? (activeMatch?.homeTeam || 'home') : (activeMatch?.awayTeam || 'away');
               const assist = e.assist ? ` (assist: ${e.assist})` : '';
               const label = e.label || e.type || 'Event';
               const playerName = e.player?.name || 'Unknown';
               return `${e.minute}' ${label}: ${playerName}${assist} (${team})`;
             }).join('\n');
-          }
-        } catch (err) {
-          console.error('[Companion] Events error:', err.message);
         }
+      } catch (err) {
+        console.error('[Companion] Events error:', err.message);
       }
     }
 

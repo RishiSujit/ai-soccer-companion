@@ -218,9 +218,125 @@ async function getMatchLineups(matchId) {
   return data?.data || null;
 }
 
+// Returns finished matches for a date range from the history feed
+async function getHistoryMatches(from, to) {
+  const data = await call('/scores/history.json', {
+    competition_id: COMP,
+    from,
+    to,
+  });
+  if (!data?.data?.match) return [];
+
+  return data.data.match.map(m => {
+    const ftParts = (m.ft_score || m.score || '0 - 0').split(' - ');
+    return {
+      id: String(m.id),
+      fixtureId: String(m.fixture_id || ''),
+      homeTeam: m.home_name,
+      awayTeam: m.away_name,
+      homeId: m.home_id,
+      awayId: m.away_id,
+      homeScore: parseInt(ftParts[0]) || 0,
+      awayScore: parseInt(ftParts[1]) || 0,
+      htScore: m.ht_score || '',
+      ftScore: m.ft_score || m.score || '',
+      status: m.status || 'FINISHED',
+      date: m.date,
+      venue: m.location || '',
+      stage: 'Group Stage',
+      homeFlag: getFlagEmoji(m.home_name),
+      awayFlag: getFlagEmoji(m.away_name),
+      isLive: false,
+      isFinished: true,
+      matchId: String(m.id),
+      eventsUrl: m.events || '',
+      lineupsUrl: m.has_lineups
+        ? `${BASE}/matches/lineups.json?match_id=${m.id}`
+        : '',
+    };
+  });
+}
+
+// Fetch events using the events URL stored on the match object
+async function getMatchEventsByUrl(eventsUrl) {
+  if (!eventsUrl) return [];
+  try {
+    const url = new URL(eventsUrl);
+    const matchId = url.searchParams.get('id');
+    if (!matchId) return [];
+    return getMatchEvents(matchId);
+  } catch {
+    return [];
+  }
+}
+
+// Fetch lineup using the lineups URL stored on the match object
+async function getLineupsByUrl(lineupsUrl) {
+  if (!lineupsUrl) return null;
+  try {
+    const url = new URL(lineupsUrl);
+    const matchId = url.searchParams.get('match_id');
+    if (!matchId) return null;
+    const data = await call('/matches/lineups.json', { match_id: matchId });
+    return data?.data?.lineup || null;
+  } catch {
+    return null;
+  }
+}
+
+// Parse raw lineup object into squad format for a specific team
+function parseLineupForTeam(lineup, teamName) {
+  if (!lineup) return null;
+  const teamLower = teamName.toLowerCase();
+  const homeName = lineup.home?.team?.name?.toLowerCase() || '';
+  const isHome =
+    homeName.includes(teamLower.split(' ')[0]) ||
+    teamLower.includes(homeName.split(' ')[0]);
+  const teamData = isHome ? lineup.home : lineup.away;
+  if (!teamData?.players?.length) return null;
+
+  const starters = teamData.players.filter(p => p.substitution === '0');
+  const subs = teamData.players.filter(p => p.substitution === '1');
+
+  return {
+    team: teamData.team?.name || teamName,
+    formation: isHome ? lineup.home_formation : lineup.away_formation,
+    players: [
+      ...starters.map(p => ({
+        name: p.name,
+        number: parseInt(p.shirt_number) || 0,
+        position: p.position || 'MF',
+        positionFull: expandPosition(p.position),
+        isStarter: true,
+        isKeyStar: false,
+        photo: p.photo || null,
+      })),
+      ...subs.map(p => ({
+        name: p.name,
+        number: parseInt(p.shirt_number) || 0,
+        position: p.position || 'MF',
+        positionFull: expandPosition(p.position),
+        isStarter: false,
+        isKeyStar: false,
+        photo: p.photo || null,
+      })),
+    ],
+  };
+}
+
 async function getStandings() {
   const data = await call('/league-tables/standings.json', { competition_id: COMP });
   return data?.data || null;
+}
+
+function expandPosition(pos) {
+  const map = {
+    GK: 'Goalkeeper', DF: 'Defender', MF: 'Midfielder', FW: 'Forward',
+    CB: 'Centre Back', RB: 'Right Back', LB: 'Left Back',
+    CM: 'Central Midfielder', CAM: 'Attacking Midfielder', CDM: 'Defensive Midfielder',
+    RW: 'Right Winger', LW: 'Left Winger', ST: 'Striker', CF: 'Centre Forward',
+  };
+  return map[pos] || pos || 'Player';
 }
 
 function inferStage(round) {
@@ -324,8 +440,12 @@ module.exports = {
   getFixturesInRange,
   getFixturesForDate,
   getFinishedMatches,
+  getHistoryMatches,
   getMatchEvents,
+  getMatchEventsByUrl,
   getMatchLineups,
+  getLineupsByUrl,
+  parseLineupForTeam,
   getStandings,
   getFlagEmoji,
   convertToET,
