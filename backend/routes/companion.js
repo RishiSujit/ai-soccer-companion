@@ -192,18 +192,22 @@ function buildMatchContextString(matchContext) {
 
   const {
     homeTeam, awayTeam, homeScore, awayScore,
-    minute, stage, derivedSignals, recentEventsText, stats,
+    minute, stage, venue, kickoffET, derivedSignals, recentEventsText, stats,
   } = matchContext;
 
   const scoreStr = (homeScore !== null && awayScore !== null)
     ? `${homeScore} - ${awayScore}`
-    : 'Score not available';
+    : 'Not started';
 
   let context = `LIVE MATCH:
 ${homeTeam} ${scoreStr} ${awayTeam}
-Minute: ${minute || 'Not started'}'
+Minute: ${minute != null ? minute + "'" : 'Not started'}
 Stage: ${stage || 'Unknown'}
 `;
+
+  if (venue) context += `Venue: ${venue}\n`;
+  if (kickoffET && minute == null) context += `Kickoff: ${kickoffET}\n`;
+
 
   if (recentEventsText && recentEventsText !== 'No events yet') {
     context += `

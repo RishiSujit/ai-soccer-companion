@@ -1,13 +1,16 @@
-const axios = require('axios');
+'use strict';
+
+const { getLiveMatches, getUpcomingFixtures, getMatchEvents } = require('./livescoreApi');
 const { buildDerivedSignals } = require('./matchSignals');
 
 const FALLBACK = {
-  homeTeam: 'Argentina',
-  awayTeam: 'France',
+  homeTeam: 'Mexico',
+  awayTeam: 'South Africa',
   homeScore: null,
   awayScore: null,
   minute: null,
   stage: 'Group Stage',
+  venue: 'Estadio Azteca, Mexico City',
   isLive: false,
   events: [],
   stats: {},
@@ -15,17 +18,8 @@ const FALLBACK = {
   recentEventsText: 'No events yet',
 };
 
-const ACTIVE_LEAGUE_ID = parseInt(process.env.ACTIVE_LEAGUE_ID) || 1;
-const ACTIVE_SEASON = parseInt(process.env.ACTIVE_SEASON) || 2026;
-
-const api = axios.create({
-  baseURL: 'https://v3.football.api-sports.io',
-  headers: { 'x-apisports-key': process.env.API_FOOTBALL_KEY },
-  timeout: 5000,
-});
-
 const matchCache = { data: null, lastFetched: null };
-const CACHE_TTL = 2 * 60 * 1000;
+const CACHE_TTL = 30 * 1000;
 
 function buildRecentEventsText(events, count = 5) {
   if (!events?.length) return 'No events yet';
@@ -38,120 +32,104 @@ function buildRecentEventsText(events, count = 5) {
       const type = e.type || '';
       const detail = e.detail || '';
       return `${min}' — ${type}` +
-        (detail ? ` (${detail})` : '') +
+        (detail && detail !== type ? ` (${detail})` : '') +
         (player ? ` — ${player}` : '') +
         (team ? ` [${team}]` : '');
     })
     .join('\n');
 }
 
-async function fetchEventsAndStats(fixtureId) {
-  let events = [];
-  let stats = {};
-
-  try {
-    const eventsRes = await api.get('/fixtures/events', {
-      params: { fixture: fixtureId },
-    });
-    events = eventsRes.data.response || [];
-  } catch (err) {
-    console.log('Events fetch failed:', err.message);
-  }
-
-  try {
-    const statsRes = await api.get('/fixtures/statistics', {
-      params: { fixture: fixtureId },
-    });
-    const homeStats = statsRes.data.response?.[0]?.statistics || [];
-    const awayStats = statsRes.data.response?.[1]?.statistics || [];
-
-    const getPossession = (arr) => {
-      const p = arr.find(s => s.type === 'Ball Possession');
-      return parseInt(p?.value || '50%') || 50;
-    };
-
-    stats = {
-      possession: {
-        home: getPossession(homeStats),
-        away: getPossession(awayStats),
-      },
-      shots: {
-        home: homeStats.find(s => s.type === 'Total Shots')?.value || 0,
-        away: awayStats.find(s => s.type === 'Total Shots')?.value || 0,
-      },
-    };
-  } catch (err) {
-    console.log('Stats fetch failed:', err.message);
-  }
-
-  return { events, stats };
+// livescoreApi returns team.name as 'home'/'away' — remap to actual team names
+// matchSignals expects time.elapsed (number) and team.name (team name string)
+function normalizeEvents(rawEvents, homeTeam, awayTeam) {
+  return (rawEvents || []).map(e => ({
+    type: e.type,
+    time: { elapsed: typeof e.minute === 'string' ? parseInt(e.minute) || 0 : (e.minute || 0) },
+    team: { name: e.team?.name === 'home' ? homeTeam : awayTeam },
+    player: e.player,
+    detail: e.detail,
+  }));
 }
 
-async function buildFullMatchContext(fixture, isLive) {
-  const { teams, goals, fixture: details, league } = fixture;
-
-  const matchState = {
-    homeTeam: teams.home.name,
-    awayTeam: teams.away.name,
-    homeScore: goals.home || 0,
-    awayScore: goals.away || 0,
-    minute: details.status.elapsed || 0,
-    stage: league.round || 'World Cup 2026',
-    isExtraTime: details.status.short === 'ET',
-    isPenaltyShootout: details.status.short === 'P',
-  };
-
-  const { events, stats } = isLive
-    ? await fetchEventsAndStats(details.id)
-    : { events: [], stats: {} };
-
-  const derivedSignals = buildDerivedSignals(matchState, events, stats);
-
-  return {
-    homeTeam: matchState.homeTeam,
-    awayTeam: matchState.awayTeam,
-    homeScore: goals.home,
-    awayScore: goals.away,
-    minute: details.status.elapsed,
-    stage: league.round,
-    isLive,
-    isExtraTime: matchState.isExtraTime,
-    isPenaltyShootout: matchState.isPenaltyShootout,
-    events: events.slice(-10),
-    stats,
-    derivedSignals,
-    recentEventsText: buildRecentEventsText(events, 5),
-  };
+function parseMinute(minuteVal) {
+  if (typeof minuteVal === 'number') return minuteVal;
+  if (minuteVal === 'HT') return 45;
+  if (minuteVal === 'FT' || minuteVal === 'AET') return 90;
+  return parseInt(minuteVal) || 0;
 }
 
 async function getLiveMatchContext() {
-  // Return cached data if still fresh
   if (matchCache.data && matchCache.lastFetched &&
       (Date.now() - matchCache.lastFetched) < CACHE_TTL) {
     return matchCache.data;
   }
 
   try {
-    // Step 1 — check for live matches in the active league
-    const liveRes = await api.get('/fixtures', { params: { live: 'all' } });
-    const liveFixtures = liveRes.data.response ?? [];
-    const liveWCMatch = liveFixtures.find(f => f.league.id === ACTIVE_LEAGUE_ID);
+    const liveMatches = await getLiveMatches();
 
-    if (liveWCMatch) {
-      const ctx = await buildFullMatchContext(liveWCMatch, true);
+    if (liveMatches.length > 0) {
+      const m = liveMatches[0];
+      const minuteNum = parseMinute(m.minute);
+      const isExtraTime = minuteNum > 90 || m.status === 'ET';
+      const isPenaltyShootout = m.status === 'PEN';
+
+      const rawEvents = await getMatchEvents(m.id);
+      const normalizedEvents = normalizeEvents(rawEvents, m.homeTeam, m.awayTeam);
+
+      const matchState = {
+        homeTeam: m.homeTeam,
+        awayTeam: m.awayTeam,
+        homeScore: m.homeScore,
+        awayScore: m.awayScore,
+        minute: minuteNum,
+        stage: m.stage || 'Group Stage',
+        isExtraTime,
+        isPenaltyShootout,
+      };
+
+      const derivedSignals = buildDerivedSignals(matchState, normalizedEvents, {});
+
+      const ctx = {
+        homeTeam: m.homeTeam,
+        awayTeam: m.awayTeam,
+        homeScore: m.homeScore,
+        awayScore: m.awayScore,
+        minute: minuteNum,
+        stage: m.stage || 'Group Stage',
+        venue: m.venue || '',
+        isLive: true,
+        isExtraTime,
+        isPenaltyShootout,
+        events: normalizedEvents.slice(-10),
+        stats: {},
+        derivedSignals,
+        recentEventsText: buildRecentEventsText(normalizedEvents, 5),
+      };
+
       matchCache.data = ctx;
       matchCache.lastFetched = Date.now();
       return ctx;
     }
 
-    // Step 2 — no live match, fetch next upcoming fixture
-    const nextRes = await api.get('/fixtures', {
-      params: { league: ACTIVE_LEAGUE_ID, season: ACTIVE_SEASON, next: 1 },
-    });
-    const nextFixtures = nextRes.data.response ?? [];
-
-    if (nextFixtures.length > 0) {
-      const ctx = await buildFullMatchContext(nextFixtures[0], false);
+    // No live match — return next upcoming fixture for pre-match context
+    const upcoming = await getUpcomingFixtures(1);
+    if (upcoming.length > 0) {
+      const f = upcoming[0];
+      const ctx = {
+        homeTeam: f.homeTeam,
+        awayTeam: f.awayTeam,
+        homeScore: null,
+        awayScore: null,
+        minute: null,
+        stage: f.stage || 'Group Stage',
+        venue: f.venue || '',
+        kickoffET: f.kickoffET,
+        isLive: false,
+        events: [],
+        stats: {},
+        derivedSignals: null,
+        recentEventsText: 'Match has not started yet',
+      };
       matchCache.data = ctx;
       matchCache.lastFetched = Date.now();
       return ctx;

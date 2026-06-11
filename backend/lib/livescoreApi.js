@@ -41,7 +41,7 @@ async function getLiveMatches() {
     awayScore: parseInt(m.away_score) || 0,
     minute: m.time === 'HT' || m.time === 'FT' ? m.time : parseInt(m.time) || 0,
     status: m.time === 'HT' ? 'HT' : m.time === 'FT' ? 'FT' : '1H',
-    stage: m.competition?.name || 'Group Stage',
+    stage: inferStage(m.round || m.competition?.name),
     venue: m.location || '',
     homeFlag: getFlagEmoji(m.home_name),
     awayFlag: getFlagEmoji(m.away_name),
@@ -68,7 +68,7 @@ async function getTodayFixtures() {
     status: 'NS',
     kickoff: toISOKickoff(f.date, f.time),
     kickoffET: convertToET(f.date, f.time),
-    stage: f.round || 'Group Stage',
+    stage: inferStage(f.round),
     venue: f.location || '',
     homeFlag: getFlagEmoji(f.home_name),
     awayFlag: getFlagEmoji(f.away_name),
@@ -97,7 +97,7 @@ async function getUpcomingFixtures(daysAhead = 7) {
     kickoff: toISOKickoff(f.date, f.time),
     kickoffET: convertToET(f.date, f.time),
     date: f.date,
-    stage: f.round || 'Group Stage',
+    stage: inferStage(f.round),
     venue: f.location || '',
     homeFlag: getFlagEmoji(f.home_name),
     awayFlag: getFlagEmoji(f.away_name),
@@ -123,7 +123,7 @@ async function getFixturesForDate(date) {
     time: f.time,
     kickoff: toISOKickoff(f.date, f.time),
     kickoffET: convertToET(f.date, f.time),
-    stage: f.round || 'Group Stage',
+    stage: inferStage(f.round),
     venue: f.location || '',
   }));
 }
@@ -159,6 +159,18 @@ async function getMatchLineups(matchId) {
 async function getStandings() {
   const data = await call('/league-tables/standings.json', { competition_id: COMP });
   return data?.data || null;
+}
+
+function inferStage(round) {
+  if (!round) return 'Group Stage';
+  const r = String(round).toLowerCase().trim();
+  if (/^\d+$/.test(r)) return 'Group Stage';
+  if (r.includes('final') && !r.includes('semi') && !r.includes('quarter')) return 'Final';
+  if (r.includes('semi')) return 'Semi-finals';
+  if (r.includes('quarter')) return 'Quarter-finals';
+  if (r.includes('round of 16') || r.includes('round of sixteen')) return 'Round of 16';
+  if (r.includes('round of 32')) return 'Round of 32';
+  return String(round);
 }
 
 function toISOKickoff(date, time) {
