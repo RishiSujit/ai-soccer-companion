@@ -243,9 +243,12 @@ export const getLiveWinProbability = async (home, away, homeScore, awayScore, mi
   }
 };
 
-export const getTeamSquad = async (team, opponent, date) => {
+export const getTeamSquad = async (team, opponent, date, lineupsUrl) => {
   try {
-    const params = new URLSearchParams({ team, ...(opponent && { opponent }), ...(date && { date }) });
+    const params = new URLSearchParams({ team });
+    if (opponent) params.append('opponent', opponent);
+    if (date) params.append('date', date);
+    if (lineupsUrl) params.append('lineupsUrl', encodeURIComponent(lineupsUrl));
     const res = await fetch(`${API_URL}/api/lineups/squad?${params}`);
     const data = await res.json();
     return data.squad || null;

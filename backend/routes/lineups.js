@@ -1,18 +1,85 @@
 const express = require('express');
 const router = express.Router();
 const Anthropic = require('@anthropic-ai/sdk');
+const { getMatchLineups } = require('../lib/livescoreApi');
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 const squadCache = new Map();
 const CACHE_TTL = 24 * 60 * 60 * 1000;
+const LIVE_CACHE_TTL = 5 * 60 * 1000;
 
-// GET /api/lineups/squad?team=Mexico&opponent=SouthAfrica&date=2026-06-11
+function mapPosition(pos) {
+  const map = { GK: 'GK', DF: 'CB', MF: 'CM', FW: 'ST' };
+  return map[pos] || pos;
+}
+
+// GET /api/lineups/squad?team=Mexico&opponent=SouthAfrica&date=2026-06-11&lineupsUrl=...
 router.get('/squad', async (req, res) => {
-  const { team, opponent, date } = req.query;
+  const { team, opponent, date, lineupsUrl } = req.query;
 
   if (!team) return res.status(400).json({ error: 'team required' });
 
+  // ── Live lineups path — use livescore API directly ─────────
+  if (lineupsUrl) {
+    let matchId;
+    try {
+      const url = new URL(decodeURIComponent(lineupsUrl));
+      matchId = url.searchParams.get('match_id');
+    } catch {}
+
+    if (matchId) {
+      const liveCacheKey = `live_${matchId}_${team.toLowerCase()}`;
+      const liveCached = squadCache.get(liveCacheKey);
+      if (liveCached && Date.now() - liveCached.ts < LIVE_CACHE_TTL) {
+        console.log('[Lineup] Live cache hit:', team);
+        return res.json({ squad: liveCached.data, cached: true });
+      }
+
+      try {
+        console.log('[Lineup] Fetching live lineups for match:', matchId, 'team:', team);
+        const lineupData = await getMatchLineups(matchId);
+        const lineup = lineupData?.lineup;
+
+        if (lineup?.home || lineup?.away) {
+          const homeTeamName = lineup.home?.team?.name || '';
+          const teamLower = team.toLowerCase();
+          const isHome = homeTeamName.toLowerCase().includes(teamLower.split(' ')[0]) ||
+                         teamLower.includes(homeTeamName.toLowerCase().split(' ')[0]);
+          const teamData = isHome ? lineup.home : lineup.away;
+
+          if (teamData?.players?.length) {
+            const squad = {
+              team: teamData.team?.name || team,
+              coach: '',
+              formation: '',
+              players: teamData.players.map(p => ({
+                name: p.name,
+                number: parseInt(p.shirt_number) || 0,
+                position: mapPosition(p.position),
+                positionFull: p.position || '',
+                club: '',
+                age: 0,
+                caps: 0,
+                goals: 0,
+                isKeyStar: false,
+                starReason: null,
+                photo: p.photo || null,
+              })),
+            };
+            squadCache.set(liveCacheKey, { data: squad, ts: Date.now() });
+            console.log('[Lineup] Live squad fetched:', squad.players.length, 'players for', team);
+            return res.json({ squad });
+          }
+        }
+      } catch (err) {
+        console.error('[Lineup] Live fetch error:', err.message);
+      }
+      // Fall through to Claude web search if live lineup fetch fails
+    }
+  }
+
+  // ── Claude web search path — upcoming matches ──────────────
   const cacheKey = team.toLowerCase();
   const cached = squadCache.get(cacheKey);
   if (cached && Date.now() - cached.ts < CACHE_TTL) {

@@ -369,11 +369,13 @@ function CompanionChat({ match, userContext, userId, onBack, preloadedQuestion, 
     setMobileTab(upcoming ? 'lineup' : 'formation');
   }, [match?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Fetch squads for upcoming matches via Claude web search
+  // Fetch squads — live matches use lineupsUrl (real API), upcoming use Claude web search
   useEffect(() => {
     if (!match?.homeTeam || !match?.awayTeam) return;
-    const upcoming = !match.isLive && (match.status === 'NS' || (!match.minute && (match.homeScore === null || match.homeScore === undefined)));
-    if (!upcoming) return;
+    const isUpcomingMatch = !match.isLive && (match.status === 'NS' || (!match.minute && (match.homeScore === null || match.homeScore === undefined)));
+    const hasLiveLineups = !!match.lineupsUrl;
+
+    if (!isUpcomingMatch && !hasLiveLineups) return;
 
     setSquadLoading(true);
     setHomeSquad(null);
@@ -381,8 +383,8 @@ function CompanionChat({ match, userContext, userId, onBack, preloadedQuestion, 
 
     const matchDate = match.date || (match.kickoff ? match.kickoff.split('T')[0] : undefined);
     Promise.all([
-      getTeamSquad(match.homeTeam, match.awayTeam, matchDate),
-      getTeamSquad(match.awayTeam, match.homeTeam, matchDate),
+      getTeamSquad(match.homeTeam, match.awayTeam, matchDate, match.lineupsUrl),
+      getTeamSquad(match.awayTeam, match.homeTeam, matchDate, match.lineupsUrl),
     ]).then(([home, away]) => {
       setHomeSquad(home);
       setAwaySquad(away);

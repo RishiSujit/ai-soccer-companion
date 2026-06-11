@@ -3,6 +3,7 @@ const router = express.Router();
 const { client } = require('../lib/anthropic');
 const { retrieve } = require('../lib/rag');
 const { getLiveMatchContext } = require('../lib/sports-api');
+const { getMatchEvents } = require('../lib/livescoreApi');
 
 const COMPANION_SYSTEM_PROMPT_TEMPLATE = `You are an AI soccer companion helping a casual American fan enjoy a live World Cup 2026 match.
 
@@ -258,6 +259,25 @@ router.post('/', async (req, res) => {
 
     const isLiveMode = !!(matchContext || liveContext?.homeTeam);
 
+    // Fetch live events directly — frontend matchContext never carries recentEventsText
+    let eventsContext = activeMatch?.recentEventsText || liveContext?.recentEventsText || '';
+    if ((!eventsContext || eventsContext === 'No events yet') && activeMatch?.isLive === true) {
+      const matchId = activeMatch?.matchId || activeMatch?.id;
+      if (matchId) {
+        try {
+          const events = await getMatchEvents(matchId);
+          if (events?.length) {
+            eventsContext = events
+              .slice(-10)
+              .map(e => `${e.minute}' — ${e.type}: ${e.player?.name || 'Unknown'}`)
+              .join('\n');
+          }
+        } catch (err) {
+          console.error('[Companion] Events error:', err.message);
+        }
+      }
+    }
+
     const useWebSearch = shouldEnableWebSearch(
       message,
       isLiveMode ? activeMatch : null
@@ -271,6 +291,10 @@ router.post('/', async (req, res) => {
       .replace('{USER_CONTEXT}', buildUserContextString(userContext))
       .replace('{MATCH_CONTEXT}', buildMatchContextString(activeMatch))
       .replace('{RETRIEVED_KNOWLEDGE}', retrievedKnowledge);
+
+    if (eventsContext && eventsContext !== 'No events yet' && eventsContext !== 'Match has not started yet') {
+      systemPrompt += `\n\nMATCH EVENTS (real data — treat as ground truth):\n${eventsContext}\n\nCRITICAL: Use these events as fact. Do NOT rely on training knowledge for scorers or timing. If events say Quinones scored in 9', that is what happened.`;
+    }
 
     if (useWebSearch) {
       systemPrompt += `
