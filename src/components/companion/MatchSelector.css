@@ -133,6 +133,28 @@
   color: #6666aa;
 }
 
+.ms-badge--soon {
+  background: #1a1200;
+  border: 1px solid #3a2800;
+  color: #f5a623;
+}
+
+.ms-card__kickoff-time {
+  font-size: 18px;
+  font-weight: 700;
+  color: #f5a623;
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 0.02em;
+}
+
+.ms-card__venue {
+  font-size: 10px;
+  color: #4444aa;
+  text-align: center;
+  margin-top: 4px;
+  font-family: 'Inter', sans-serif;
+}
+
 .ms-card__stage {
   font-size: 10px;
   font-weight: 600;

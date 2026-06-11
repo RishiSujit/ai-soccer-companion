@@ -57,6 +57,8 @@ async function getLiveMatches() {
         homeFlag: getFlagEmoji(m.home.name),
         awayFlag: getFlagEmoji(m.away.name),
         matchId: String(m.id),
+        scheduled: m.scheduled || m.time || null,
+        kickoffET: m.scheduled ? convertToET(new Date().toISOString().split('T')[0], m.scheduled) : null,
         lineupsUrl: m.urls?.lineups,
         eventsUrl: m.urls?.events,
       };

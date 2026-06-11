@@ -39,7 +39,11 @@ function formatDateHeader(dateStr) {
 }
 
 function isLiveStatus(s) {
-  return s === 'live' || ['1H', '2H', 'ET', 'P', 'LIVE'].includes(s);
+  if (!s) return false;
+  const upper = s.toUpperCase();
+  // Live feed returns "NOT STARTED" for matches ~30min before kickoff — show in Live tab
+  return ['1H', '2H', 'ET', 'P', 'LIVE', 'HT', 'IN PLAY', 'IN PROGRESS',
+          'NOT STARTED', 'NS'].includes(upper) || upper === 'LIVE';
 }
 
 function isResultStatus(s) {
@@ -47,13 +51,20 @@ function isResultStatus(s) {
 }
 
 function LiveMatchCard({ match, onMatchSelected }) {
+  const isPreKick = !match.isLive || match.status === 'NOT STARTED' || match.status === 'NS';
   return (
     <div className="ms-card ms-card--live">
       <div className="ms-card__top">
-        <div className="ms-badge ms-badge--live">
-          <div className="ms-badge__dot" />
-          <span>Live</span>
-        </div>
+        {isPreKick ? (
+          <div className="ms-badge ms-badge--soon">
+            <span>⏰ Kickoff Soon</span>
+          </div>
+        ) : (
+          <div className="ms-badge ms-badge--live">
+            <div className="ms-badge__dot" />
+            <span>Live</span>
+          </div>
+        )}
         <div className="ms-card__stage">{match.stage}</div>
       </div>
       <div className="ms-card__teams">
@@ -62,16 +73,25 @@ function LiveMatchCard({ match, onMatchSelected }) {
           <span className="ms-card__team-name">{match.homeTeam}</span>
         </div>
         <div className="ms-card__score-col">
-          <div className="ms-card__score-live">{match.homeScore} – {match.awayScore}</div>
-          <div className="ms-card__minute">{match.minute}'</div>
+          {isPreKick ? (
+            <div className="ms-card__kickoff-time">{match.kickoffET || match.scheduled || 'Today'}</div>
+          ) : (
+            <>
+              <div className="ms-card__score-live">{match.homeScore} – {match.awayScore}</div>
+              <div className="ms-card__minute">{match.minute}'</div>
+            </>
+          )}
         </div>
         <div className="ms-card__team ms-card__team--right">
           <span className="ms-card__flag">{FLAGS[match.awayTeam] ?? '🌍'}</span>
           <span className="ms-card__team-name">{match.awayTeam}</span>
         </div>
       </div>
+      {match.venue && (
+        <div className="ms-card__venue">{match.venue}</div>
+      )}
       <button className="ms-card__cta ms-card__cta--live" onClick={() => onMatchSelected(match)}>
-        Watch with Companion →
+        {isPreKick ? 'Open Companion →' : 'Watch with Companion →'}
       </button>
     </div>
   );
