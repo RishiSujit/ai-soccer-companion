@@ -1,157 +1,142 @@
 const express = require('express');
 const router = express.Router();
+const axios = require('axios');
 const Anthropic = require('@anthropic-ai/sdk');
-const { getMatchLineups } = require('../lib/livescoreApi');
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const KEY = process.env.LIVESCORE_API_KEY;
+const SECRET = process.env.LIVESCORE_API_SECRET;
+const cache = new Map();
+const TTL = 30 * 60 * 1000; // 30 mins
 
-const squadCache = new Map();
-const CACHE_TTL = 24 * 60 * 60 * 1000;
-const LIVE_CACHE_TTL = 5 * 60 * 1000;
-
-function mapPosition(pos) {
-  const map = { GK: 'GK', DF: 'CB', MF: 'CM', FW: 'ST' };
-  return map[pos] || pos;
-}
-
-// GET /api/lineups/squad?team=Mexico&opponent=SouthAfrica&date=2026-06-11&lineupsUrl=...
+// GET /api/lineups/squad?team=Mexico&matchId=716178
 router.get('/squad', async (req, res) => {
-  const { team, opponent, date, lineupsUrl } = req.query;
+  const { team, matchId } = req.query;
 
   if (!team) return res.status(400).json({ error: 'team required' });
 
-  // ── Live lineups path — use livescore API directly ─────────
-  if (lineupsUrl) {
-    let matchId;
+  const cacheKey = `${team.toLowerCase()}-${matchId || 'general'}`;
+  const cached = cache.get(cacheKey);
+  if (cached && Date.now() - cached.ts < TTL) {
+    return res.json({ squad: cached.data });
+  }
+
+  // PATH 1: Live API lineup — use when matchId available
+  if (matchId) {
     try {
-      const url = new URL(decodeURIComponent(lineupsUrl));
-      matchId = url.searchParams.get('match_id');
-    } catch {}
+      console.log('[Lineup] Fetching from API:', matchId, 'for team:', team);
 
-    if (matchId) {
-      const liveCacheKey = `live_${matchId}_${team.toLowerCase()}`;
-      const liveCached = squadCache.get(liveCacheKey);
-      if (liveCached && Date.now() - liveCached.ts < LIVE_CACHE_TTL) {
-        console.log('[Lineup] Live cache hit:', team);
-        return res.json({ squad: liveCached.data, cached: true });
-      }
+      const response = await axios.get(
+        'https://livescore-api.com/api-client/matches/lineups.json',
+        { params: { key: KEY, secret: SECRET, match_id: matchId }, timeout: 8000 }
+      );
 
-      try {
-        console.log('[Lineup] Fetching live lineups for match:', matchId, 'team:', team);
-        const lineupData = await getMatchLineups(matchId);
-        const lineup = lineupData?.lineup;
+      const lineup = response.data?.data?.lineup;
 
-        if (lineup?.home || lineup?.away) {
-          const homeTeamName = lineup.home?.team?.name || '';
-          const teamLower = team.toLowerCase();
-          const isHome = homeTeamName.toLowerCase().includes(teamLower.split(' ')[0]) ||
-                         teamLower.includes(homeTeamName.toLowerCase().split(' ')[0]);
-          const teamData = isHome ? lineup.home : lineup.away;
+      if (lineup) {
+        const teamLower = team.toLowerCase();
+        const homeName = lineup.home?.team?.name?.toLowerCase() || '';
+        const isHome = homeName.includes(teamLower.split(' ')[0]) ||
+                       teamLower.includes(homeName.split(' ')[0]);
+        const teamData = isHome ? lineup.home : lineup.away;
 
-          if (teamData?.players?.length) {
-            const squad = {
-              team: teamData.team?.name || team,
-              coach: '',
-              formation: '',
-              players: teamData.players.map(p => ({
+        if (teamData?.players?.length) {
+          const starters = teamData.players.filter(p => p.substitution === '0');
+          const subs     = teamData.players.filter(p => p.substitution === '1');
+
+          const squad = {
+            team: teamData.team?.name || team,
+            formation: isHome ? lineup.home_formation : lineup.away_formation,
+            players: [
+              ...starters.map(p => ({
                 name: p.name,
                 number: parseInt(p.shirt_number) || 0,
-                position: mapPosition(p.position),
-                positionFull: p.position || '',
-                club: '',
-                age: 0,
-                caps: 0,
-                goals: 0,
+                position: p.position || 'CM',
+                positionFull: expandPosition(p.position),
+                isStarter: true,
                 isKeyStar: false,
-                starReason: null,
                 photo: p.photo || null,
               })),
-            };
-            squadCache.set(liveCacheKey, { data: squad, ts: Date.now() });
-            console.log('[Lineup] Live squad fetched:', squad.players.length, 'players for', team);
-            return res.json({ squad });
-          }
+              ...subs.map(p => ({
+                name: p.name,
+                number: parseInt(p.shirt_number) || 0,
+                position: p.position || 'CM',
+                positionFull: expandPosition(p.position),
+                isStarter: false,
+                isKeyStar: false,
+                photo: p.photo || null,
+              })),
+            ],
+          };
+
+          cache.set(cacheKey, { data: squad, ts: Date.now() });
+          console.log('[Lineup] Got', squad.players.length, 'players for', team);
+          return res.json({ squad });
         }
-      } catch (err) {
-        console.error('[Lineup] Live fetch error:', err.message);
       }
-      // Fall through to Claude web search if live lineup fetch fails
+    } catch (err) {
+      console.error('[Lineup] API error:', err.message);
     }
   }
 
-  // ── Claude web search path — upcoming matches ──────────────
-  const cacheKey = team.toLowerCase();
-  const cached = squadCache.get(cacheKey);
-  if (cached && Date.now() - cached.ts < CACHE_TTL) {
-    console.log('[Lineup] Cache hit:', team);
-    return res.json({ squad: cached.data, cached: true });
-  }
+  // PATH 2: Claude web search fallback — upcoming matches without matchId
+  console.log('[Lineup] Web search fallback for:', team);
 
   try {
-    console.log('[Lineup] Fetching squad for:', team);
+    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
     const response = await client.messages.create({
       model: 'claude-sonnet-4-5',
       max_tokens: 2000,
       tools: [{ type: 'web_search_20250305', name: 'web_search' }],
-      system: `You are a sports data assistant for the 2026 FIFA World Cup.
-Search for the confirmed official squad and return ONLY valid JSON.
-
-Return this exact structure:
+      system: `Return ONLY valid JSON, nothing else.
 {
-  "team": "team name",
-  "coach": "coach name",
+  "team": "string",
   "formation": "4-3-3",
-  "players": [
-    {
-      "name": "Player Name",
-      "number": 10,
-      "position": "ST",
-      "positionFull": "Striker",
-      "club": "Club Name",
-      "age": 26,
-      "caps": 45,
-      "goals": 12,
-      "isKeyStar": true,
-      "starReason": "one sentence why they matter"
-    }
-  ]
-}
-
-Position codes: GK, RB, CB, LB, CDM, CM, CAM, RM, LM, RW, LW, ST
-Include the full 26-man squad. Mark the likely starting XI as the first 11 players.
-isKeyStar: true only for the 2-3 most famous/important players.
-If you cannot find data return: { "available": false }
-Return ONLY JSON. No other text.`,
+  "players": [{
+    "name": "string",
+    "number": 10,
+    "position": "ST",
+    "positionFull": "Striker",
+    "isStarter": true,
+    "isKeyStar": false
+  }]
+}`,
       messages: [{
         role: 'user',
-        content: `Find the complete official confirmed 2026 FIFA World Cup squad for ${team}. Search for their confirmed 26-player roster submitted to FIFA. Include shirt numbers, positions, clubs, ages, and international caps.${opponent ? ` They play ${opponent}${date ? ` on ${date}` : ''}.` : ''}`,
+        content: `Official 2026 World Cup squad for ${team}. Starting XI first.`,
       }],
     });
 
     const text = response.content
       .filter(b => b.type === 'text')
       .map(b => b.text)
-      .join('')
-      .replace(/```json/g, '')
-      .replace(/```/g, '')
-      .trim();
+      .join('');
 
-    const jsonStart = text.indexOf('{');
-    const jsonEnd = text.lastIndexOf('}');
-    if (jsonStart === -1 || jsonEnd === -1) return res.json({ squad: null });
+    const start = text.indexOf('{');
+    const end = text.lastIndexOf('}');
 
-    const squad = JSON.parse(text.slice(jsonStart, jsonEnd + 1));
-    if (squad.available === false) return res.json({ squad: null });
-
-    squadCache.set(cacheKey, { data: squad, ts: Date.now() });
-    console.log('[Lineup] Fetched squad:', squad.players?.length, 'players for', team);
-    res.json({ squad });
-
+    if (start !== -1 && end > start) {
+      const squad = JSON.parse(text.slice(start, end + 1));
+      if (squad?.players?.length) {
+        cache.set(cacheKey, { data: squad, ts: Date.now() });
+        return res.json({ squad });
+      }
+    }
   } catch (err) {
-    console.error('[Lineup] Error:', err.message);
-    res.json({ squad: null });
+    console.error('[Lineup] Web search error:', err.message);
   }
+
+  res.json({ squad: null });
 });
+
+function expandPosition(pos) {
+  const map = {
+    GK: 'Goalkeeper', DF: 'Defender', MF: 'Midfielder', FW: 'Forward',
+    CB: 'Centre Back', RB: 'Right Back', LB: 'Left Back',
+    CM: 'Central Midfielder', CAM: 'Attacking Midfielder', CDM: 'Defensive Midfielder',
+    RW: 'Right Winger', LW: 'Left Winger', ST: 'Striker', CF: 'Centre Forward',
+  };
+  return map[pos] || pos || 'Player';
+}
 
 module.exports = router;

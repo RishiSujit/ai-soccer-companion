@@ -381,10 +381,9 @@ function CompanionChat({ match, userContext, userId, onBack, preloadedQuestion, 
     setHomeSquad(null);
     setAwaySquad(null);
 
-    const matchDate = match.date || (match.kickoff ? match.kickoff.split('T')[0] : undefined);
     Promise.all([
-      getTeamSquad(match.homeTeam, match.awayTeam, matchDate, match.lineupsUrl),
-      getTeamSquad(match.awayTeam, match.homeTeam, matchDate, match.lineupsUrl),
+      getTeamSquad(match.homeTeam, match.matchId),
+      getTeamSquad(match.awayTeam, match.matchId),
     ]).then(([home, away]) => {
       setHomeSquad(home);
       setAwaySquad(away);
