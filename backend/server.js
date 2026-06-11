@@ -83,36 +83,30 @@ const { updateBracket } = require('./jobs/updateBracket');
 console.log("Generating today's hot take...");
 generateDailyHotTake().catch(console.error);
 
+const { getLiveMatches } = require('./lib/livescoreApi');
+
 setInterval(async () => {
   try {
-    const axios = require('axios');
-    const res = await axios.get(
-      'https://v3.football.api-sports.io/fixtures',
-      {
-        params: { league: 1, season: 2026, status: 'FT', last: 5 },
-        headers: { 'x-apisports-key': process.env.API_FOOTBALL_KEY },
+    const liveMatches = await getLiveMatches();
+
+    for (const match of liveMatches) {
+      if (match.status === 'FT') {
+        await generateRecapForMatch({
+          id: String(match.id),
+          homeTeam: match.homeTeam,
+          awayTeam: match.awayTeam,
+          homeScore: match.homeScore,
+          awayScore: match.awayScore,
+          stage: match.stage,
+        }).catch(console.error);
       }
-    );
-
-    const finished = res.data.response || [];
-
-    for (const fixture of finished) {
-      const match = {
-        id: String(fixture.fixture.id),
-        homeTeam: fixture.teams.home.name,
-        awayTeam: fixture.teams.away.name,
-        homeScore: fixture.goals.home,
-        awayScore: fixture.goals.away,
-        stage: fixture.league.round,
-      };
-      await generateRecapForMatch(match).catch(console.error);
     }
 
     await updateBracket().catch(console.error);
   } catch (err) {
     console.error('Polling error:', err);
   }
-}, 5 * 60 * 1000);
+}, 2 * 60 * 1000);
 
 console.log('Background jobs started');
 

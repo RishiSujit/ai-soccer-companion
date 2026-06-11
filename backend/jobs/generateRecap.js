@@ -19,18 +19,11 @@ async function generateRecapForMatch(match, userSports = ['NFL', 'NBA']) {
 
   let eventsContext = '';
   try {
-    const axios = require('axios');
-    const eventsRes = await axios.get(
-      'https://v3.football.api-sports.io/fixtures/events',
-      {
-        params: { fixture: match.id },
-        headers: { 'x-apisports-key': process.env.API_FOOTBALL_KEY },
-      }
-    );
-    const events = eventsRes.data.response;
+    const { getMatchEvents } = require('../lib/livescoreApi');
+    const events = await getMatchEvents(match.id);
     if (events?.length) {
       eventsContext = events
-        .map(e => `${e.time.elapsed}' — ${e.type}: ${e.player?.name} (${e.team?.name})`)
+        .map(e => `${e.minute}' — ${e.type}: ${e.player?.name} (${e.team?.name === 'home' ? match.homeTeam : match.awayTeam})`)
         .join('\n');
     }
   } catch (err) {

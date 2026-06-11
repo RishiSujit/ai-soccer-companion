@@ -1,5 +1,4 @@
 const { createClient } = require('@supabase/supabase-js');
-const axios = require('axios');
 require('dotenv').config();
 
 const supabase = createClient(
@@ -7,20 +6,10 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-const API_KEY = process.env.API_FOOTBALL_KEY;
-const BASE_URL = 'https://v3.football.api-sports.io';
+const { getFinishedMatches } = require('./livescoreApi');
 
 async function fetchFinishedFixtures(date) {
-  const res = await axios.get(`${BASE_URL}/fixtures`, {
-    params: {
-      league: process.env.ACTIVE_LEAGUE_ID || 1,
-      season: process.env.ACTIVE_SEASON || 2026,
-      date,
-      status: 'FT-AET-PEN-AWD-WO',
-    },
-    headers: { 'x-apisports-key': API_KEY },
-  });
-  return res.data.response || [];
+  return getFinishedMatches(date);
 }
 
 function buildActualResults(fixtures, card) {
@@ -29,10 +18,15 @@ function buildActualResults(fixtures, card) {
   const matchGoals = {};
 
   fixtures.forEach(m => {
-    const home = m.teams.home.name;
-    const away = m.teams.away.name;
-    const homeGoals = m.goals.home ?? 0;
-    const awayGoals = m.goals.away ?? 0;
+    // Support both livescore-api (home_name/score) and legacy (teams/goals) formats
+    const home = m.home_name || m.teams?.home?.name;
+    const away = m.away_name || m.teams?.away?.name;
+    const homeGoals = m.home_name
+      ? (parseInt(m.score) || 0)
+      : (m.goals?.home ?? 0);
+    const awayGoals = m.home_name
+      ? (parseInt(m.away_score) || 0)
+      : (m.goals?.away ?? 0);
     const goals = homeGoals + awayGoals;
 
     totalGoals += goals;
@@ -58,8 +52,8 @@ function buildActualResults(fixtures, card) {
   const fm = card?.feature_match;
   if (fm) {
     const fmFixture = fixtures.find(m => {
-      const h = m.teams.home.name.toLowerCase();
-      const a = m.teams.away.name.toLowerCase();
+      const h = (m.home_name || m.teams?.home?.name || '').toLowerCase();
+      const a = (m.away_name || m.teams?.away?.name || '').toLowerCase();
       const fmH = fm.homeTeam.toLowerCase();
       const fmA = fm.awayTeam.toLowerCase();
       return h.includes(fmH) || fmH.includes(h) ||
@@ -67,8 +61,12 @@ function buildActualResults(fixtures, card) {
     });
 
     if (fmFixture) {
-      const h = fmFixture.goals.home ?? 0;
-      const a = fmFixture.goals.away ?? 0;
+      const h = fmFixture.home_name
+        ? (parseInt(fmFixture.score) || 0)
+        : (fmFixture.goals?.home ?? 0);
+      const a = fmFixture.home_name
+        ? (parseInt(fmFixture.away_score) || 0)
+        : (fmFixture.goals?.away ?? 0);
       results.featureResult =
         h > a ? `${fm.homeTeam} win` :
         a > h ? `${fm.awayTeam} win` : 'Draw';
@@ -168,7 +166,7 @@ async function scoreDate(date) {
   try {
     fixtures = await fetchFinishedFixtures(date);
   } catch (err) {
-    console.error('[ScoringEngine] API-Football fetch failed:', err.message);
+    console.error('[ScoringEngine] Fetch failed:', err.message);
     return { scored: 0, skipped: 'api_error' };
   }
 

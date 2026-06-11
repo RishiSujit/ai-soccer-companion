@@ -56,20 +56,13 @@ async function checkAndGenerateBriefings(userTeam, userSports) {
     const twoHoursFromNow = new Date(now.getTime() + 2 * 60 * 60 * 1000);
     const fourHoursFromNow = new Date(now.getTime() + 4 * 60 * 60 * 1000);
 
-    const res = await axios.get('https://v3.football.api-sports.io/fixtures', {
-      params: {
-        league: process.env.ACTIVE_LEAGUE_ID || 1,
-        season: process.env.ACTIVE_SEASON || 2026,
-      },
-      headers: { 'x-apisports-key': process.env.API_FOOTBALL_KEY },
-    });
+    const { getUpcomingFixtures } = require('../lib/livescoreApi');
+    const allFixtures = await getUpcomingFixtures(1); // next 24 hours
 
-    const fixtures = res.data.response || [];
-
-    const upcoming = fixtures.filter(f => {
-      const kickoff = new Date(f.fixture.date);
+    const upcoming = allFixtures.filter(f => {
+      const kickoff = new Date(f.kickoff);
       const involvesTeam =
-        f.teams.home.name === userTeam || f.teams.away.name === userTeam;
+        f.homeTeam === userTeam || f.awayTeam === userTeam;
       const inWindow =
         kickoff >= twoHoursFromNow && kickoff <= fourHoursFromNow;
       return involvesTeam && inWindow;
@@ -78,10 +71,10 @@ async function checkAndGenerateBriefings(userTeam, userSports) {
     if (upcoming.length === 0) return null;
 
     const fixture = upcoming[0];
-    const homeTeam = fixture.teams.home.name;
-    const awayTeam = fixture.teams.away.name;
-    const stage = fixture.league.round;
-    const kickoffTime = fixture.fixture.date;
+    const homeTeam = fixture.homeTeam;
+    const awayTeam = fixture.awayTeam;
+    const stage = fixture.stage || 'Group Stage';
+    const kickoffTime = fixture.kickoff;
 
     const briefingText = await generatePreMatchBriefing(
       homeTeam, awayTeam, stage,
@@ -94,7 +87,7 @@ async function checkAndGenerateBriefings(userTeam, userSports) {
       stage,
       kickoffTime,
       briefing: briefingText,
-      fixtureId: fixture.fixture.id,
+      fixtureId: fixture.id,
     };
   } catch (err) {
     console.error('Briefing generation error:', err.message);

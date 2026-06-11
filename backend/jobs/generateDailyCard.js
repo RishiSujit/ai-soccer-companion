@@ -1,6 +1,5 @@
 const Anthropic = require('@anthropic-ai/sdk');
 const { createClient } = require('@supabase/supabase-js');
-const axios = require('axios');
 require('dotenv').config();
 
 const anthropic = new Anthropic({
@@ -10,22 +9,14 @@ const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
-const LEAGUE_ID = parseInt(process.env.ACTIVE_LEAGUE_ID) || 1;
-const SEASON = parseInt(process.env.ACTIVE_SEASON) || 2026;
-const API_KEY = process.env.API_FOOTBALL_KEY;
-const BASE_URL = 'https://v3.football.api-sports.io';
+
+const { getFixturesForDate } = require('../lib/livescoreApi');
 
 async function fetchTomorrowsFixtures() {
   try {
     const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000)
       .toISOString().split('T')[0];
-
-    const res = await axios.get(`${BASE_URL}/fixtures`, {
-      params: { league: LEAGUE_ID, season: SEASON, date: tomorrow },
-      headers: { 'x-apisports-key': API_KEY },
-    });
-
-    const fixtures = res.data.response || [];
+    const fixtures = await getFixturesForDate(tomorrow);
     console.log(`Tomorrow's fixtures: ${fixtures.length}`);
     return fixtures;
   } catch (err) {
@@ -37,13 +28,7 @@ async function fetchTomorrowsFixtures() {
 async function fetchTodaysFixtures() {
   try {
     const today = new Date().toISOString().split('T')[0];
-
-    const res = await axios.get(`${BASE_URL}/fixtures`, {
-      params: { league: LEAGUE_ID, season: SEASON, date: today },
-      headers: { 'x-apisports-key': API_KEY },
-    });
-
-    return res.data.response || [];
+    return await getFixturesForDate(today);
   } catch (err) {
     console.error('Fetch today fixtures error:', err.message);
     return [];
@@ -68,11 +53,11 @@ async function generateDailyCard(fixtures, targetDate) {
   }
 
   const matchSummary = fixtures.map(f => ({
-    homeTeam: f.teams.home.name,
-    awayTeam: f.teams.away.name,
-    kickoff: f.fixture.date,
-    stage: f.league.round || 'Group Stage',
-    fixtureId: f.fixture.id,
+    homeTeam: f.homeTeam || f.home_name,
+    awayTeam: f.awayTeam || f.away_name,
+    kickoff: f.kickoff || f.date,
+    stage: f.stage || 'Group Stage',
+    fixtureId: f.id,
   }));
 
   const prompt = `You are generating a daily prediction card for World Cup 2026 fans.

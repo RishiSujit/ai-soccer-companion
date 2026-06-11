@@ -11,39 +11,13 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-const LEAGUE_ID = parseInt(process.env.ACTIVE_LEAGUE_ID) || 1;
-const SEASON = parseInt(process.env.ACTIVE_SEASON) || 2026;
-const API_KEY = process.env.API_FOOTBALL_KEY;
-const BASE_URL = 'https://v3.football.api-sports.io';
+const { getUpcomingFixtures } = require('../lib/livescoreApi');
 
-// ─────────────────────────────────────────
-// Fetch upcoming fixtures for next 48 hours
-// ─────────────────────────────────────────
 async function fetchUpcomingFixtures() {
   try {
-    const today = new Date().toISOString().split('T')[0];
-    const tomorrow = new Date(
-      Date.now() + 24 * 60 * 60 * 1000
-    ).toISOString().split('T')[0];
-
-    const results = [];
-
-    for (const date of [today, tomorrow]) {
-      const res = await axios.get(`${BASE_URL}/fixtures`, {
-        params: {
-          league: LEAGUE_ID,
-          season: SEASON,
-          date,
-        },
-        headers: { 'x-apisports-key': API_KEY },
-      });
-      const fixtures = res.data.response || [];
-      const upcoming = fixtures.filter(f => f.fixture.status.short === 'NS');
-      results.push(...upcoming);
-    }
-
-    console.log(`Upcoming fixtures found: ${results.length}`);
-    return results;
+    const fixtures = await getUpcomingFixtures(2); // next 48 hours
+    console.log(`Upcoming fixtures found: ${fixtures.length}`);
+    return fixtures;
   } catch (err) {
     console.error('Fetch fixtures error:', err.message);
     return [];
@@ -54,10 +28,10 @@ async function fetchUpcomingFixtures() {
 // Generate props for one match via Claude
 // ─────────────────────────────────────────
 async function generatePropsForMatch(fixture) {
-  const homeTeam = fixture.teams.home.name;
-  const awayTeam = fixture.teams.away.name;
-  const stage = fixture.league.round || 'Group Stage';
-  const kickoff = fixture.fixture.date;
+  const homeTeam = fixture.homeTeam || fixture.home_name;
+  const awayTeam = fixture.awayTeam || fixture.away_name;
+  const stage = fixture.stage || 'Group Stage';
+  const kickoff = fixture.kickoff || fixture.date;
 
   const prompt = `You are generating prop bet questions for a World Cup prediction game for casual American sports fans.
 
