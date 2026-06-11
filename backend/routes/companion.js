@@ -267,10 +267,13 @@ router.post('/', async (req, res) => {
         try {
           const events = await getMatchEvents(matchId);
           if (events?.length) {
-            eventsContext = events
-              .slice(-10)
-              .map(e => `${e.minute}' — ${e.type}: ${e.player?.name || 'Unknown'}`)
-              .join('\n');
+            eventsContext = events.slice(-10).map(e => {
+              const team = e.isHome ? (activeMatch?.homeTeam || 'home') : (activeMatch?.awayTeam || 'away');
+              const assist = e.assist ? ` (assist: ${e.assist})` : '';
+              const label = e.label || e.type || 'Event';
+              const playerName = e.player?.name || 'Unknown';
+              return `${e.minute}' ${label}: ${playerName}${assist} (${team})`;
+            }).join('\n');
           }
         } catch (err) {
           console.error('[Companion] Events error:', err.message);
@@ -293,7 +296,7 @@ router.post('/', async (req, res) => {
       .replace('{RETRIEVED_KNOWLEDGE}', retrievedKnowledge);
 
     if (eventsContext && eventsContext !== 'No events yet' && eventsContext !== 'Match has not started yet') {
-      systemPrompt += `\n\nMATCH EVENTS (real data — treat as ground truth):\n${eventsContext}\n\nCRITICAL: Use these events as fact. Do NOT rely on training knowledge for scorers or timing. If events say Quinones scored in 9', that is what happened.`;
+      systemPrompt += `\n\nMATCH EVENTS — USE THIS AS GROUND TRUTH:\n${eventsContext}\n\nCRITICAL RULES:\n- Use ONLY the above events for facts about this match\n- Never invent or guess goal scorers, times, or assists\n- Never use training knowledge for who scored, when, or what happened\n- If asked who scored, answer using these events only`;
     }
 
     if (useWebSearch) {

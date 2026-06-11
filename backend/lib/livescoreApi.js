@@ -182,15 +182,35 @@ async function getFinishedMatches(date) {
 
 async function getMatchEvents(matchId) {
   const data = await call('/scores/events.json', { id: matchId });
-  if (!data?.data?.event) return [];
-
-  return data.data.event.map(e => ({
+  const events = data?.data?.event;
+  if (!events?.length) {
+    console.log('[Events] No events for:', matchId);
+    return [];
+  }
+  console.log('[Events] Got', events.length, 'events for match', matchId);
+  return events.map(e => ({
     type: e.event,
+    label: formatEventLabel(e.event),
     minute: e.time,
-    player: { name: e.player },
-    team: { name: e.home_away === 'h' ? 'home' : 'away' },
-    detail: e.info || e.event,
+    player: { name: e.player || '' },
+    assist: e.info || null,
+    isHome: e.home_away === 'h',
+    isAway: e.home_away === 'a',
   }));
+}
+
+function formatEventLabel(eventType) {
+  const labels = {
+    GOAL: 'Goal',
+    YELLOW_CARD: 'Yellow Card',
+    RED_CARD: 'Red Card',
+    SUBSTITUTION: 'Sub',
+    OWN_GOAL: 'Own Goal',
+    PENALTY_SCORED: 'Penalty Goal',
+    PENALTY_MISSED: 'Penalty Missed',
+    VAR: 'VAR Review',
+  };
+  return labels[eventType] || eventType;
 }
 
 async function getMatchLineups(matchId) {
