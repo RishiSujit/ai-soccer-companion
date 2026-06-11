@@ -33,21 +33,34 @@ async function getLiveMatches() {
   const data = await call('/matches/live.json', { competition_id: COMP });
   if (!data?.data?.match) return [];
 
-  return data.data.match.map(m => ({
-    id: String(m.id),
-    homeTeam: m.home_name,
-    awayTeam: m.away_name,
-    homeScore: parseInt(m.score) || 0,
-    awayScore: parseInt(m.away_score) || 0,
-    minute: m.time === 'HT' || m.time === 'FT' ? m.time : parseInt(m.time) || 0,
-    status: m.time === 'HT' ? 'HT' : m.time === 'FT' ? 'FT' : '1H',
-    stage: inferStage(m.round || m.competition?.name),
-    venue: m.location || '',
-    homeFlag: getFlagEmoji(m.home_name),
-    awayFlag: getFlagEmoji(m.away_name),
-    isLive: true,
-    matchId: String(m.id),
-  }));
+  return data.data.match
+    .filter(m => m.home?.name && m.away?.name)
+    .map(m => {
+      const scoreStr = m.scores?.score || '? - ?';
+      const scores = scoreStr.split(' - ');
+      const homeScore = parseInt(scores[0]) || 0;
+      const awayScore = parseInt(scores[1]) || 0;
+      const isLive = m.status !== 'NOT STARTED';
+
+      return {
+        id: String(m.id),
+        fixtureId: String(m.fixture_id),
+        homeTeam: m.home.name,
+        awayTeam: m.away.name,
+        homeScore: isLive ? homeScore : null,
+        awayScore: isLive ? awayScore : null,
+        minute: isLive ? parseInt(m.time) || 0 : null,
+        status: m.status,
+        isLive,
+        stage: inferStage(m.competition?.name),
+        venue: m.location || '',
+        homeFlag: getFlagEmoji(m.home.name),
+        awayFlag: getFlagEmoji(m.away.name),
+        matchId: String(m.id),
+        lineupsUrl: m.urls?.lineups,
+        eventsUrl: m.urls?.events,
+      };
+    });
 }
 
 async function getTodayFixtures() {
