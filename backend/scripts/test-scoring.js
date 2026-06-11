@@ -1,12 +1,12 @@
 /**
- * Test script: score today's predictions using real API-Football results.
+ * Test script: score today's predictions using livescore-api results.
  * Run: node backend/scripts/test-scoring.js [YYYY-MM-DD]
  */
 
 require('dotenv').config();
 const { scoreDate, buildActualResults } = require('../lib/scoringEngine');
+const { getFinishedMatches } = require('../lib/livescoreApi');
 const { createClient } = require('@supabase/supabase-js');
-const axios = require('axios');
 
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL,
@@ -16,27 +16,16 @@ const supabase = createClient(
 const date = process.argv[2] || new Date().toISOString().split('T')[0];
 
 async function previewResults() {
-  console.log('\n=== API-FOOTBALL RESULTS PREVIEW ===');
+  console.log('\n=== LIVESCORE-API RESULTS PREVIEW ===');
   console.log('Date:', date);
 
-  const res = await axios.get('https://v3.football.api-sports.io/fixtures', {
-    params: {
-      league: process.env.ACTIVE_LEAGUE_ID || 1,
-      season: process.env.ACTIVE_SEASON || 2026,
-      date,
-      status: 'FT-AET-PEN-AWD-WO',
-    },
-    headers: { 'x-apisports-key': process.env.API_FOOTBALL_KEY },
-  });
-
-  const fixtures = res.data.response || [];
+  const fixtures = await getFinishedMatches(date);
   console.log(`\nFinished fixtures: ${fixtures.length}`);
 
   fixtures.forEach(m => {
-    const h = m.goals.home ?? '?';
-    const a = m.goals.away ?? '?';
-    const status = m.fixture.status.short;
-    console.log(`  ${m.teams.home.name} ${h} - ${a} ${m.teams.away.name} [${status}]`);
+    const h = parseInt(m.score) || 0;
+    const a = parseInt(m.away_score) || 0;
+    console.log(`  ${m.home_name} ${h} - ${a} ${m.away_name} [${m.time}]`);
   });
 
   const { data: card } = await supabase
@@ -65,7 +54,7 @@ async function main() {
   try {
     fixtureCount = await previewResults();
   } catch (err) {
-    console.error('API-Football fetch failed:', err.message);
+    console.error('Livescore-api fetch failed:', err.message);
     console.log('Continuing to score with whatever is in DB...');
   }
 
