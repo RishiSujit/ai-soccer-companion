@@ -181,7 +181,7 @@ async function getFinishedMatches(date) {
 }
 
 async function getMatchEvents(matchId) {
-  const data = await call('/scores/events.json', { id: matchId });
+  const data = await call('/matches/events.json', { match_id: matchId });
   const events = data?.data?.event;
   if (!events?.length) {
     console.log('[Events] No events for:', matchId);
@@ -190,12 +190,12 @@ async function getMatchEvents(matchId) {
   console.log('[Events] Got', events.length, 'events for match', matchId);
   return events.map(e => ({
     type: e.event,
-    label: formatEventLabel(e.event),
+    label: e.label || formatEventLabel(e.event),
     minute: e.time,
-    player: { name: e.player || '' },
-    assist: e.info || null,
-    isHome: e.home_away === 'h',
-    isAway: e.home_away === 'a',
+    player: { name: e.player?.name || e.player || '' },
+    assist: e.info?.name || null,
+    isHome: e.is_home === true,
+    isAway: e.is_away === true,
   }));
 }
 

@@ -259,8 +259,9 @@ router.post('/', async (req, res) => {
 
     const isLiveMode = !!(matchContext || liveContext?.homeTeam);
 
-    // Fetch events for both live AND finished matches
-    let eventsContext = activeMatch?.recentEventsText || liveContext?.recentEventsText || '';
+    // Fetch events for both live AND finished matches.
+    // Never fall back to liveContext.recentEventsText — it may be from a different concurrent match.
+    let eventsContext = activeMatch?.recentEventsText || '';
     const matchId = activeMatch?.matchId || activeMatch?.id;
     if ((!eventsContext || eventsContext === 'No events yet') && matchId) {
       try {
