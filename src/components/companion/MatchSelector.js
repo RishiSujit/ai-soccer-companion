@@ -23,7 +23,7 @@ const FLAGS = {
   'Czech Republic': '🇨🇿',
 };
 
-const FILTER_TABS = ['Live', 'Upcoming', 'Results'];
+const FILTER_TABS = ['Today', 'Upcoming', 'Results'];
 
 const today = () => new Date().toISOString().split('T')[0];
 
@@ -197,54 +197,49 @@ const watchabilityColor = (score) => {
 // ── Main component ─────────────────────────────────────────
 
 function MatchSelector({ onMatchSelected }) {
-  const [liveMatches, setLiveMatches]       = useState([]);
+  const [todayMatches, setTodayMatches]       = useState([]);
   const [upcomingMatches, setUpcomingMatches] = useState([]);
-  const [resultMatches, setResultMatches]   = useState([]);
-  const [loading, setLoading]               = useState(true);
-  const [activeFilter, setActiveFilter]     = useState('Upcoming');
-  const [predictions, setPredictions]       = useState({});
-  const [predsLoading, setPredsLoading]     = useState(false);
+  const [resultMatches, setResultMatches]     = useState([]);
+  const [loading, setLoading]                 = useState(true);
+  const [activeFilter, setActiveFilter]       = useState('Today');
+  const [predictions, setPredictions]         = useState({});
+  const [predsLoading, setPredsLoading]       = useState(false);
 
-  // Load live matches — auto-switch tab if any are truly live; poll every 60s
+  // Load today's matches from live feed — includes pre-kick, in-play, and finished-today
   useEffect(() => {
     let mounted = true;
 
-    const fetchLive = (initial = false) => {
+    const fetchToday = (initial = false) => {
       getLiveMatches().then(data => {
         if (!mounted) return;
         const matches = data?.matches || [];
-        const live    = matches.filter(m => isLiveStatus(m.status) && m.isLive);
-        const preKick = matches.filter(m => isLiveStatus(m.status) && !m.isLive);
-        const results = matches.filter(m => isResultStatus(m.status));
-
-        setLiveMatches([...live, ...preKick]);
-        setResultMatches(results);
-
-        if (live.length > 0) setActiveFilter('Live');
+        setTodayMatches(matches);
+        // Auto-switch to Today if a game just kicked off live
+        const trulyLive = matches.filter(m => m.isLive && !isResultStatus(m.status));
+        if (trulyLive.length > 0) setActiveFilter('Today');
         if (initial) setLoading(false);
       }).catch(() => { if (mounted && initial) setLoading(false); });
     };
 
-    fetchLive(true);
-    const interval = setInterval(() => fetchLive(false), 60000);
+    fetchToday(true);
+    const interval = setInterval(() => fetchToday(false), 60000);
     return () => { mounted = false; clearInterval(interval); };
   }, []);
 
-  // Load upcoming schedule from live API
+  // Load upcoming schedule — fixtures from tomorrow onwards
   useEffect(() => {
     getUpcomingMatches().then(data => {
-      setUpcomingMatches(data?.matches || []);
+      const todayStr = today();
+      const future = (data?.matches || []).filter(m => m.date > todayStr);
+      setUpcomingMatches(future);
     }).catch(() => {});
   }, []);
 
-  // Load finished matches from history API (persists after live feed drops them)
+  // Load finished matches from history API (persists beyond the 3-hour live feed window)
   useEffect(() => {
     getResultMatches().then(data => {
       const results = data?.matches || [];
-      if (results.length > 0) {
-        setResultMatches(results);
-        setActiveFilter('Results');
-      }
+      if (results.length > 0) setResultMatches(results);
     }).catch(() => {});
   }, []);
 
@@ -266,7 +261,8 @@ function MatchSelector({ onMatchSelected }) {
   }, [upcomingMatches]);
 
   const getPred = (homeTeam, awayTeam) => predictions[`${homeTeam}-${awayTeam}`] || null;
-  const liveCount = liveMatches.length;
+  // Badge count: only truly in-play games
+  const liveCount = todayMatches.filter(m => m.isLive && !isResultStatus(m.status)).length;
 
   // Group upcoming by date
   const upcomingByDate = upcomingMatches.reduce((acc, m) => {
@@ -303,7 +299,7 @@ function MatchSelector({ onMatchSelected }) {
             onClick={() => setActiveFilter(tab)}
           >
             {tab}
-            {tab === 'Live' && liveCount > 0 && (
+            {tab === 'Today' && liveCount > 0 && (
               <span className="ms-filter-tab__badge">{liveCount}</span>
             )}
           </button>
@@ -314,13 +310,17 @@ function MatchSelector({ onMatchSelected }) {
       <div className="ms-cards">
         {loading ? (
           <div className="ms-loading">Loading matches...</div>
-        ) : activeFilter === 'Live' ? (
-          liveMatches.length === 0 ? (
-            <div className="ms-empty">No live matches right now — check back at kickoff</div>
+        ) : activeFilter === 'Today' ? (
+          todayMatches.length === 0 ? (
+            <div className="ms-empty">No matches scheduled for today</div>
           ) : (
-            liveMatches.map(m => (
-              <LiveMatchCard key={m.id || m.matchId} match={m} onMatchSelected={onMatchSelected} />
-            ))
+            todayMatches.map(m =>
+              isResultStatus(m.status) ? (
+                <ResultCard key={m.id || m.matchId} match={m} onMatchSelected={onMatchSelected} />
+              ) : (
+                <LiveMatchCard key={m.id || m.matchId} match={m} onMatchSelected={onMatchSelected} />
+              )
+            )
           )
         ) : activeFilter === 'Results' ? (
           resultMatches.length === 0 ? (
