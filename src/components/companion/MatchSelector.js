@@ -47,13 +47,6 @@ function flag(match, side) {
   return backendFlag || FLAGS[teamName] || '🌍';
 }
 
-function isLiveStatus(s) {
-  if (!s) return false;
-  const upper = s.toUpperCase();
-  return ['1H', '2H', 'ET', 'P', 'LIVE', 'HT', 'IN PLAY', 'IN PROGRESS',
-          'NOT STARTED', 'NS'].includes(upper) || upper === 'LIVE';
-}
-
 function isResultStatus(s) {
   if (!s) return false;
   const upper = s.toUpperCase();
