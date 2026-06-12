@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { createClient } = require('@supabase/supabase-js');
+const { generateDailyCards } = require('../jobs/generateDailyCard');
 require('dotenv').config();
 
 const supabase = createClient(
@@ -170,6 +171,47 @@ router.get('/my-prediction', async (req, res) => {
     res.json({ prediction: data || null });
   } catch (err) {
     res.json({ prediction: null });
+  }
+});
+
+// POST /api/daily-card/admin/regenerate
+// Deletes the existing card for a date and regenerates from the fixture API.
+// Body: { date: "YYYY-MM-DD", secret: "..." }  — date defaults to today
+router.post('/admin/regenerate', async (req, res) => {
+  const { date, secret } = req.body;
+  if (secret !== process.env.ADMIN_SECRET) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  const targetDate = date || new Date().toISOString().split('T')[0];
+  try {
+    const { error: delErr } = await supabase
+      .from('daily_prediction_cards')
+      .delete()
+      .eq('date', targetDate);
+    if (delErr) throw delErr;
+
+    console.log(`[DailyCard] Admin deleted card for ${targetDate}, regenerating...`);
+    await generateDailyCards();
+
+    const { data: newCard } = await supabase
+      .from('daily_prediction_cards')
+      .select('date, feature_match, matches')
+      .eq('date', targetDate)
+      .single();
+
+    if (!newCard) {
+      return res.json({ success: false, message: `No fixtures found for ${targetDate}` });
+    }
+
+    res.json({
+      success: true,
+      date: newCard.date,
+      matchCount: newCard.matches?.length || 0,
+      featureMatch: `${newCard.feature_match?.homeTeam} vs ${newCard.feature_match?.awayTeam}`,
+    });
+  } catch (err) {
+    console.error('[DailyCard] Regenerate error:', err.message);
+    res.status(500).json({ error: err.message });
   }
 });
 
