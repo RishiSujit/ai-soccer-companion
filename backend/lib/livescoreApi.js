@@ -158,19 +158,21 @@ async function getFixturesForDate(date) {
   });
   if (!data?.data?.fixtures) return [];
 
-  return data.data.fixtures.map(f => ({
-    id: String(f.id),
-    home_name: f.home_name,
-    away_name: f.away_name,
-    homeTeam: f.home_name,
-    awayTeam: f.away_name,
-    date: f.date,
-    time: f.time,
-    kickoff: toISOKickoff(f.date, f.time),
-    kickoffET: convertToET(f.date, f.time),
-    stage: inferStage(f.round),
-    venue: f.location || '',
-  }));
+  return data.data.fixtures
+    .filter(f => f.date === date)
+    .map(f => ({
+      id: String(f.id),
+      home_name: f.home_name,
+      away_name: f.away_name,
+      homeTeam: f.home_name,
+      awayTeam: f.away_name,
+      date: f.date,
+      time: f.time,
+      kickoff: toISOKickoff(f.date, f.time),
+      kickoffET: convertToET(f.date, f.time),
+      stage: inferStage(f.round),
+      venue: f.location || '',
+    }));
 }
 
 async function getFinishedMatches(date) {

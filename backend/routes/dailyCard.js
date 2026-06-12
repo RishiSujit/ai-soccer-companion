@@ -1,8 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const { createClient } = require('@supabase/supabase-js');
-const { generateDailyCards } = require('../jobs/generateDailyCard');
-const { getUpcomingFixtures } = require('../lib/livescoreApi');
 require('dotenv').config();
 
 const supabase = createClient(
@@ -11,38 +9,27 @@ const supabase = createClient(
 );
 
 // GET /api/daily-card/today
+// Serves the card from DB only — generated once at midnight by the scheduled job.
+// Never triggers generation on-demand to prevent questions changing mid-day.
 router.get('/today', async (req, res) => {
   try {
     const today = new Date().toISOString().split('T')[0];
 
-    let { data: card } = await supabase
+    const { data: card } = await supabase
       .from('daily_prediction_cards')
       .select('*')
       .eq('date', today)
       .single();
 
     if (!card) {
-      console.log('[DailyCard] No card for today — generating...');
-      await generateDailyCards();
-
-      const { data: newCard } = await supabase
-        .from('daily_prediction_cards')
-        .select('*')
-        .eq('date', today)
-        .single();
-
-      card = newCard;
-    }
-
-    if (!card) {
-      return res.json({ card: await getPreTournamentCard(today), fromFallback: true });
+      console.log('[DailyCard] No card for today yet');
+      return res.json({ card: null, fromFallback: false });
     }
 
     res.json({ card, fromFallback: false });
   } catch (err) {
     console.error('Daily card error:', err.message);
-    const today = new Date().toISOString().split('T')[0];
-    res.json({ card: await getPreTournamentCard(today), fromFallback: true });
+    res.json({ card: null, fromFallback: false });
   }
 });
 
@@ -185,41 +172,5 @@ router.get('/my-prediction', async (req, res) => {
     res.json({ prediction: null });
   }
 });
-
-// Fallback: pull the nearest upcoming fixture from live API to show as preview
-async function getPreTournamentCard(date) {
-  try {
-    // Check DB for a future card first
-    const { data: futureCard } = await supabase
-      .from('daily_prediction_cards')
-      .select('*')
-      .gte('date', date)
-      .order('date', { ascending: true })
-      .limit(1)
-      .maybeSingle();
-
-    if (futureCard) {
-      return { ...futureCard, _isPreview: true, _previewFor: futureCard.date };
-    }
-
-    // Otherwise build a minimal card from the next upcoming fixture
-    const fixtures = await getUpcomingFixtures(7);
-    if (!fixtures.length) return null;
-
-    const f = fixtures[0];
-    return {
-      date,
-      matches: [{ homeTeam: f.homeTeam, awayTeam: f.awayTeam, kickoff: f.kickoff, kickoffET: f.kickoffET, venue: f.venue, stage: f.stage }],
-      daily_questions: [],
-      feature_match: { homeTeam: f.homeTeam, awayTeam: f.awayTeam, stage: f.stage, venue: f.venue, props: [] },
-      bonus: null,
-      _isPreview: true,
-      _previewFor: f.date,
-    };
-  } catch (err) {
-    console.error('getPreTournamentCard error:', err.message);
-    return null;
-  }
-}
 
 module.exports = router;

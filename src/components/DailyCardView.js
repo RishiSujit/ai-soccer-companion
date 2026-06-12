@@ -258,7 +258,7 @@ function DailyCardView({ userId, userContext, isGuest, onShowAuth, onNavigateToC
   if (!card) {
     return (
       <div className="dcv-empty">
-        No matches scheduled today. Check back on June 11th for the World Cup opener!
+        Today's card hasn't been generated yet — check back shortly after midnight.
       </div>
     );
   }

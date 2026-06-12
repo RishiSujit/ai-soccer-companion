@@ -6,70 +6,75 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-const { getFinishedMatches } = require('./livescoreApi');
+const { getHistoryMatches, getMatchEvents } = require('./livescoreApi');
 
-async function fetchFinishedFixtures(date) {
-  return getFinishedMatches(date);
+// Fuzzy match: checks if two team names refer to the same team
+function fuzzyTeamMatch(a, b) {
+  if (!a || !b) return false;
+  const norm = s => s.toLowerCase().trim();
+  const an = norm(a), bn = norm(b);
+  if (an === bn) return true;
+  // Partial: one name contains the first word of the other
+  const aFirst = an.split(' ')[0];
+  const bFirst = bn.split(' ')[0];
+  return an.includes(bFirst) || bn.includes(aFirst);
 }
 
-function buildActualResults(fixtures, card) {
+async function buildActualResults(matches, card) {
   const results = {};
   let totalGoals = 0;
   const matchGoals = {};
 
-  fixtures.forEach(m => {
-    // Support both livescore-api (home_name/score) and legacy (teams/goals) formats
-    const home = m.home_name || m.teams?.home?.name;
-    const away = m.away_name || m.teams?.away?.name;
-    const homeGoals = m.home_name
-      ? (parseInt(m.score) || 0)
-      : (m.goals?.home ?? 0);
-    const awayGoals = m.home_name
-      ? (parseInt(m.away_score) || 0)
-      : (m.goals?.away ?? 0);
-    const goals = homeGoals + awayGoals;
-
+  for (const m of matches) {
+    const goals = m.homeScore + m.awayScore;
     totalGoals += goals;
-    matchGoals[`${home} vs ${away}`] = goals;
 
-    results[`${home}_result`] =
-      homeGoals > awayGoals ? 'home' :
-      awayGoals > homeGoals ? 'away' : 'draw';
-    results[`${away}_result`] =
-      homeGoals > awayGoals ? 'home' :
-      awayGoals > homeGoals ? 'away' : 'draw';
-  });
+    // Use card's team name for the key so dq3 options match exactly
+    const cardMatch = (card.matches || []).find(cm =>
+      fuzzyTeamMatch(cm.homeTeam, m.homeTeam) && fuzzyTeamMatch(cm.awayTeam, m.awayTeam)
+    );
+    const matchKey = cardMatch
+      ? `${cardMatch.homeTeam} vs ${cardMatch.awayTeam}`
+      : `${m.homeTeam} vs ${m.awayTeam}`;
 
-  const mostGoalsEntry = Object.entries(matchGoals)
-    .sort((a, b) => b[1] - a[1])[0];
+    matchGoals[matchKey] = goals;
+    results[`${m.homeTeam}_result`] = m.homeScore > m.awayScore ? 'home' : m.awayScore > m.homeScore ? 'away' : 'draw';
+    results[`${m.awayTeam}_result`] = m.homeScore > m.awayScore ? 'home' : m.awayScore > m.homeScore ? 'away' : 'draw';
+  }
 
+  const mostGoalsEntry = Object.entries(matchGoals).sort((a, b) => b[1] - a[1])[0];
   results.totalGoals = totalGoals;
   results.mostGoalsMatch = mostGoalsEntry?.[0] || null;
   results.matchGoals = matchGoals;
-  // Red card detection requires events API — not implemented in v1
   results.hasRedCard = false;
 
+  // Fetch events for all matches — red cards + feature match player props
   const fm = card?.feature_match;
-  if (fm) {
-    const fmFixture = fixtures.find(m => {
-      const h = (m.home_name || m.teams?.home?.name || '').toLowerCase();
-      const a = (m.away_name || m.teams?.away?.name || '').toLowerCase();
-      const fmH = fm.homeTeam.toLowerCase();
-      const fmA = fm.awayTeam.toLowerCase();
-      return h.includes(fmH) || fmH.includes(h) ||
-             a.includes(fmA) || fmA.includes(a);
-    });
+  for (const m of matches) {
+    if (!m.matchId) continue;
+    try {
+      const events = await getMatchEvents(m.matchId);
+      if (events.some(e => e.type === 'RED_CARD')) {
+        results.hasRedCard = true;
+      }
+      // Store feature match events for fm2 / bonus scoring
+      if (fm && (fuzzyTeamMatch(m.homeTeam, fm.homeTeam) || fuzzyTeamMatch(m.homeTeam, fm.awayTeam))) {
+        results.featureMatchEvents = events;
+      }
+    } catch (err) {
+      console.error('[ScoringEngine] Events fetch error:', err.message);
+    }
+  }
 
+  // Feature match result and goals
+  if (fm) {
+    const fmFixture = matches.find(m =>
+      fuzzyTeamMatch(m.homeTeam, fm.homeTeam) && fuzzyTeamMatch(m.awayTeam, fm.awayTeam)
+    );
     if (fmFixture) {
-      const h = fmFixture.home_name
-        ? (parseInt(fmFixture.score) || 0)
-        : (fmFixture.goals?.home ?? 0);
-      const a = fmFixture.home_name
-        ? (parseInt(fmFixture.away_score) || 0)
-        : (fmFixture.goals?.away ?? 0);
-      results.featureResult =
-        h > a ? `${fm.homeTeam} win` :
-        a > h ? `${fm.awayTeam} win` : 'Draw';
+      const h = fmFixture.homeScore;
+      const a = fmFixture.awayScore;
+      results.featureResult = h > a ? `${fm.homeTeam} win` : a > h ? `${fm.awayTeam} win` : 'Draw';
       results.featureGoals = h + a;
     }
   }
@@ -81,11 +86,12 @@ function calculatePoints(answers, bonusTaken, results, card) {
   let total = 0;
   const breakdown = {};
 
-  (card.daily_questions || []).forEach(q => {
+  // Daily questions
+  for (const q of (card.daily_questions || [])) {
     const userAnswer = answers?.[q.id];
     if (!userAnswer) {
       breakdown[q.id] = { answer: null, correct: false, points: 0 };
-      return;
+      continue;
     }
 
     let correct = false;
@@ -93,12 +99,11 @@ function calculatePoints(answers, bonusTaken, results, card) {
       correct = (userAnswer === 'Yes') === results.hasRedCard;
     } else if (q.id === 'dq2') {
       const g = results.totalGoals;
-      correct = (
+      correct =
         (userAnswer === '0-3' && g <= 3) ||
         (userAnswer === '4-6' && g >= 4 && g <= 6) ||
         (userAnswer === '7-9' && g >= 7 && g <= 9) ||
-        (userAnswer === '10+' && g >= 10)
-      );
+        (userAnswer === '10+' && g >= 10);
     } else if (q.id === 'dq3') {
       correct = userAnswer === results.mostGoalsMatch;
     }
@@ -106,43 +111,56 @@ function calculatePoints(answers, bonusTaken, results, card) {
     const pts = correct ? (q.points || 0) : 0;
     total += pts;
     breakdown[q.id] = { answer: userAnswer, correct, points: pts };
-  });
+  }
 
-  (card.feature_match?.props || []).forEach(p => {
+  // Feature match props
+  for (const p of (card.feature_match?.props || [])) {
     const userAnswer = answers?.[p.id];
     if (!userAnswer) {
       breakdown[p.id] = { answer: null, correct: false, points: 0 };
-      return;
+      continue;
     }
 
     let correct = false;
     if (p.id === 'fm1') {
       correct = userAnswer === results.featureResult;
+    } else if (p.id === 'fm2') {
+      // Player prop: "Will [Player] score?" — check events
+      const events = results.featureMatchEvents || [];
+      const match = (p.question || '').toLowerCase().match(/will (.+?) score/);
+      if (match && events.length > 0) {
+        const lastName = match[1].trim().split(' ').pop().toLowerCase();
+        const playerScored = events.some(e =>
+          (e.type === 'GOAL' || e.type === 'GOAL_PENALTY' || e.type === 'OWN_GOAL') &&
+          (e.player?.name || '').toLowerCase().includes(lastName)
+        );
+        correct = (userAnswer === 'Yes') === playerScored;
+      }
+      // If events unavailable, leave correct=false (don't award points on uncertainty)
     } else if (p.id === 'fm3') {
       const g = results.featureGoals ?? 0;
-      correct = (
+      correct =
         (userAnswer === '0-1' && g <= 1) ||
         (userAnswer === '2-3' && g >= 2 && g <= 3) ||
-        (userAnswer === '4+' && g >= 4)
-      );
+        (userAnswer === '4+' && g >= 4);
     }
-    // fm2 (player prop) requires events API — skip in v1
 
     const pts = correct ? (p.points || 0) : 0;
     total += pts;
     breakdown[p.id] = { answer: userAnswer, correct, points: pts };
-  });
+  }
 
-  if (bonusTaken && answers?.['bonus1']) {
-    const bonusCorrect = answers['bonus1'] === 'Yes' &&
-      answers['fm1'] === results.featureResult;
+  // Bonus: correct if the user took it AND both fm1 and fm2 are correct
+  if (bonusTaken) {
+    const fm1Correct = breakdown['fm1']?.correct || false;
+    const fm2Correct = breakdown['fm2']?.correct;
+    // If fm2 couldn't be determined (events unavailable), require only fm1
+    const bonusCorrect = fm2Correct !== undefined
+      ? fm1Correct && fm2Correct
+      : fm1Correct;
     const bonusPts = bonusCorrect ? 10 : 0;
     total += bonusPts;
-    breakdown.bonus1 = {
-      answer: answers['bonus1'],
-      correct: bonusCorrect,
-      points: bonusPts,
-    };
+    breakdown.bonus1 = { answer: 'Yes', correct: bonusCorrect, points: bonusPts };
   }
 
   return { total, breakdown };
@@ -162,24 +180,28 @@ async function scoreDate(date) {
     return { scored: 0, skipped: 'no_card' };
   }
 
-  let fixtures;
+  let matches;
   try {
-    fixtures = await fetchFinishedFixtures(date);
+    matches = await getHistoryMatches(date, date);
   } catch (err) {
     console.error('[ScoringEngine] Fetch failed:', err.message);
     return { scored: 0, skipped: 'api_error' };
   }
 
   const expectedCount = (card.matches || []).length;
-  if (fixtures.length < expectedCount) {
-    console.log(
-      `[ScoringEngine] ${fixtures.length}/${expectedCount} matches finished — waiting`
-    );
+  if (matches.length < expectedCount) {
+    console.log(`[ScoringEngine] ${matches.length}/${expectedCount} matches finished — waiting`);
     return { scored: 0, skipped: 'matches_pending' };
   }
 
-  const actualResults = buildActualResults(fixtures, card);
-  console.log('[ScoringEngine] Results:', JSON.stringify(actualResults));
+  const actualResults = await buildActualResults(matches, card);
+  console.log('[ScoringEngine] Results:', JSON.stringify({
+    totalGoals: actualResults.totalGoals,
+    mostGoalsMatch: actualResults.mostGoalsMatch,
+    hasRedCard: actualResults.hasRedCard,
+    featureResult: actualResults.featureResult,
+    featureGoals: actualResults.featureGoals,
+  }));
 
   const { data: predictions } = await supabase
     .from('daily_predictions')
@@ -216,6 +238,7 @@ async function scoreDate(date) {
       continue;
     }
 
+    // Update total_points for every group the user belongs to
     const { data: memberships } = await supabase
       .from('group_members')
       .select('id, total_points')

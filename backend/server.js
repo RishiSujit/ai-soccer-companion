@@ -117,10 +117,8 @@ setInterval(() => {
   runDailyScoring().catch(console.error);
 }, 30 * 60 * 1000);
 
-// ── Daily card generation ────────────────────────────────────
+// ── Daily card generation — fires once at midnight, never on startup ─────────
 const { generateDailyCards } = require('./jobs/generateDailyCard');
-
-generateDailyCards().catch(console.error);
 
 const _dcNow = new Date();
 const _dcMidnight = new Date(_dcNow.getFullYear(), _dcNow.getMonth(), _dcNow.getDate() + 1, 0, 0, 0);
@@ -132,6 +130,8 @@ setTimeout(() => {
     generateDailyCards().catch(console.error);
   }, 24 * 60 * 60 * 1000);
 }, _dcMsUntilMidnight);
+
+console.log(`[DailyCard] Next generation in ${Math.round(_dcMsUntilMidnight / 1000 / 60)} minutes`);
 
 // ── Prop generation ──────────────────────────────────────────
 const { generatePropsForUpcoming } = require('./jobs/generateProps');
