@@ -11,7 +11,7 @@ const cache = new Map();
 async function call(endpoint, params = {}) {
   const allParams = { key: KEY, secret: SECRET, ...params };
   const cacheKey = endpoint + JSON.stringify(allParams);
-  const ttl = endpoint.includes('live') ? 30000 : 300000;
+  const ttl = (endpoint.includes('live') || endpoint.includes('events')) ? 30000 : 300000;
 
   const cached = cache.get(cacheKey);
   if (cached && Date.now() - cached.ts < ttl) return cached.data;
