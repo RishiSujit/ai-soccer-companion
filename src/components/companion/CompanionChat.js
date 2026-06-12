@@ -576,7 +576,12 @@ function CompanionChat({ match, userContext, userId, onBack, preloadedQuestion, 
           <div className="split-left-content">
             {mobileTab === 'lineup'
               ? <LineupList {...match} userContext={userContext} homeSquad={homeSquad} awaySquad={awaySquad} squadLoading={squadLoading} isUpcoming={isUpcoming} />
-              : <FormationPitch {...match} userContext={userContext} />}
+              : <FormationPitch {...match} userContext={userContext}
+                  homePlayers={homeSquad?.players?.filter(p => p.isStarter).map(p => ({ num: p.number, name: p.name.split(' ').pop(), position: p.position }))}
+                  awayPlayers={awaySquad?.players?.filter(p => p.isStarter).map(p => ({ num: p.number, name: p.name.split(' ').pop(), position: p.position }))}
+                  homeFormation={homeSquad?.formation}
+                  awayFormation={awaySquad?.formation}
+                />}
           </div>
         </div>
         <div className="split-right">
@@ -605,7 +610,12 @@ function CompanionChat({ match, userContext, userId, onBack, preloadedQuestion, 
           <div className={`mobile-tab ${mobileTab === 'chat' ? 'active' : ''}`} onClick={() => setMobileTab('chat')}>Chat</div>
         </div>
         <div className="mobile-panel-content">
-          {mobileTab === 'formation' && <div className="mobile-panel-scroll"><FormationPitch {...match} userContext={userContext} /></div>}
+          {mobileTab === 'formation' && <div className="mobile-panel-scroll"><FormationPitch {...match} userContext={userContext}
+              homePlayers={homeSquad?.players?.filter(p => p.isStarter).map(p => ({ num: p.number, name: p.name.split(' ').pop(), position: p.position }))}
+              awayPlayers={awaySquad?.players?.filter(p => p.isStarter).map(p => ({ num: p.number, name: p.name.split(' ').pop(), position: p.position }))}
+              homeFormation={homeSquad?.formation}
+              awayFormation={awaySquad?.formation}
+            /></div>}
           {mobileTab === 'lineup' && <div className="mobile-panel-scroll"><LineupList {...match} userContext={userContext} homeSquad={homeSquad} awaySquad={awaySquad} squadLoading={squadLoading} isUpcoming={isUpcoming} /></div>}
           {mobileTab === 'chat' && (
             <>
