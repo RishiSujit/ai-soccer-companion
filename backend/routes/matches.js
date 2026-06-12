@@ -11,16 +11,26 @@ const {
 } = require('../lib/livescoreApi');
 
 // GET /api/matches/live
-// Returns live matches + today's fixtures if nothing live
+// Returns today's fixtures enriched with live scores where available
 router.get('/live', async (req, res) => {
   try {
-    let matches = await getLiveMatches();
-    console.log('[Matches] Live:', matches.length);
+    const [liveMatches, todayFixtures] = await Promise.all([
+      getLiveMatches(),
+      getTodayFixtures(),
+    ]);
+    console.log('[Matches] Live feed:', liveMatches.length, '| Today fixtures:', todayFixtures.length);
 
-    if (matches.length === 0) {
-      matches = await getTodayFixtures();
-      console.log('[Matches] Today fallback:', matches.length);
+    // Build lookup of in-play data by team pair
+    const liveByPair = {};
+    for (const m of liveMatches) {
+      liveByPair[`${m.homeTeam}|${m.awayTeam}`] = m;
     }
+
+    // Today's fixtures are the canonical list; overlay live scores for in-play matches
+    const matches = todayFixtures.map(f => {
+      const live = liveByPair[`${f.homeTeam}|${f.awayTeam}`];
+      return live ? { ...f, ...live, kickoffET: f.kickoffET } : f;
+    });
 
     res.json({ matches });
   } catch (err) {
