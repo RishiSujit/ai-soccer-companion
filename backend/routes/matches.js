@@ -18,7 +18,7 @@ router.get('/live', async (req, res) => {
       getLiveMatches(),
       getTodayFixtures(),
     ]);
-    console.log('[Matches] Live feed:', liveMatches.length, '| Today fixtures:', todayFixtures.length);
+    console.log('[Matches] Live feed:', liveMatches.length, '| Today fixtures (pre-filter):', todayFixtures.length);
 
     // Build lookup of in-play data by team pair
     const liveByPair = {};

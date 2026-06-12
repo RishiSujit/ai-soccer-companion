@@ -74,21 +74,24 @@ async function getTodayFixtures() {
   });
   if (!data?.data?.fixtures) return [];
 
-  return data.data.fixtures.map(f => ({
-    id: String(f.id),
-    homeTeam: f.home_name,
-    awayTeam: f.away_name,
-    homeScore: null,
-    awayScore: null,
-    status: 'NS',
-    kickoff: toISOKickoff(f.date, f.time),
-    kickoffET: convertToET(f.date, f.time),
-    stage: inferStage(f.round),
-    venue: f.location || '',
-    homeFlag: getFlagEmoji(f.home_name),
-    awayFlag: getFlagEmoji(f.away_name),
-    isLive: false,
-  }));
+  return data.data.fixtures
+    .filter(f => f.date === today)
+    .map(f => ({
+      id: String(f.id),
+      homeTeam: f.home_name,
+      awayTeam: f.away_name,
+      homeScore: null,
+      awayScore: null,
+      status: 'NS',
+      date: f.date,
+      kickoff: toISOKickoff(f.date, f.time),
+      kickoffET: convertToET(f.date, f.time),
+      stage: inferStage(f.round),
+      venue: f.location || '',
+      homeFlag: getFlagEmoji(f.home_name),
+      awayFlag: getFlagEmoji(f.away_name),
+      isLive: false,
+    }));
 }
 
 async function getUpcomingFixtures(daysAhead = 7) {
