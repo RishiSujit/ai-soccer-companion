@@ -65,17 +65,27 @@ async function getLiveMatches() {
     });
 }
 
+// Returns today's date string in ET (Eastern Time)
+function etDateStr() {
+  return new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
+}
+
+// Returns the ET calendar date for a fixture's kickoff (UTC)
+function kickoffETDate(date, time) {
+  return new Date(toISOKickoff(date, time)).toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
+}
+
 async function getTodayFixtures() {
-  const today = new Date().toISOString().split('T')[0];
+  const etToday = etDateStr();
   const data = await call('/fixtures/matches.json', {
     competition_id: COMP,
-    date_from: today,
-    date_to: today,
+    date_from: etToday,
+    date_to: etToday,
   });
   if (!data?.data?.fixtures) return [];
 
   return data.data.fixtures
-    .filter(f => f.date === today)
+    .filter(f => kickoffETDate(f.date, f.time) === etToday)
     .map(f => ({
       id: String(f.id),
       homeTeam: f.home_name,
@@ -84,6 +94,7 @@ async function getTodayFixtures() {
       awayScore: null,
       status: 'NS',
       date: f.date,
+      etDate: kickoffETDate(f.date, f.time),
       kickoff: toISOKickoff(f.date, f.time),
       kickoffET: convertToET(f.date, f.time),
       stage: inferStage(f.round),
@@ -95,14 +106,13 @@ async function getTodayFixtures() {
 }
 
 async function getUpcomingFixtures(daysAhead = 7) {
-  const today = new Date();
-  const end = new Date(today.getTime() + daysAhead * 24 * 60 * 60 * 1000);
-  const dateFrom = today.toISOString().split('T')[0];
+  const etToday = etDateStr();
+  const end = new Date(Date.now() + daysAhead * 24 * 60 * 60 * 1000);
   const dateTo = end.toISOString().split('T')[0];
 
   const data = await call('/fixtures/matches.json', {
     competition_id: COMP,
-    date_from: dateFrom,
+    date_from: etToday,
     date_to: dateTo,
   });
   if (!data?.data?.fixtures) return [];
@@ -115,6 +125,7 @@ async function getUpcomingFixtures(daysAhead = 7) {
     kickoff: toISOKickoff(f.date, f.time),
     kickoffET: convertToET(f.date, f.time),
     date: f.date,
+    etDate: kickoffETDate(f.date, f.time),
     stage: inferStage(f.round),
     venue: f.location || '',
     homeFlag: getFlagEmoji(f.home_name),

@@ -25,7 +25,7 @@ const FLAGS = {
 
 const FILTER_TABS = ['Today', 'Upcoming', 'Results'];
 
-const today = () => new Date().toISOString().split('T')[0];
+const today = () => new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
 
 function formatDateHeader(dateStr) {
   const todayStr = today();
@@ -223,7 +223,7 @@ function MatchSelector({ onMatchSelected }) {
   useEffect(() => {
     getUpcomingMatches().then(data => {
       const todayStr = today();
-      const future = (data?.matches || []).filter(m => m.date > todayStr);
+      const future = (data?.matches || []).filter(m => (m.etDate || m.date) > todayStr);
       setUpcomingMatches(future);
     }).catch(() => {});
   }, []);
