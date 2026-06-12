@@ -10,30 +10,7 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-const { getFixturesForDate } = require('../lib/livescoreApi');
-
-async function fetchTomorrowsFixtures() {
-  try {
-    const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000)
-      .toISOString().split('T')[0];
-    const fixtures = await getFixturesForDate(tomorrow);
-    console.log(`Tomorrow's fixtures: ${fixtures.length}`);
-    return fixtures;
-  } catch (err) {
-    console.error('Fetch fixtures error:', err.message);
-    return [];
-  }
-}
-
-async function fetchTodaysFixtures() {
-  try {
-    const today = new Date().toISOString().split('T')[0];
-    return await getFixturesForDate(today);
-  } catch (err) {
-    console.error('Fetch today fixtures error:', err.message);
-    return [];
-  }
-}
+const { getMatchesForDate } = require('../lib/wcSchedule');
 
 async function generateDailyCard(fixtures, targetDate) {
   if (!fixtures || fixtures.length === 0) {
@@ -53,11 +30,13 @@ async function generateDailyCard(fixtures, targetDate) {
   }
 
   const matchSummary = fixtures.map(f => ({
-    homeTeam: f.homeTeam || f.home_name,
-    awayTeam: f.awayTeam || f.away_name,
-    kickoff: f.kickoff || f.date,
-    stage: f.stage || 'Group Stage',
-    fixtureId: f.id,
+    homeTeam: f.homeTeam,
+    awayTeam: f.awayTeam,
+    kickoff: f.kickoff,
+    kickoffET: f.kickoffET,
+    stage: f.stage,
+    group: f.group,
+    venue: f.venue,
   }));
 
   const prompt = `You are generating a daily prediction card for World Cup 2026 fans.
@@ -181,14 +160,18 @@ async function generateDailyCards() {
   const today = new Date().toISOString().split('T')[0];
   const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0];
 
-  const todayFixtures = await fetchTodaysFixtures();
-  if (todayFixtures.length > 0) {
-    await generateDailyCard(todayFixtures, today);
+  const todayMatches = getMatchesForDate(today);
+  if (todayMatches.length > 0) {
+    await generateDailyCard(todayMatches, today);
+  } else {
+    console.log(`[DailyCard] No matches scheduled for ${today}`);
   }
 
-  const tomorrowFixtures = await fetchTomorrowsFixtures();
-  if (tomorrowFixtures.length > 0) {
-    await generateDailyCard(tomorrowFixtures, tomorrow);
+  const tomorrowMatches = getMatchesForDate(tomorrow);
+  if (tomorrowMatches.length > 0) {
+    await generateDailyCard(tomorrowMatches, tomorrow);
+  } else {
+    console.log(`[DailyCard] No matches scheduled for ${tomorrow}`);
   }
 
   console.log('=== DONE ===\n');
