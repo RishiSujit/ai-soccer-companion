@@ -10,27 +10,59 @@ const {
   getLineupsByUrl,
 } = require('../lib/livescoreApi');
 
+// Normalize team names to handle API inconsistencies between feeds
+// e.g. 'Korea Republic' (live feed) vs 'South Korea' (fixtures feed)
+function normTeam(name) {
+  const MAP = {
+    'korea republic': 'south korea',
+    'united states': 'usa',
+    "cote d'ivoire": 'ivory coast',
+    'bosnia': 'bosnia and herzegovina',
+    'bosnia & herzegovina': 'bosnia and herzegovina',
+    'türkiye': 'turkey',
+  };
+  if (!name) return '';
+  const lower = name.toLowerCase();
+  return MAP[lower] || lower;
+}
+
+function pairKey(home, away) {
+  return `${normTeam(home)}|${normTeam(away)}`;
+}
+
 // GET /api/matches/live
-// Returns today's fixtures enriched with live scores where available
+// Returns today's fixtures enriched with live scores where available.
+// Also includes any matches that dropped off the fixtures feed after kickoff —
+// the livescore API moves in-play games to the live feed only.
 router.get('/live', async (req, res) => {
   try {
     const [liveMatches, todayFixtures] = await Promise.all([
       getLiveMatches(),
       getTodayFixtures(),
     ]);
-    console.log('[Matches] Live feed:', liveMatches.length, '| Today fixtures (pre-filter):', todayFixtures.length);
+    console.log('[Matches] Live feed:', liveMatches.length, '| Today fixtures:', todayFixtures.length);
 
-    // Build lookup of in-play data by team pair
+    // Build lookup of in-play data by normalized team pair
     const liveByPair = {};
     for (const m of liveMatches) {
-      liveByPair[`${m.homeTeam}|${m.awayTeam}`] = m;
+      liveByPair[pairKey(m.homeTeam, m.awayTeam)] = m;
     }
 
-    // Today's fixtures are the canonical list; overlay live scores for in-play matches
+    // Start with fixtures as canonical list; overlay live scores where matched
+    const coveredKeys = new Set();
     const matches = todayFixtures.map(f => {
-      const live = liveByPair[`${f.homeTeam}|${f.awayTeam}`];
+      const key = pairKey(f.homeTeam, f.awayTeam);
+      coveredKeys.add(key);
+      const live = liveByPair[key];
       return live ? { ...f, ...live, kickoffET: f.kickoffET } : f;
     });
+
+    // Add any live/finished matches that dropped off the fixtures feed after kickoff
+    for (const m of liveMatches) {
+      if (!coveredKeys.has(pairKey(m.homeTeam, m.awayTeam))) {
+        matches.push(m);
+      }
+    }
 
     res.json({ matches });
   } catch (err) {
