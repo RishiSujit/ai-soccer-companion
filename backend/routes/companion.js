@@ -315,7 +315,7 @@ Then explain the real reason to Sam using your normal style — plain English, s
     }
 
     const messages = [
-      ...conversationHistory,
+      ...conversationHistory.slice(-6),
       { role: 'user', content: message },
     ];
 

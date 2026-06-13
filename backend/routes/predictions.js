@@ -7,7 +7,7 @@ const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 // In-memory cache for score predictions (6-hour TTL)
 const predCache = new Map();
-const PRED_TTL = 6 * 60 * 60 * 1000;
+const PRED_TTL = 24 * 60 * 60 * 1000;
 
 // POST /api/predictions/scores
 // Body: { matches: [{homeTeam, awayTeam, group, date}] }
@@ -38,11 +38,10 @@ router.post('/scores', async (req, res) => {
       .join('\n');
 
     const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-5',
-      max_tokens: 2000,
-      tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 1200,
       system: `You are a World Cup analyst predicting match scores for entertainment purposes.
-Analyze team form, head-to-head history, squad quality, and tournament context.
+Use your knowledge of team form, head-to-head history, squad quality, and tournament context.
 
 Return ONLY a valid JSON object. No markdown. No backticks. Start with {
 
@@ -71,7 +70,7 @@ Keep headlines under 12 words.
 keyFactor under 10 words.`,
       messages: [{
         role: 'user',
-        content: `Search for recent form, head to head records, and expert predictions for these 2026 World Cup matches:\n\n${matchList}\n\nReturn predictions as JSON.`,
+        content: `Predict scores for these 2026 World Cup matches:\n\n${matchList}\n\nReturn predictions as JSON.`,
       }],
     });
 

@@ -241,7 +241,7 @@ function MatchSelector({ onMatchSelected }) {
     if (upcomingMatches.length === 0) return;
     const fetchPredictions = async () => {
       setPredsLoading(true);
-      const toPredict = upcomingMatches.slice(0, 12).map(m => ({
+      const toPredict = upcomingMatches.slice(0, 6).map(m => ({
         homeTeam: m.homeTeam,
         awayTeam: m.awayTeam,
         date: m.date,
