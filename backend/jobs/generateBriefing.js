@@ -41,7 +41,7 @@ Write like a knowledgeable friend texting Sam before the game.
 End with: "You're ready. Go watch. ⚽"`;
 
   const response = await anthropic.messages.create({
-    model: 'claude-sonnet-4-5',
+    model: 'claude-haiku-4-5-20251001',
     max_tokens: 300,
     messages: [{ role: 'user', content: prompt }],
   });

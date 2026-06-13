@@ -12,6 +12,18 @@ const supabase = createClient(
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
+// Cache team headlines for the day — no need to regenerate per request
+const headlineCache = new Map();
+const headlineCacheDate = { date: '' };
+function getHeadlineCache(team) {
+  const today = new Date().toISOString().split('T')[0];
+  if (headlineCacheDate.date !== today) { headlineCache.clear(); headlineCacheDate.date = today; }
+  return headlineCache.get(team) || null;
+}
+function setHeadlineCache(team, headline) {
+  headlineCache.set(team, headline);
+}
+
 // GET /api/home/recap/:team
 router.get('/recap/:team', async (req, res) => {
   try {
@@ -116,13 +128,18 @@ Examples of good style:
 "America's team on home soil for the first time in 32 years"
 "The aging legend's last shot at glory"`;
 
+    const cached = getHeadlineCache(team);
+    if (cached) return res.json({ headline: cached, team });
+
     const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-5',
+      model: 'claude-haiku-4-5-20251001',
       max_tokens: 60,
       messages: [{ role: 'user', content: prompt }],
     });
 
-    res.json({ headline: response.content[0].text.trim(), team });
+    const headline = response.content[0].text.trim();
+    setHeadlineCache(team, headline);
+    res.json({ headline, team });
   } catch (err) {
     console.error('Headline error:', err.message);
     res.json({
