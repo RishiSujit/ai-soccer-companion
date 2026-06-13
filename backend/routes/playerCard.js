@@ -70,7 +70,7 @@ Respond with ONLY the JSON object. No preamble, no markdown, no backticks.`;
 
 async function generateCard(prompt) {
   const cardResponse = await client.messages.create({
-    model: 'claude-sonnet-4-5',
+    model: 'claude-haiku-4-5-20251001',
     max_tokens: 500,
     messages: [{ role: 'user', content: prompt }],
   });
@@ -97,37 +97,10 @@ router.post('/', async (req, res) => {
       success: true,
       card: cardCache[cacheKey].card,
       fromCache: true,
-      hadRealStats: cardCache[cacheKey].hadRealStats,
     });
   }
 
-  // Step 1 — Fetch real stats via web search
-  let realData = null;
-  try {
-    const searchResponse = await client.messages.create({
-      model: 'claude-sonnet-4-5',
-      max_tokens: 400,
-      tools: [{ type: 'web_search_20250305', name: 'web_search' }],
-      messages: [{
-        role: 'user',
-        content: `Look up current World Cup 2026 stats and career stats for ${playerName} who plays for ${team}. Return a JSON object with: name, age, nationality, club, position, goals (career or World Cup), assists, appearances, keyTraits (array of 2-3 strings). Return ONLY the JSON, no other text.`,
-      }],
-    });
-
-    const textBlock = searchResponse.content.find(b => b.type === 'text');
-    if (textBlock?.text) {
-      const clean = textBlock.text.replace(/```json/g, '').replace(/```/g, '').trim();
-      const jsonMatch = clean.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        realData = JSON.parse(jsonMatch[0]);
-      }
-    }
-  } catch (err) {
-    console.error('Player web lookup failed, using Claude knowledge:', err.message);
-  }
-
-  // Step 2 — Generate card with Claude
-  const prompt = buildPrompt(playerName, team, position || 'player', realData, userContext);
+  const prompt = buildPrompt(playerName, team, position || 'player', null, userContext);
 
   let cardData;
   try {
@@ -145,14 +118,12 @@ router.post('/', async (req, res) => {
     }
   }
 
-  // Step 3 — Cache and return
-  cardCache[cacheKey] = { card: cardData, hadRealStats: realData !== null };
+  cardCache[cacheKey] = { card: cardData };
 
   return res.json({
     success: true,
     card: cardData,
     fromCache: false,
-    hadRealStats: realData !== null,
   });
 });
 

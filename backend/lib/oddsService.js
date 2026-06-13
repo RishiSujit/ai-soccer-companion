@@ -25,10 +25,9 @@ async function fetchMatchOdds(homeTeam, awayTeam, matchDate) {
 
   try {
     const response = await client.messages.create({
-      model: 'claude-sonnet-4-5',
-      max_tokens: 500,
-      tools: [{ type: 'web_search_20250305', name: 'web_search' }],
-      system: `You are a sports data assistant. Search for current betting odds for the requested World Cup 2026 match. Return ONLY valid JSON, no other text.
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 400,
+      system: `You are a sports analyst estimating World Cup 2026 match probabilities based on team quality, form, and tournament context. Return ONLY valid JSON, no other text.
 
 Return this exact structure:
 {
@@ -43,16 +42,14 @@ Return this exact structure:
   "totalGoalsLine": 2.5,
   "overOdds": "-110",
   "underOdds": "-110",
-  "source": "source name",
-  "asOf": "time fetched"
+  "source": "AI estimate",
+  "asOf": "pre-match"
 }
 
-If odds are not available yet, return: { "available": false }
-
-Convert American odds to implied probability percentages. homeWinPct + drawPct + awayWinPct should roughly equal 100.`,
+homeWinPct + drawPct + awayWinPct must equal 100. Base estimates on team rankings, squad quality, and historical head-to-head.`,
       messages: [{
         role: 'user',
-        content: `Find current betting odds for ${homeTeam} vs ${awayTeam} FIFA World Cup 2026. Search for moneyline odds and over/under total goals. Check ESPN, DraftKings, or OddsShark for the latest lines.`,
+        content: `Estimate win probabilities and approximate betting odds for ${homeTeam} vs ${awayTeam} FIFA World Cup 2026. Return JSON only.`,
       }],
     });
 
@@ -97,9 +94,8 @@ async function fetchLiveWinProbability(homeTeam, awayTeam, homeScore, awayScore,
 
   try {
     const response = await client.messages.create({
-      model: 'claude-sonnet-4-5',
-      max_tokens: 300,
-      tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 200,
       system: `You are a sports probability analyst. Return ONLY valid JSON, no other text.
 
 Return this structure:
@@ -109,10 +105,12 @@ Return this structure:
   "awayWinPct": 15,
   "context": "one sentence explaining the probability in plain English",
   "momentum": "home" or "away" or "even"
-}`,
+}
+
+homeWinPct + drawPct + awayWinPct must equal 100.`,
       messages: [{
         role: 'user',
-        content: `${homeTeam} vs ${awayTeam}, minute ${minute}, score ${homeScore}-${awayScore}. Search for current live win probability or in-game odds. What is each team's current probability of winning?`,
+        content: `${homeTeam} vs ${awayTeam}, minute ${minute}, score ${homeScore}-${awayScore}. Estimate each team's current probability of winning based on the score and time remaining.`,
       }],
     });
 
