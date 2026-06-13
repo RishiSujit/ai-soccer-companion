@@ -4,12 +4,14 @@ import {
   getHotTake,
   getBracketForTeam,
   getLiveMatches,
+  getUpcomingMatches,
+  getGroupStandings,
   voteOnHotTake,
   getPreMatchBriefing,
   getTeamHeadline,
   getMatchPredictions,
 } from '../services/api';
-import { GROUPS, OPENING_MATCHES } from '../lib/worldCupData';
+import { GROUPS } from '../lib/worldCupData';
 import BriefingCard from './BriefingCard';
 import './HomeScreen.css';
 
@@ -55,12 +57,6 @@ function getTimeOfDay() {
   return 'evening';
 }
 
-function getDaysToKickoff() {
-  return Math.ceil(
-    (new Date('2026-06-11') - new Date()) / (1000 * 60 * 60 * 24)
-  );
-}
-
 function getOpponent(match, team) {
   if (match.home_team === team) return match.away_team || 'TBD';
   if (match.away_team === team) return match.home_team || 'TBD';
@@ -86,45 +82,13 @@ function getUserGroup(teamName) {
   return 'A';
 }
 
-function getPreTournamentBracket(teamName) {
-  const teamMatches = OPENING_MATCHES.filter(
-    m => m.homeTeam === teamName || m.awayTeam === teamName
-  );
-  const groupMatches = teamMatches.slice(0, 3).map(m => ({
-    round: 'Group Stage',
-    status: 'NS',
-    home_team: m.homeTeam,
-    away_team: m.awayTeam,
-    home_score: null,
-    away_score: null,
-    match_date: m.date,
-  }));
-  if (groupMatches.length === 0) {
-    groupMatches.push({
-      round: 'Group Stage',
-      status: 'NS',
-      home_team: teamName,
-      away_team: 'TBD',
-      home_score: null,
-      away_score: null,
-      match_date: '2026-06-11',
-    });
-  }
-  return [
-    ...groupMatches,
-    { round: 'Round of 32',   status: 'scheduled', home_team: teamName, away_team: 'TBD', home_score: null, away_score: null, match_date: '2026-06-27' },
-    { round: 'Round of 16',   status: 'scheduled', home_team: teamName, away_team: 'TBD', home_score: null, away_score: null, match_date: '2026-07-01' },
-    { round: 'Quarter-finals',status: 'scheduled', home_team: teamName, away_team: 'TBD', home_score: null, away_score: null, match_date: '2026-07-04' },
-    { round: 'Semi-finals',   status: 'scheduled', home_team: teamName, away_team: 'TBD', home_score: null, away_score: null, match_date: '2026-07-09' },
-    { round: 'Final',         status: 'scheduled', home_team: teamName, away_team: 'TBD', home_score: null, away_score: null, match_date: '2026-07-19', venue: 'MetLife Stadium, NJ' },
-  ];
-}
-
 function HomeScreen({ userContext, userId, onNavigate }) {
   const [recap, setRecap] = useState(null);
   const [hotTake, setHotTake] = useState(null);
   const [bracket, setBracket] = useState([]);
   const [liveMatches, setLiveMatches] = useState([]);
+  const [upcomingMatches, setUpcomingMatches] = useState([]);
+  const [standings, setStandings] = useState(null);
   const [userVote, setUserVote] = useState(null);
   const [briefing, setBriefing] = useState(null);
   const [showBriefing, setShowBriefing] = useState(false);
@@ -139,7 +103,6 @@ function HomeScreen({ userContext, userId, onNavigate }) {
 
   const team = userContext?.team || 'USA';
   const firstName = team ? team.split(' ')[0] : 'Fan';
-  const daysLeft = getDaysToKickoff();
   const teamFlag = FLAGS[team] ?? '🌍';
 
   // Auto-select user's group on mount
@@ -154,12 +117,16 @@ function HomeScreen({ userContext, userId, onNavigate }) {
       getHotTake(),
       getBracketForTeam(team),
       getLiveMatches(),
+      getUpcomingMatches(),
+      getGroupStandings(),
     ])
-      .then(([recapRes, hotTakeRes, bracketRes, matchesRes]) => {
+      .then(([recapRes, hotTakeRes, bracketRes, matchesRes, upcomingRes, standingsRes]) => {
         setRecap(recapRes?.recap || null);
         setHotTake(hotTakeRes?.hotTake || null);
         setBracket(bracketRes?.bracket || []);
         setLiveMatches(matchesRes?.matches || []);
+        setUpcomingMatches(upcomingRes?.matches || []);
+        setStandings(standingsRes?.standings || null);
       })
       .catch(() => {});
   }, [team]);
@@ -250,7 +217,7 @@ function HomeScreen({ userContext, userId, onNavigate }) {
   };
 
   const displayHotTake = hotTake || FALLBACK_HOT_TAKE;
-  const displayBracket = bracket.length ? bracket : getPreTournamentBracket(team);
+  const displayBracket = bracket;
 
   const bracketWithState = displayBracket.map((m, i) => {
     const prevDone = i === 0 || displayBracket[i - 1]?.status === 'FT';
@@ -273,11 +240,13 @@ function HomeScreen({ userContext, userId, onNavigate }) {
 
   const currentGroup = GROUPS[selectedGroup];
 
-  // Next match for user's team from WC schedule
-  const todayStr = new Date().toISOString().split('T')[0];
-  const nextMatch = OPENING_MATCHES.find(m =>
-    m.date >= todayStr &&
-    (m.homeTeam === team || m.awayTeam === team)
+  // Next match for user's team from upcoming API
+  const teamLower = team.toLowerCase();
+  const nextMatch = upcomingMatches.find(m =>
+    m.homeTeam?.toLowerCase() === teamLower ||
+    m.awayTeam?.toLowerCase() === teamLower ||
+    m.homeTeam?.toLowerCase().includes(teamLower.split(' ')[0]) ||
+    m.awayTeam?.toLowerCase().includes(teamLower.split(' ')[0])
   );
 
   useEffect(() => {
@@ -311,8 +280,8 @@ function HomeScreen({ userContext, userId, onNavigate }) {
           <div className="welcome-greeting">Good {getTimeOfDay()}, {firstName}</div>
           <div className="welcome-sub">World Cup 2026 · 48 teams · 104 matches</div>
         </div>
-        <div className={`kickoff-pill ${daysLeft <= 0 ? 'kickoff-pill--live' : ''}`}>
-          {daysLeft > 0 ? `${daysLeft} days to kickoff` : 'Tournament underway 🔴'}
+        <div className="kickoff-pill kickoff-pill--live">
+          Tournament underway 🔴
         </div>
       </div>
 
@@ -604,24 +573,28 @@ function HomeScreen({ userContext, userId, onNavigate }) {
               const isUserTeam = userContext?.team === t.name ||
                 userContext?.team?.includes(t.name) ||
                 t.name?.includes(userContext?.team || '');
+              const liveRow = standings?.table?.find(s =>
+                s.team_name?.toLowerCase().includes(t.name.toLowerCase().split(' ')[0]) ||
+                t.name.toLowerCase().includes(s.team_name?.toLowerCase().split(' ')[0] || '')
+              );
               return (
                 <div
                   key={t.code}
                   className={`group-standings-row ${isUserTeam ? 'user-team' : ''} ${i < 2 ? 'qualifying' : ''}`}
                 >
-                  <span className="gsr-rank">{i + 1}</span>
+                  <span className="gsr-rank">{liveRow?.position ?? i + 1}</span>
                   <span className="gsr-team">
                     {t.flag} {t.name}
                     {t.isHost && <span className="host-badge">HOST</span>}
                   </span>
-                  <span className="gsr-gd">—</span>
-                  <span className="gsr-pts">0</span>
+                  <span className="gsr-gd">{liveRow ? (liveRow.goal_difference >= 0 ? '+' : '') + liveRow.goal_difference : '—'}</span>
+                  <span className="gsr-pts">{liveRow?.points ?? 0}</span>
                 </div>
               );
             })}
           </div>
 
-          <div className="standings-footer">Top 2 + 8 best 3rd-place advance to Round of 32 · Group stage not started</div>
+          <div className="standings-footer">Top 2 + 8 best 3rd-place advance to Round of 32</div>
         </div>
 
       </div>

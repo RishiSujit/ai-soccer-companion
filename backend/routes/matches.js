@@ -120,6 +120,19 @@ router.get('/lineups/:matchId', async (req, res) => {
   }
 });
 
+// GET /api/matches/standings
+// Returns current group standings from the livescore API
+router.get('/standings', async (req, res) => {
+  try {
+    const { getStandings } = require('../lib/livescoreApi');
+    const data = await getStandings();
+    res.json({ standings: data });
+  } catch (err) {
+    console.error('/standings error:', err.message);
+    res.json({ standings: null });
+  }
+});
+
 // GET /api/matches/results
 // Returns finished matches from the last 7 days
 router.get('/results', async (req, res) => {

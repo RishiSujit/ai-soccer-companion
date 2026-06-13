@@ -290,3 +290,12 @@ export const getBracketForTeam = async (team) => {
     return { bracket: [] };
   }
 };
+
+export const getGroupStandings = async () => {
+  try {
+    const res = await fetch(`${API_URL}/api/matches/standings`);
+    return res.json();
+  } catch {
+    return { standings: null };
+  }
+};
