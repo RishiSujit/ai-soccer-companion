@@ -7,12 +7,9 @@ import {
   getUpcomingMatches,
   getGroupStandings,
   voteOnHotTake,
-  getPreMatchBriefing,
-  getTeamHeadline,
-  getMatchPredictions,
 } from '../services/api';
-import { GROUPS } from '../lib/worldCupData';
-import BriefingCard from './BriefingCard';
+import { supabase } from '../lib/supabase';
+import { GROUPS, TOURNAMENT_FORMAT } from '../lib/worldCupData';
 import './HomeScreen.css';
 
 const FLAGS = {
@@ -37,8 +34,8 @@ const FALLBACK_HOT_TAKE = {
   question: "Can a North American host (USA, Canada, or Mexico) reach the knockout stage?",
   yes_label: "Home field advantage",
   no_label: "Star power wins",
-  yes_votes: 6200,
-  no_votes: 3800,
+  yes_votes: 0,
+  no_votes: 0,
 };
 
 const parseBullet = (text) => {
@@ -82,6 +79,47 @@ function getUserGroup(teamName) {
   return 'A';
 }
 
+// Canonical name normalization for matching livescore API names to GROUPS names
+function normTeam(name) {
+  const MAP = {
+    'korea republic': 'south korea',
+    'united states': 'usa',
+    "cote d'ivoire": 'ivory coast',
+    "côte d'ivoire": 'ivory coast',
+    'bosnia and herzegovina': 'bosnia & herzegovina',
+    'bosnia': 'bosnia & herzegovina',
+    'turkey': 'türkiye',
+    'curacao': 'curaçao',
+    'czech republic': 'czechia',
+    'congo dr': 'dr congo',
+  };
+  if (!name) return '';
+  const lower = name.toLowerCase();
+  return MAP[lower] || lower;
+}
+
+// Return the group letter for any team name (uses normalized matching)
+function getTeamGroup(teamName) {
+  if (!teamName) return null;
+  const norm = normTeam(teamName);
+  for (const [letter, group] of Object.entries(GROUPS)) {
+    if (group.teams.some(t => normTeam(t.name) === norm)) return letter;
+  }
+  return null;
+}
+
+// Find a team's live standing row from the standings API data
+function getTeamStanding(teamName, standings) {
+  if (!standings?.table) return null;
+  const norm = normTeam(teamName);
+  return standings.table.find(s => {
+    const sNorm = normTeam(s.team_name);
+    return sNorm === norm ||
+      sNorm.startsWith(norm.split(' ')[0]) ||
+      norm.startsWith(sNorm.split(' ')[0]);
+  }) || null;
+}
+
 function HomeScreen({ userContext, userId, onNavigate }) {
   const [recap, setRecap] = useState(null);
   const [hotTake, setHotTake] = useState(null);
@@ -90,16 +128,12 @@ function HomeScreen({ userContext, userId, onNavigate }) {
   const [upcomingMatches, setUpcomingMatches] = useState([]);
   const [standings, setStandings] = useState(null);
   const [userVote, setUserVote] = useState(null);
-  const [briefing, setBriefing] = useState(null);
-  const [showBriefing, setShowBriefing] = useState(false);
-  const dismissedFixtureId = useRef(null);
+  const [userStats, setUserStats] = useState({ watched: 0, points: 0, correct: 0, total: 0, groupRank: null });
 
   const [activeTeamIndex, setActiveTeamIndex] = useState(0);
-  const [teamHeadlines, setTeamHeadlines] = useState({});
   const touchStartX = useRef(null);
 
   const [selectedGroup, setSelectedGroup] = useState('A');
-  const [nextMatchPred, setNextMatchPred] = useState(null);
 
   const team = userContext?.team || 'USA';
   const firstName = team ? team.split(' ')[0] : 'Fan';
@@ -131,50 +165,85 @@ function HomeScreen({ userContext, userId, onNavigate }) {
       .catch(() => {});
   }, [team]);
 
-  useEffect(() => {
-    if (!userContext?.team) return;
 
-    const checkBriefing = async () => {
+  useEffect(() => {
+    if (!userId) return;
+
+    // Watched count from localStorage (written by App.js whenever companion opens a real match)
+    try {
+      const watched = JSON.parse(localStorage.getItem(`wcc_watched_${userId}`) || '[]');
+      setUserStats(prev => ({ ...prev, watched: watched.length }));
+    } catch {}
+
+    async function fetchUserStats() {
       try {
-        const sports = userContext.knownSports?.join(',') || 'NFL,NBA';
-        const data = await getPreMatchBriefing(userContext.team, sports);
-        if (data.briefing && data.briefing.fixtureId !== dismissedFixtureId.current) {
-          setBriefing(data.briefing);
-          setShowBriefing(true);
+        // Points + group rank from group_members
+        const { data: memberRows } = await supabase
+          .from('group_members')
+          .select('total_points, group_id')
+          .eq('user_id', userId);
+
+        if (memberRows?.length) {
+          const totalPoints = memberRows.reduce((sum, m) => sum + (m.total_points || 0), 0);
+
+          // Rank within the first group the user belongs to
+          const { data: groupRows } = await supabase
+            .from('group_members')
+            .select('user_id, total_points')
+            .eq('group_id', memberRows[0].group_id)
+            .order('total_points', { ascending: false });
+
+          const rankIdx = groupRows?.findIndex(m => m.user_id === userId);
+          const groupRank = rankIdx != null && rankIdx >= 0 ? rankIdx + 1 : null;
+
+          setUserStats(prev => ({ ...prev, points: totalPoints, groupRank }));
         }
-      } catch (err) {
-        console.error('Briefing check error:', err);
-      }
-    };
 
-    checkBriefing();
-    const interval = setInterval(checkBriefing, 30 * 60 * 1000);
-    return () => clearInterval(interval);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userContext?.team]);
+        // Correct predictions from scored daily_predictions
+        const { data: predictions } = await supabase
+          .from('daily_predictions')
+          .select('points_earned, scored_at')
+          .eq('user_id', userId)
+          .not('scored_at', 'is', null);
 
-  const featuredTeams = [
-    team,
-    'USA', 'Brazil', 'England', 'Germany',
-    'Spain', 'France', 'Portugal', 'Netherlands',
-  ].filter((t, i, arr) => arr.indexOf(t) === i).slice(0, 8);
-
-  useEffect(() => {
-    const sports = userContext?.knownSports?.join(',') || 'NFL,NBA';
-    const cached = {};
-
-    async function load() {
-      const results = await Promise.all(
-        featuredTeams.map(t => getTeamHeadline(t, sports))
-      );
-      featuredTeams.forEach((t, i) => {
-        cached[t] = results[i]?.headline || `Follow ${t}'s World Cup journey`;
-      });
-      setTeamHeadlines(cached);
+        if (predictions?.length) {
+          const correct = predictions.filter(p => (p.points_earned || 0) > 0).length;
+          setUserStats(prev => ({ ...prev, correct, total: predictions.length }));
+        }
+      } catch {}
     }
 
-    load();
-  }, [team]); // eslint-disable-line react-hooks/exhaustive-deps
+    fetchUserStats();
+  }, [userId]);
+
+  // Poll live matches, standings, and bracket every 60s so scores and standings stay current
+  useEffect(() => {
+    const poll = async () => {
+      const [matchesRes, standingsRes, bracketRes] = await Promise.all([
+        getLiveMatches().catch(() => null),
+        getGroupStandings().catch(() => null),
+        getBracketForTeam(team).catch(() => null),
+      ]);
+      if (matchesRes?.matches) setLiveMatches(matchesRes.matches);
+      if (standingsRes?.standings) setStandings(standingsRes.standings);
+      if (bracketRes?.bracket?.length > 0) setBracket(bracketRes.bracket);
+    };
+
+    const interval = setInterval(poll, 60 * 1000);
+    return () => clearInterval(interval);
+  }, [team]);
+
+  // Featured teams: user's group first, then host nations not already in group, then popular teams
+  const userGroupLetter = getTeamGroup(team) || getUserGroup(team);
+  const userGroupTeamNames = GROUPS[userGroupLetter]?.teams.map(t => t.name) || [];
+  const HOST_TEAMS = ['USA', 'Canada', 'Mexico'];
+  const POPULAR_TEAMS = ['Brazil', 'France', 'Argentina', 'England', 'Germany', 'Spain', 'Portugal', 'Netherlands'];
+  const featuredTeams = [
+    team,
+    ...userGroupTeamNames.filter(t => t !== team),
+    ...HOST_TEAMS.filter(t => !userGroupTeamNames.includes(t)),
+    ...POPULAR_TEAMS.filter(t => !userGroupTeamNames.includes(t) && !HOST_TEAMS.includes(t)),
+  ].filter((t, i, arr) => arr.indexOf(t) === i).slice(0, 8);
 
   const handleTouchStart = (e) => {
     touchStartX.current = e.touches[0].clientX;
@@ -202,29 +271,18 @@ function HomeScreen({ userContext, userId, onNavigate }) {
     }
   };
 
-  const watchabilityColor = (score) => {
-    if (score >= 8) return '#00ff87';
-    if (score >= 6) return '#f5a623';
-    return '#9494b8';
-  };
-
-  const watchabilityLabel = (score) => {
-    if (score >= 9) return 'Must watch';
-    if (score >= 8) return 'Great game';
-    if (score >= 6) return 'Worth watching';
-    if (score >= 4) return 'Competitive';
-    return 'May be one-sided';
-  };
-
   const displayHotTake = hotTake || FALLBACK_HOT_TAKE;
   const displayBracket = bracket;
 
   const bracketWithState = displayBracket.map((m, i) => {
     const prevDone = i === 0 || displayBracket[i - 1]?.status === 'FT';
+    const isFinished = m.status === 'FT';
+    const isLive = m.status === 'LIVE' || (m.status && !['FT', 'scheduled', 'NS'].includes(m.status) && m.home_score != null);
     let dotState = 'future';
-    if (m.status === 'FT') dotState = 'done';
+    if (isFinished) dotState = 'done';
+    else if (isLive) dotState = 'next';
     else if ((m.status === 'scheduled' || m.status === 'NS') && prevDone) dotState = 'next';
-    return { ...m, dotState };
+    return { ...m, dotState, isLive };
   });
 
   const yesVotes = displayHotTake.yes_votes || 0;
@@ -232,11 +290,6 @@ function HomeScreen({ userContext, userId, onNavigate }) {
   const totalVotes = yesVotes + noVotes || 1;
   const yesPct = Math.round((yesVotes / totalVotes) * 100);
   const noPct = 100 - yesPct;
-
-  const handleDismissBriefing = () => {
-    dismissedFixtureId.current = briefing?.fixtureId;
-    setShowBriefing(false);
-  };
 
   const currentGroup = GROUPS[selectedGroup];
 
@@ -249,30 +302,9 @@ function HomeScreen({ userContext, userId, onNavigate }) {
     m.awayTeam?.toLowerCase().includes(teamLower.split(' ')[0])
   );
 
-  useEffect(() => {
-    if (!nextMatch) return;
-    getMatchPredictions([{
-      homeTeam: nextMatch.homeTeam,
-      awayTeam: nextMatch.awayTeam,
-      group: `Group ${nextMatch.group}`,
-      date: nextMatch.date,
-    }]).then(preds => {
-      const key = `${nextMatch.homeTeam}-${nextMatch.awayTeam}`;
-      setNextMatchPred(preds[key] || null);
-    }).catch(() => {});
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [nextMatch?.homeTeam, nextMatch?.awayTeam]);
 
   return (
     <div className="home-screen stagger-children">
-
-      {showBriefing && briefing && (
-        <BriefingCard
-          briefing={briefing}
-          onDismiss={handleDismissBriefing}
-          onNavigate={onNavigate}
-        />
-      )}
 
       {/* ── SECTION 1: Welcome bar ──────────────────────── */}
       <div className="home-welcome">
@@ -314,7 +346,16 @@ function HomeScreen({ userContext, userId, onNavigate }) {
                 <div className="your-team-badge">Your team</div>
               )}
               <div className="team-card-headline">
-                {teamHeadlines[featuredTeams[activeTeamIndex]] || 'Loading...'}
+                {(() => {
+                  const t = featuredTeams[activeTeamIndex];
+                  const groupLetter = getTeamGroup(t);
+                  const row = getTeamStanding(t, standings);
+                  if (row) {
+                    const gd = row.goal_difference > 0 ? `+${row.goal_difference}` : `${row.goal_difference}`;
+                    return `Group ${groupLetter} · #${row.position} · ${row.points} pts · GD ${gd}`;
+                  }
+                  return groupLetter ? `Group ${groupLetter} · 2026 World Cup` : '2026 World Cup';
+                })()}
               </div>
               <button
                 className="follow-team-btn"
@@ -332,32 +373,52 @@ function HomeScreen({ userContext, userId, onNavigate }) {
 
         <div className="home-card tournament-card">
           <div className="home-card-label">YOUR WORLD CUP</div>
-          {/* TODO: fetch real stats from Supabase using userId once match data flows in */}
           <div className="tournament-stats-grid">
             <div className="tournament-stat">
               <div className="tournament-stat-value">
-                0<span className="tournament-stat-denom">/0</span>
+                {userStats.correct}<span className="tournament-stat-denom">/{userStats.total}</span>
               </div>
               <div className="tournament-stat-label">Correct</div>
             </div>
             <div className="tournament-stat">
-              <div className="tournament-stat-value">—</div>
+              <div className="tournament-stat-value">
+                {userStats.groupRank != null ? `#${userStats.groupRank}` : '—'}
+              </div>
               <div className="tournament-stat-label">Group Rank</div>
             </div>
             <div className="tournament-stat">
-              <div className="tournament-stat-value">0</div>
+              <div className="tournament-stat-value">{userStats.watched}</div>
               <div className="tournament-stat-label">Watched</div>
             </div>
             <div className="tournament-stat">
-              <div className="tournament-stat-value">0</div>
+              <div className="tournament-stat-value">{userStats.points}</div>
               <div className="tournament-stat-label">Points</div>
             </div>
           </div>
-          <div className="tournament-accuracy-label">Predictions open June 11</div>
-          <div className="tournament-progress">
-            <div className="tournament-progress-fill" style={{ width: '0%' }} />
-          </div>
-          <div className="tournament-accuracy-pct">—</div>
+          {userStats.total > 0 ? (
+            <>
+              <div className="tournament-accuracy-label">
+                Prediction accuracy
+              </div>
+              <div className="tournament-progress">
+                <div
+                  className="tournament-progress-fill"
+                  style={{ width: `${Math.round((userStats.correct / userStats.total) * 100)}%` }}
+                />
+              </div>
+              <div className="tournament-accuracy-pct">
+                {Math.round((userStats.correct / userStats.total) * 100)}%
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="tournament-accuracy-label">Make predictions to track accuracy</div>
+              <div className="tournament-progress">
+                <div className="tournament-progress-fill" style={{ width: '0%' }} />
+              </div>
+              <div className="tournament-accuracy-pct">—</div>
+            </>
+          )}
         </div>
 
       </div>
@@ -416,24 +477,6 @@ function HomeScreen({ userContext, userId, onNavigate }) {
                 {nextMatch.venue !== 'TBD' && (
                   <div className="next-match-venue">{nextMatch.venue}, {nextMatch.city}</div>
                 )}
-                {nextMatchPred && (
-                  <div className="home-match-pred">
-                    <div className="home-pred-score">
-                      Predicted: {nextMatch.homeTeam}{' '}
-                      <strong>{nextMatchPred.homeScore}–{nextMatchPred.awayScore}</strong>
-                      {' '}{nextMatch.awayTeam}
-                    </div>
-                    <div
-                      className="home-pred-watch"
-                      style={{ color: watchabilityColor(nextMatchPred.watchability) }}
-                    >
-                      ⚡ {watchabilityLabel(nextMatchPred.watchability)} · {nextMatchPred.watchability}/10
-                    </div>
-                    {nextMatchPred.keyFactor && (
-                      <div className="home-pred-factor">Key: {nextMatchPred.keyFactor}</div>
-                    )}
-                  </div>
-                )}
                 <button
                   className="home-cta-link"
                   onClick={() => onNavigate('companion', {
@@ -447,7 +490,7 @@ function HomeScreen({ userContext, userId, onNavigate }) {
             ) : (
               <div className="next-match-empty">
                 <div className="next-match-flag">{teamFlag}</div>
-                <div className="next-match-info">Tournament kicks off June 11</div>
+                <div className="next-match-info">No upcoming matches scheduled</div>
                 <button
                   className="home-cta-link"
                   onClick={() => onNavigate('companion', { general: true })}
@@ -515,7 +558,9 @@ function HomeScreen({ userContext, userId, onNavigate }) {
               const oppFlag = FLAGS[opp] ?? '';
               const resultText = isDone
                 ? `${m.home_score}–${m.away_score}`
-                : isNext ? 'NEXT ↗' : 'TBD';
+                : m.isLive
+                  ? `${m.home_score ?? 0}–${m.away_score ?? 0}${m.minute ? ` (${m.minute}')` : ' LIVE'}`
+                  : isNext ? 'NEXT ↗' : 'TBD';
 
               return (
                 <div key={i} className="timeline-item">
@@ -530,18 +575,18 @@ function HomeScreen({ userContext, userId, onNavigate }) {
                     <div className="timeline-matchup">
                       {oppFlag && <span className="timeline-opp-flag">{oppFlag}</span>}
                       <span className="timeline-opp-name">
-                        {isDone || isNext ? opp : 'vs TBD'}
+                        {isDone || isNext || m.isLive ? opp : 'vs TBD'}
                       </span>
                     </div>
                   </div>
-                  <div className={`timeline-result timeline-result--${isNext ? 'next' : isDone ? 'done' : 'tbd'}`}>
+                  <div className={`timeline-result timeline-result--${isDone ? 'done' : m.isLive ? 'next' : isNext ? 'next' : 'tbd'}`}>
                     {resultText}
                   </div>
                 </div>
               );
             })}
           </div>
-          <div className="bracket-footer">48-team format · Group stage → Round of 32 → knockout</div>
+          <div className="bracket-footer">{TOURNAMENT_FORMAT.totalTeams}-team format · Group stage → {TOURNAMENT_FORMAT.knockoutRounds[0].name} → Final</div>
         </div>
 
         <div className="home-card standings-card">
@@ -570,13 +615,8 @@ function HomeScreen({ userContext, userId, onNavigate }) {
               <span>PTS</span>
             </div>
             {currentGroup.teams.map((t, i) => {
-              const isUserTeam = userContext?.team === t.name ||
-                userContext?.team?.includes(t.name) ||
-                t.name?.includes(userContext?.team || '');
-              const liveRow = standings?.table?.find(s =>
-                s.team_name?.toLowerCase().includes(t.name.toLowerCase().split(' ')[0]) ||
-                t.name.toLowerCase().includes(s.team_name?.toLowerCase().split(' ')[0] || '')
-              );
+              const isUserTeam = normTeam(userContext?.team) === normTeam(t.name);
+              const liveRow = getTeamStanding(t.name, standings);
               return (
                 <div
                   key={t.code}

@@ -73,19 +73,19 @@ export const GROUPS = {
   G: {
     name: 'Group G',
     teams: [
-      { name: 'Spain',        flag: '🇪🇸', code: 'ESP' },
-      { name: 'Saudi Arabia', flag: '🇸🇦', code: 'KSA' },
-      { name: 'Uruguay',      flag: '🇺🇾', code: 'URU' },
-      { name: 'Cape Verde',   flag: '🇨🇻', code: 'CPV' },
+      { name: 'Belgium',     flag: '🇧🇪', code: 'BEL' },
+      { name: 'Egypt',       flag: '🇪🇬', code: 'EGY' },
+      { name: 'Iran',        flag: '🇮🇷', code: 'IRN' },
+      { name: 'New Zealand', flag: '🇳🇿', code: 'NZL' },
     ],
   },
   H: {
     name: 'Group H',
     teams: [
-      { name: 'Belgium',     flag: '🇧🇪', code: 'BEL' },
-      { name: 'Egypt',       flag: '🇪🇬', code: 'EGY' },
-      { name: 'Iran',        flag: '🇮🇷', code: 'IRN' },
-      { name: 'New Zealand', flag: '🇳🇿', code: 'NZL' },
+      { name: 'Spain',        flag: '🇪🇸', code: 'ESP' },
+      { name: 'Saudi Arabia', flag: '🇸🇦', code: 'KSA' },
+      { name: 'Uruguay',      flag: '🇺🇾', code: 'URU' },
+      { name: 'Cape Verde',   flag: '🇨🇻', code: 'CPV' },
     ],
   },
   I: {

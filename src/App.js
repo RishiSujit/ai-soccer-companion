@@ -96,6 +96,20 @@ function App() {
   const [authMode, setAuthMode] = useState('signup');
   const [companionSource, setCompanionSource] = useState(null);
 
+  // Track watched matches in localStorage whenever user opens a real match in companion
+  useEffect(() => {
+    if (!selectedMatch || selectedMatch.general || !userId) return;
+    try {
+      const key = `wcc_watched_${userId}`;
+      const existing = new Set(JSON.parse(localStorage.getItem(key) || '[]'));
+      const matchKey = `${selectedMatch.homeTeam}-${selectedMatch.awayTeam}`;
+      if (!existing.has(matchKey)) {
+        existing.add(matchKey);
+        localStorage.setItem(key, JSON.stringify([...existing]));
+      }
+    } catch {}
+  }, [selectedMatch, userId]);
+
   useEffect(() => {
     async function initAuth() {
       try {

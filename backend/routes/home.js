@@ -3,6 +3,8 @@ const router = express.Router();
 const { createClient } = require('@supabase/supabase-js');
 const Anthropic = require('@anthropic-ai/sdk');
 const { generateDailyHotTake } = require('../jobs/generateHotTake');
+const { WC_SCHEDULE } = require('../lib/wcSchedule');
+const { getLiveMatches: getLivescoreMatches, getHistoryMatches } = require('../lib/livescoreApi');
 require('dotenv').config();
 
 const supabase = createClient(
@@ -90,18 +92,87 @@ router.post('/hot-take/:id/vote', async (req, res) => {
   }
 });
 
+// Normalize team names to a canonical lowercase form for bracket matching
+function normTeamBracket(name) {
+  const MAP = {
+    'united states': 'usa',
+    'korea republic': 'south korea',
+    "cote d'ivoire": 'ivory coast',
+    "côte d'ivoire": 'ivory coast',
+    'bosnia and herzegovina': 'bosnia & herzegovina',
+    'bosnia': 'bosnia & herzegovina',
+    'turkey': 'türkiye',
+    'curacao': 'curaçao',
+    'czech republic': 'czechia',
+    'congo dr': 'dr congo',
+  };
+  const lower = (name || '').toLowerCase();
+  return MAP[lower] || lower;
+}
+
+function bracketPairKey(home, away) {
+  return `${normTeamBracket(home)}|${normTeamBracket(away)}`;
+}
+
 // GET /api/home/bracket/:team
+// Built live from wcSchedule + livescore API — updates after every finished match.
 router.get('/bracket/:team', async (req, res) => {
   try {
     const { team } = req.params;
-    const { data } = await supabase
-      .from('bracket_rounds')
-      .select('*')
-      .or(`home_team.eq.${team},away_team.eq.${team}`)
-      .order('match_date', { ascending: true });
+    const teamNorm = normTeamBracket(team);
 
-    res.json({ bracket: data || [] });
+    // Collect this team's 3 group stage matches from the schedule
+    const teamMatches = [];
+    for (const [date, matches] of Object.entries(WC_SCHEDULE)) {
+      for (const m of matches) {
+        if (normTeamBracket(m.homeTeam) === teamNorm || normTeamBracket(m.awayTeam) === teamNorm) {
+          teamMatches.push({ ...m, scheduleDate: date });
+        }
+      }
+    }
+    teamMatches.sort((a, b) => new Date(a.kickoff) - new Date(b.kickoff));
+
+    if (teamMatches.length === 0) return res.json({ bracket: [] });
+
+    // Fetch finished results + currently live matches in parallel
+    const today = new Date().toISOString().split('T')[0];
+    const [results, liveNow] = await Promise.all([
+      getHistoryMatches('2026-06-11', today).catch(() => []),
+      getLivescoreMatches().catch(() => []),
+    ]);
+
+    const resultMap = {};
+    for (const r of results) resultMap[bracketPairKey(r.homeTeam, r.awayTeam)] = r;
+    const liveMap = {};
+    for (const l of liveNow) liveMap[bracketPairKey(l.homeTeam, l.awayTeam)] = l;
+
+    const bracket = teamMatches.map((m, i) => {
+      const key = bracketPairKey(m.homeTeam, m.awayTeam);
+      const result = resultMap[key];
+      const live = liveMap[key];
+
+      const base = {
+        round: `Group ${m.group} · Match ${i + 1}`,
+        home_team: m.homeTeam,
+        away_team: m.awayTeam,
+        kickoffET: m.kickoffET,
+        venue: m.venue,
+        group: m.group,
+        scheduleDate: m.scheduleDate,
+      };
+
+      if (result) {
+        return { ...base, home_score: result.homeScore, away_score: result.awayScore, status: 'FT' };
+      }
+      if (live) {
+        return { ...base, home_score: live.homeScore, away_score: live.awayScore, status: live.status || 'LIVE', minute: live.minute };
+      }
+      return { ...base, status: 'scheduled' };
+    });
+
+    res.json({ bracket });
   } catch (err) {
+    console.error('Bracket error:', err.message);
     res.json({ bracket: [] });
   }
 });
