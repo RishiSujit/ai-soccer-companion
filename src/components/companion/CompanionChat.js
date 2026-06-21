@@ -255,7 +255,6 @@ function CompanionChat({ match, userContext, userId, onBack, preloadedQuestion, 
   const [mobileTab, setMobileTab] = useState('formation');
   const [homeSquad, setHomeSquad] = useState(null);
   const [awaySquad, setAwaySquad] = useState(null);
-  const [squadLoading, setSquadLoading] = useState(false);
   const [followUps, setFollowUps] = useState([]);
   const [showFollowUps, setShowFollowUps] = useState(false);
   const [tappedIndex, setTappedIndex] = useState(null);
@@ -365,7 +364,6 @@ function CompanionChat({ match, userContext, userId, onBack, preloadedQuestion, 
   useEffect(() => {
     if (!match?.homeTeam || !match?.awayTeam || !match?.lineupsUrl) return;
 
-    setSquadLoading(true);
     setHomeSquad(null);
     setAwaySquad(null);
 
@@ -375,7 +373,7 @@ function CompanionChat({ match, userContext, userId, onBack, preloadedQuestion, 
     ]).then(([home, away]) => {
       setHomeSquad(home);
       setAwaySquad(away);
-    }).catch(() => {}).finally(() => setSquadLoading(false));
+    }).catch(() => {});
   }, [match?.homeTeam, match?.awayTeam]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Persist chat to localStorage whenever messages update
