@@ -3,7 +3,6 @@ import { sendCompanionMessage, getMatchOdds, getTeamSquad, getLiveMatches } from
 import { supabase } from '../../lib/supabase';
 import PivotalMomentAlert from '../PivotalMomentAlert';
 import FormationPitch from './FormationPitch';
-import LineupList from './LineupList';
 
 
 const MATCH_OPENING = "I'm your match companion for this game. Ask me anything — rules, players, what just happened. I'll explain it in plain English.";
@@ -253,7 +252,7 @@ function CompanionChat({ match, userContext, userId, onBack, preloadedQuestion, 
   });
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [mobileTab, setMobileTab] = useState(isUpcoming ? 'lineup' : 'formation');
+  const [mobileTab, setMobileTab] = useState('formation');
   const [homeSquad, setHomeSquad] = useState(null);
   const [awaySquad, setAwaySquad] = useState(null);
   const [squadLoading, setSquadLoading] = useState(false);
@@ -362,20 +361,9 @@ function CompanionChat({ match, userContext, userId, onBack, preloadedQuestion, 
       .finally(() => setOddsLoading(false));
   }, [match?.homeTeam, match?.awayTeam]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Default to Lineup tab for upcoming, Pitch for live — update when match changes
+  // Fetch squads for FormationPitch — only when the livescore API provides a lineupsUrl
   useEffect(() => {
-    if (!match) return;
-    const upcoming = !match.isLive && (match.status === 'NS' || (!match.minute && (match.homeScore === null || match.homeScore === undefined)));
-    setMobileTab(upcoming ? 'lineup' : 'formation');
-  }, [match?.id]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Fetch squads — live matches use lineupsUrl (real API), upcoming use Claude web search
-  useEffect(() => {
-    if (!match?.homeTeam || !match?.awayTeam) return;
-    const isUpcomingMatch = !match.isLive && (match.status === 'NS' || (!match.minute && (match.homeScore === null || match.homeScore === undefined)));
-    const hasLiveLineups = !!match.lineupsUrl;
-
-    if (!isUpcomingMatch && !hasLiveLineups) return;
+    if (!match?.homeTeam || !match?.awayTeam || !match?.lineupsUrl) return;
 
     setSquadLoading(true);
     setHomeSquad(null);
@@ -567,21 +555,15 @@ function CompanionChat({ match, userContext, userId, onBack, preloadedQuestion, 
       <div className="companion-split">
         <div className="split-left">
           <div className="split-panel-header">
-            <div className="split-panel-title">{isUpcoming ? 'Squad preview' : 'Live formation'}</div>
-            <div className="split-panel-tabs">
-              <button className={mobileTab !== 'lineup' ? 'active' : ''} onClick={() => setMobileTab('formation')}>Pitch</button>
-              <button className={mobileTab === 'lineup' ? 'active' : ''} onClick={() => setMobileTab('lineup')}>Lineup</button>
-            </div>
+            <div className="split-panel-title">{isUpcoming ? 'Pitch view' : 'Live formation'}</div>
           </div>
           <div className="split-left-content">
-            {mobileTab === 'lineup'
-              ? <LineupList {...match} userContext={userContext} homeSquad={homeSquad} awaySquad={awaySquad} squadLoading={squadLoading} isUpcoming={isUpcoming} />
-              : <FormationPitch {...match} userContext={userContext}
-                  homePlayers={homeSquad?.players?.filter(p => p.isStarter).map(p => ({ num: p.number, name: p.name.split(' ').pop(), position: p.position }))}
-                  awayPlayers={awaySquad?.players?.filter(p => p.isStarter).map(p => ({ num: p.number, name: p.name.split(' ').pop(), position: p.position }))}
-                  homeFormation={homeSquad?.formation}
-                  awayFormation={awaySquad?.formation}
-                />}
+            <FormationPitch {...match} userContext={userContext}
+              homePlayers={homeSquad?.players?.filter(p => p.isStarter).map(p => ({ num: p.number, name: p.name.split(' ').pop(), position: p.position }))}
+              awayPlayers={awaySquad?.players?.filter(p => p.isStarter).map(p => ({ num: p.number, name: p.name.split(' ').pop(), position: p.position }))}
+              homeFormation={homeSquad?.formation}
+              awayFormation={awaySquad?.formation}
+            />
           </div>
         </div>
         <div className="split-right">
@@ -606,7 +588,6 @@ function CompanionChat({ match, userContext, userId, onBack, preloadedQuestion, 
       <div className="companion-mobile">
         <div className="mobile-panel-tabs">
           <div className={`mobile-tab ${mobileTab === 'formation' ? 'active' : ''}`} onClick={() => setMobileTab('formation')}>Formation</div>
-          <div className={`mobile-tab ${mobileTab === 'lineup' ? 'active' : ''}`} onClick={() => setMobileTab('lineup')}>Lineup</div>
           <div className={`mobile-tab ${mobileTab === 'chat' ? 'active' : ''}`} onClick={() => setMobileTab('chat')}>Chat</div>
         </div>
         <div className="mobile-panel-content">
@@ -616,7 +597,6 @@ function CompanionChat({ match, userContext, userId, onBack, preloadedQuestion, 
               homeFormation={homeSquad?.formation}
               awayFormation={awaySquad?.formation}
             /></div>}
-          {mobileTab === 'lineup' && <div className="mobile-panel-scroll"><LineupList {...match} userContext={userContext} homeSquad={homeSquad} awaySquad={awaySquad} squadLoading={squadLoading} isUpcoming={isUpcoming} /></div>}
           {mobileTab === 'chat' && (
             <>
               <OddsInline
