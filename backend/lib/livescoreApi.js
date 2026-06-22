@@ -341,7 +341,7 @@ function parseLineupForTeam(lineup, teamName) {
 }
 
 async function getStandings() {
-  const data = await call('/league-tables/standings.json', { competition_id: COMP });
+  const data = await call('/competitions/standings.json', { competition_id: COMP });
   return data?.data || null;
 }
 

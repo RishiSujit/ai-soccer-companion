@@ -109,11 +109,12 @@ function getTeamGroup(teamName) {
 }
 
 // Find a team's live standing row from the standings API data
+// API fields: name, rank, points, goal_diff, group_name
 function getTeamStanding(teamName, standings) {
   if (!standings?.table) return null;
   const norm = normTeam(teamName);
   return standings.table.find(s => {
-    const sNorm = normTeam(s.team_name);
+    const sNorm = normTeam(s.name);
     return sNorm === norm ||
       sNorm.startsWith(norm.split(' ')[0]) ||
       norm.startsWith(sNorm.split(' ')[0]);
@@ -351,8 +352,9 @@ function HomeScreen({ userContext, userId, onNavigate }) {
                   const groupLetter = getTeamGroup(t);
                   const row = getTeamStanding(t, standings);
                   if (row) {
-                    const gd = row.goal_difference > 0 ? `+${row.goal_difference}` : `${row.goal_difference}`;
-                    return `Group ${groupLetter} · #${row.position} · ${row.points} pts · GD ${gd}`;
+                    const gdNum = parseInt(row.goal_diff || '0');
+                    const gd = gdNum > 0 ? `+${gdNum}` : `${gdNum}`;
+                    return `Group ${groupLetter} · #${row.rank} · ${row.points} pts · GD ${gd}`;
                   }
                   return groupLetter ? `Group ${groupLetter} · 2026 World Cup` : '2026 World Cup';
                 })()}
@@ -614,24 +616,41 @@ function HomeScreen({ userContext, userId, onNavigate }) {
               <span>GD</span>
               <span>PTS</span>
             </div>
-            {currentGroup.teams.map((t, i) => {
-              const isUserTeam = normTeam(userContext?.team) === normTeam(t.name);
-              const liveRow = getTeamStanding(t.name, standings);
-              return (
-                <div
-                  key={t.code}
-                  className={`group-standings-row ${isUserTeam ? 'user-team' : ''} ${i < 2 ? 'qualifying' : ''}`}
-                >
-                  <span className="gsr-rank">{liveRow?.position ?? i + 1}</span>
-                  <span className="gsr-team">
-                    {t.flag} {t.name}
-                    {t.isHost && <span className="host-badge">HOST</span>}
-                  </span>
-                  <span className="gsr-gd">{liveRow ? (liveRow.goal_difference >= 0 ? '+' : '') + liveRow.goal_difference : '—'}</span>
-                  <span className="gsr-pts">{liveRow?.points ?? 0}</span>
-                </div>
-              );
-            })}
+            {(() => {
+              // Use live API rows (sorted by rank) when available, else fall back to worldCupData order
+              const liveRows = standings?.table
+                ? standings.table
+                    .filter(s => s.group_name === selectedGroup)
+                    .sort((a, b) => parseInt(a.rank) - parseInt(b.rank))
+                : [];
+              const teamsToDisplay = liveRows.length > 0
+                ? liveRows.map(row => {
+                    const norm = normTeam(row.name);
+                    const wcTeam = currentGroup.teams.find(t => normTeam(t.name) === norm)
+                      || { name: row.name, flag: '🌍', code: row.name, isHost: false };
+                    return { wcTeam, row };
+                  })
+                : currentGroup.teams.map(t => ({ wcTeam: t, row: null }));
+
+              return teamsToDisplay.map(({ wcTeam, row }, i) => {
+                const isUserTeam = normTeam(userContext?.team) === normTeam(wcTeam.name);
+                const gdNum = parseInt(row?.goal_diff || '0');
+                return (
+                  <div
+                    key={wcTeam.code || i}
+                    className={`group-standings-row ${isUserTeam ? 'user-team' : ''} ${i < 2 ? 'qualifying' : ''}`}
+                  >
+                    <span className="gsr-rank">{row?.rank ?? i + 1}</span>
+                    <span className="gsr-team">
+                      {wcTeam.flag} {wcTeam.name}
+                      {wcTeam.isHost && <span className="host-badge">HOST</span>}
+                    </span>
+                    <span className="gsr-gd">{row ? (gdNum >= 0 ? '+' : '') + gdNum : '—'}</span>
+                    <span className="gsr-pts">{row?.points ?? '—'}</span>
+                  </div>
+                );
+              });
+            })()}
           </div>
 
           <div className="standings-footer">Top 2 + 8 best 3rd-place advance to Round of 32</div>
