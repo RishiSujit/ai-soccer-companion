@@ -48,8 +48,9 @@ STRICT RULES:
 - Standings/points → use ONLY "CURRENT TOURNAMENT STANDINGS" above.
 - Lineups → use ONLY "OFFICIAL STARTING LINEUPS" above. Never guess who started.
 - Live goals/cards → use ONLY "MATCH EVENTS" appended at the end of this prompt.
+- PENALTY SHOOTOUT → use ONLY the "PENALTY SCORE" and "WINNER ON PENALTIES" lines in the LIVE MATCH section above. NEVER predict, recall, or guess the shootout outcome from training knowledge.
 - If a team or match isn't in the injected data, say "I don't have that result yet" — do not fabricate.
-- NEVER say "Brazil beat Morocco 3-1" or any score you recall from training — trust the injected data.
+- NEVER use training knowledge to override injected API data on any 2026 WC fact.
 
 PLAYER CONTEXT QUESTIONS:
 When asked about a player's general profile, playing style, or background (not lineup status):
@@ -327,20 +328,43 @@ function buildUserContextString(userContext) {
 function buildMatchContextString(matchContext) {
   if (!matchContext) return 'MATCH CONTEXT: No live match data available.';
 
-  const { homeTeam, awayTeam, homeScore, awayScore, minute, stage, venue, kickoffET, derivedSignals, recentEventsText, stats } = matchContext;
+  const {
+    homeTeam, awayTeam, homeScore, awayScore, minute, timeStr, stage, venue,
+    kickoffET, derivedSignals, recentEventsText, stats,
+    isPenaltyShootout, isExtraTime, psScoreHome, psScoreAway, psWinner, etScore,
+  } = matchContext;
 
   const scoreStr = (homeScore !== null && awayScore !== null) ? `${homeScore} - ${awayScore}` : 'Not started';
 
+  // Time display
+  let timeDisplay;
+  if (isPenaltyShootout) timeDisplay = 'PENALTY SHOOTOUT (AP)';
+  else if (isExtraTime) timeDisplay = `Extra Time (${minute}')`;
+  else if (minute != null) timeDisplay = `${minute}'`;
+  else timeDisplay = 'Not started';
+
   let context = `LIVE MATCH:
 ${homeTeam} ${scoreStr} ${awayTeam}
-Minute: ${minute != null ? minute + "'" : 'Not started'}
+Time: ${timeDisplay}
 Stage: ${stage || 'Unknown'}`;
 
   if (venue) context += `\nVenue: ${venue}`;
-  if (kickoffET && minute == null) context += `\nKickoff: ${kickoffET}`;
+  if (kickoffET && minute == null && !isPenaltyShootout) context += `\nKickoff: ${kickoffET}`;
+
+  if (isPenaltyShootout) {
+    context += `\n\n⚽ PENALTY SHOOTOUT IN PROGRESS / COMPLETE:`;
+    if (etScore) context += `\nFull-time / Extra time score: ${etScore}`;
+    if (psScoreHome != null && psScoreAway != null) {
+      context += `\nPENALTY SCORE: ${homeTeam} ${psScoreHome} – ${psScoreAway} ${awayTeam}`;
+    }
+    if (psWinner) context += `\nWINNER ON PENALTIES: ${psWinner}`;
+    context += `\n⚠ USE PENALTY SCORE ABOVE FOR ANY OUTCOME QUESTIONS. Do not guess from training knowledge.`;
+  } else if (isExtraTime) {
+    context += `\n(Match in extra time — this goes 2 × 15-minute periods before potential penalties)`;
+  }
 
   if (recentEventsText && recentEventsText !== 'No events yet') {
-    context += `\n\nRECENT EVENTS (last 5):\n${recentEventsText}`;
+    context += `\n\nRECENT EVENTS (last 5 — team attribution is authoritative):\n${recentEventsText}`;
   }
 
   if (stats?.possession) {

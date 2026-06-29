@@ -42,6 +42,21 @@ async function getLiveMatches() {
       const awayScore = parseInt(scores[1]) || 0;
       const isLive = m.status !== 'NOT STARTED';
 
+      // Detect penalty shootout and extra time from the time field and outcomes
+      const timeStr = String(m.time || '');
+      const isPenaltyShootout = timeStr === 'AP' || m.outcomes?.penalty_shootout != null;
+      const isExtraTime = timeStr === 'AET' || (parseInt(timeStr) > 90 && !isPenaltyShootout);
+
+      // Penalty shootout score (e.g. "3 - 4" = home 3, away 4)
+      const psParts = (m.scores?.ps_score || '').split(' - ');
+      const psScoreHome = psParts.length === 2 ? parseInt(psParts[0]) : null;
+      const psScoreAway = psParts.length === 2 ? parseInt(psParts[1]) : null;
+      const psWinner = m.outcomes?.penalty_shootout === '1' ? m.home.name
+        : m.outcomes?.penalty_shootout === '2' ? m.away.name : null;
+
+      // Minute: numeric for in-play, null for special time strings
+      const minuteNum = /^\d+$/.test(timeStr) ? parseInt(timeStr) : null;
+
       return {
         id: String(m.id),
         fixtureId: String(m.fixture_id),
@@ -49,15 +64,22 @@ async function getLiveMatches() {
         awayTeam: m.away.name,
         homeScore: isLive ? homeScore : null,
         awayScore: isLive ? awayScore : null,
-        minute: isLive ? parseInt(m.time) || 0 : null,
+        minute: minuteNum,
         status: m.status,
+        timeStr,
         isLive,
-        stage: 'Group Stage',
+        isPenaltyShootout,
+        isExtraTime,
+        psScoreHome,
+        psScoreAway,
+        psWinner,
+        etScore: m.scores?.et_score || null,
+        stage: m.stage || 'Group Stage',
         venue: m.location || '',
         homeFlag: getFlagEmoji(m.home.name),
         awayFlag: getFlagEmoji(m.away.name),
         matchId: String(m.id),
-        scheduled: m.scheduled || m.time || null,
+        scheduled: m.scheduled || null,
         kickoffET: m.scheduled ? convertToET(new Date().toISOString().split('T')[0], m.scheduled) : null,
         lineupsUrl: m.urls?.lineups,
         eventsUrl: m.urls?.events,

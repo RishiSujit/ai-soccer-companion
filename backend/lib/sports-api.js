@@ -39,13 +39,12 @@ function buildRecentEventsText(events, count = 5) {
     .join('\n');
 }
 
-// livescoreApi returns team.name as 'home'/'away' — remap to actual team names
-// matchSignals expects time.elapsed (number) and team.name (team name string)
+// getMatchEvents() returns isHome/isAway booleans — remap to team name for matchSignals
 function normalizeEvents(rawEvents, homeTeam, awayTeam) {
   return (rawEvents || []).map(e => ({
     type: e.type,
-    time: { elapsed: typeof e.minute === 'string' ? parseInt(e.minute) || 0 : (e.minute || 0) },
-    team: { name: e.team?.name === 'home' ? homeTeam : awayTeam },
+    time: { elapsed: e.minute || 0 },
+    team: { name: e.isHome ? homeTeam : awayTeam },
     player: e.player,
     detail: e.detail,
   }));
@@ -69,9 +68,9 @@ async function getLiveMatchContext() {
 
     if (liveMatches.length > 0) {
       const m = liveMatches[0];
-      const minuteNum = parseMinute(m.minute);
-      const isExtraTime = minuteNum > 90 || m.status === 'ET';
-      const isPenaltyShootout = m.status === 'PEN';
+      const minuteNum = m.minute ?? parseMinute(m.timeStr);
+      const isExtraTime = m.isExtraTime || minuteNum > 90;
+      const isPenaltyShootout = m.isPenaltyShootout || false;
 
       const rawEvents = await getMatchEvents(m.id);
       const normalizedEvents = normalizeEvents(rawEvents, m.homeTeam, m.awayTeam);
@@ -95,11 +94,17 @@ async function getLiveMatchContext() {
         homeScore: m.homeScore,
         awayScore: m.awayScore,
         minute: minuteNum,
+        timeStr: m.timeStr || null,
         stage: m.stage || 'Group Stage',
         venue: m.venue || '',
         isLive: true,
         isExtraTime,
         isPenaltyShootout,
+        psScoreHome: m.psScoreHome ?? null,
+        psScoreAway: m.psScoreAway ?? null,
+        psWinner: m.psWinner ?? null,
+        etScore: m.etScore ?? null,
+        matchId: m.matchId || m.id,
         events: normalizedEvents.slice(-10),
         stats: {},
         derivedSignals,
