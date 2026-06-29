@@ -1,9 +1,26 @@
 const express = require('express');
+const fs = require('fs');
+const path = require('path');
 const router = express.Router();
 const { client } = require('../lib/anthropic');
 const { retrieve } = require('../lib/rag');
 const { getLiveMatchContext } = require('../lib/sports-api');
-const { getMatchEvents } = require('../lib/livescoreApi');
+const {
+  getMatchEvents,
+  getMatchLineups,
+  getHistoryMatches,
+  getStandings,
+} = require('../lib/livescoreApi');
+
+// Load squads once at startup — built from real API lineup data for all 48 teams
+let SQUADS = {};
+try {
+  SQUADS = JSON.parse(fs.readFileSync(path.join(__dirname, '../knowledge-base/squads.json'), 'utf8'));
+} catch (e) {
+  console.warn('squads.json not found — squad context will be empty');
+}
+
+// ── System prompt template ────────────────────────────────────────────────────
 
 const COMPANION_SYSTEM_PROMPT_TEMPLATE = `You are an AI soccer companion helping a casual American fan enjoy a live World Cup 2026 match.
 
@@ -12,15 +29,33 @@ USER SPORTS CONTEXT:
 
 {MATCH_CONTEXT}
 
+{LINEUP_CONTEXT}
+
+{SQUAD_CONTEXT}
+
+{STANDINGS_CONTEXT}
+
+{HISTORY_CONTEXT}
+
 RELEVANT KNOWLEDGE:
 {RETRIEVED_KNOWLEDGE}
 
-PLAYER AND LINEUP QUESTIONS:
-You do NOT have access to the official confirmed lineup for this match. When asked about players, who is starting, formations, or who is playing:
-- Answer confidently using your training knowledge of each team's World Cup 2026 squad and typical starters
-- Example: "Mbappe is France's main striker and almost always starts as center forward"
-- If lineups haven't been officially confirmed, say "The official lineup isn't out yet, but [team] typically plays..."
-- NEVER say "I can't find X in the lineup" or "X isn't in the lineup" — you simply use training knowledge instead
+⚠️ GROUND TRUTH OVERRIDE — READ THIS FIRST:
+The 2026 World Cup is happening RIGHT NOW. Your training data contains simulated/predicted results that ARE WRONG. The ACTUAL results are injected above from the live API. Always defer to injected data over training knowledge.
+
+STRICT RULES:
+- Match results → use ONLY "COMPLETED TOURNAMENT MATCHES" above. If a score there differs from what you remember from training, the injected score is CORRECT.
+- Standings/points → use ONLY "CURRENT TOURNAMENT STANDINGS" above.
+- Lineups → use ONLY "OFFICIAL STARTING LINEUPS" above. Never guess who started.
+- Live goals/cards → use ONLY "MATCH EVENTS" appended at the end of this prompt.
+- If a team or match isn't in the injected data, say "I don't have that result yet" — do not fabricate.
+- NEVER say "Brazil beat Morocco 3-1" or any score you recall from training — trust the injected data.
+
+PLAYER CONTEXT QUESTIONS:
+When asked about a player's general profile, playing style, or background (not lineup status):
+- Use your training knowledge — you know these players well
+- Be specific: position, club, nationality, playing style
+- For lineup/starting status: ALWAYS defer to OFFICIAL STARTING LINEUPS above
 
 YOUR CORE JOB:
 - Use the MATCH INTELLIGENCE signals above to calibrate how you respond
@@ -78,6 +113,145 @@ Argentina are in control. France need two goals in 10 minutes — they're pushin
 [FOLLOW_UPS]
 ["What if France score?", "What are the comeback odds?", "Who's most likely to score?"]`;
 
+// ── Context builders ──────────────────────────────────────────────────────────
+
+function buildLineupContext(lineupData) {
+  if (!lineupData?.lineup) return 'OFFICIAL STARTING LINEUPS: Not yet released for this match.';
+
+  const { home, away } = lineupData.lineup;
+  const formatTeam = (teamData) => {
+    if (!teamData?.players?.length) return `${teamData?.team?.name || 'Team'}: Lineup data unavailable`;
+
+    const starters = teamData.players
+      .filter(p => p.substitution === '0')
+      .sort((a, b) => {
+        const order = { GK: 0, DF: 1, MF: 2, FW: 3 };
+        return (order[a.position] ?? 4) - (order[b.position] ?? 4);
+      });
+    const subs = teamData.players.filter(p => p.substitution === '1');
+
+    const byPos = {};
+    starters.forEach(p => {
+      if (!byPos[p.position]) byPos[p.position] = [];
+      byPos[p.position].push(`${p.name}(#${p.shirt_number})`);
+    });
+
+    const posOrder = ['GK', 'DF', 'MF', 'FW'];
+    const lineStr = posOrder
+      .filter(pos => byPos[pos])
+      .map(pos => `${pos}: ${byPos[pos].join(', ')}`)
+      .join(' | ');
+
+    const subsStr = subs.length ? subs.map(p => p.name).join(', ') : 'None listed';
+    return `${teamData.team.name} (${teamData.formation || 'formation TBD'}):\n  Starters — ${lineStr}\n  Bench — ${subsStr}`;
+  };
+
+  return `OFFICIAL STARTING LINEUPS (confirmed — use ONLY these for lineup/starter questions):
+${formatTeam(home)}
+
+${formatTeam(away)}`;
+}
+
+function buildHistoryContext(homeTeam, awayTeam, allHistory) {
+  if (!allHistory?.length) return '';
+
+  // Sort by date ascending so results are in chronological order
+  const sorted = [...allHistory].sort((a, b) => a.date.localeCompare(b.date));
+
+  // Compact format: all matches (the prompt can handle ~4k chars for 72 matches)
+  const lines = sorted
+    .map(m => `  ${m.date}: ${m.homeTeam} ${m.homeScore}–${m.awayScore} ${m.awayTeam}`)
+    .join('\n');
+
+  let context = `COMPLETED TOURNAMENT MATCHES — ACTUAL RESULTS FROM LIVE API (these scores are correct; your training data scores may differ and are WRONG):\n${lines}`;
+
+  // Also highlight the specific match teams' results for easy reference
+  if (homeTeam || awayTeam) {
+    const relevant = sorted.filter(m =>
+      m.homeTeam === homeTeam || m.awayTeam === homeTeam ||
+      m.homeTeam === awayTeam || m.awayTeam === awayTeam
+    );
+    if (relevant.length) {
+      const relLines = relevant
+        .map(m => `  ${m.date}: ${m.homeTeam} ${m.homeScore}–${m.awayScore} ${m.awayTeam}`)
+        .join('\n');
+      context += `\n\nTHIS MATCH'S TEAMS — PREVIOUS RESULTS (for quick reference):\n${relLines}`;
+    }
+  }
+
+  return context;
+}
+
+function buildStandingsContext(standingsData, teamNames) {
+  if (!standingsData?.table?.length) return '';
+
+  // Group rows by group letter
+  const groups = {};
+  standingsData.table.forEach(row => {
+    const g = row.group_name;
+    if (!groups[g]) groups[g] = [];
+    groups[g].push(row);
+  });
+  Object.keys(groups).forEach(g => {
+    groups[g].sort((a, b) => parseInt(a.rank) - parseInt(b.rank));
+  });
+
+  // If teams are specified, highlight their groups first; otherwise show all
+  const allGroupLetters = Object.keys(groups).sort();
+  let prioritized = allGroupLetters;
+  if (teamNames?.length) {
+    const teamGroupLetters = new Set();
+    standingsData.table.forEach(row => {
+      if (teamNames.some(t => t && row.name.toLowerCase().includes(t.split(' ')[0].toLowerCase()))) {
+        teamGroupLetters.add(row.group_name);
+      }
+    });
+    prioritized = [
+      ...teamGroupLetters,
+      ...allGroupLetters.filter(g => !teamGroupLetters.has(g)),
+    ];
+  }
+
+  const lines = prioritized.filter(g => groups[g]).map(g => {
+    const rows = groups[g].map(r => {
+      const gdNum = parseInt(r.goal_diff || '0');
+      const gd = gdNum >= 0 ? `+${gdNum}` : `${gdNum}`;
+      return `${r.rank}.${r.name}(${r.points}pts,${gd}GD,${r.won}W-${r.drawn}D-${r.lost}L)`;
+    }).join(' | ');
+    return `  Group ${g}: ${rows}`;
+  });
+
+  return `CURRENT TOURNAMENT STANDINGS — GROUND TRUTH (use for all points/ranking questions):\n${lines.join('\n')}`;
+}
+
+function buildSquadContext(homeTeam, awayTeam) {
+  const teams = [homeTeam, awayTeam].filter(Boolean);
+  if (!teams.length || !Object.keys(SQUADS).length) return '';
+
+  const sections = teams.map(team => {
+    const squad = SQUADS[team];
+    if (!squad?.players?.length) return null;
+
+    const byPos = { GK: [], DF: [], MF: [], FW: [], Unknown: [] };
+    squad.players.forEach(p => {
+      const pos = p.position && byPos[p.position] ? p.position : 'Unknown';
+      byPos[pos].push(`${p.name}(#${p.num})`);
+    });
+
+    const posOrder = ['GK', 'DF', 'MF', 'FW', 'Unknown'];
+    const lines = posOrder
+      .filter(pos => byPos[pos].length)
+      .map(pos => `    ${pos}: ${byPos[pos].join(', ')}`);
+
+    return `  ${team} (${squad.formation || 'formation varies'}):\n${lines.join('\n')}`;
+  }).filter(Boolean);
+
+  if (!sections.length) return '';
+  return `FULL TOURNAMENT SQUAD ROSTERS — these are players who actually appeared in the 2026 World Cup (confirmed from match data):\n${sections.join('\n\n')}`;
+}
+
+// ── Existing helpers ──────────────────────────────────────────────────────────
+
 function parseCompanionResponse(rawText) {
   try {
     const factMarker = '[FACT]';
@@ -88,54 +262,33 @@ function parseCompanionResponse(rawText) {
     const analogyIdx = rawText.indexOf(analogyMarker);
     const followUpsIdx = rawText.indexOf(followUpsMarker);
 
-    // No [FACT] marker — old format fallback
     if (factIdx === -1) {
       const oldIdx = rawText.indexOf(followUpsMarker);
-      if (oldIdx === -1) {
-        return { coreAnswer: rawText.trim(), analogy: null, followUps: [] };
-      }
+      if (oldIdx === -1) return { coreAnswer: rawText.trim(), analogy: null, followUps: [] };
       let followUps = [];
-      try {
-        followUps = JSON.parse(rawText.substring(oldIdx + followUpsMarker.length).trim());
-      } catch(e) {}
-      return {
-        coreAnswer: rawText.substring(0, oldIdx).trim(),
-        analogy: null,
-        followUps,
-      };
+      try { followUps = JSON.parse(rawText.substring(oldIdx + followUpsMarker.length).trim()); } catch(e) {}
+      return { coreAnswer: rawText.substring(0, oldIdx).trim(), analogy: null, followUps };
     }
 
-    // Get fact
-    const factEnd = analogyIdx !== -1
-      ? analogyIdx
-      : followUpsIdx !== -1
-        ? followUpsIdx
-        : rawText.length;
+    const factEnd = analogyIdx !== -1 ? analogyIdx : followUpsIdx !== -1 ? followUpsIdx : rawText.length;
     const coreAnswer = rawText.substring(factIdx + factMarker.length, factEnd).trim();
 
-    // Get analogy (optional)
     let analogy = null;
     if (analogyIdx !== -1) {
       const analogyEnd = followUpsIdx !== -1 ? followUpsIdx : rawText.length;
       const analogyText = rawText.substring(analogyIdx + analogyMarker.length, analogyEnd).trim();
-      if (analogyText.length > 10) {
-        analogy = analogyText;
-      }
+      if (analogyText.length > 10) analogy = analogyText;
     }
 
-    // Get follow-ups
     let followUps = ['Tell me more', 'Why does this matter?', 'What happens next?'];
     if (followUpsIdx !== -1) {
       try {
         const parsed = JSON.parse(rawText.substring(followUpsIdx + followUpsMarker.length).trim());
-        if (Array.isArray(parsed) && parsed.length >= 3) {
-          followUps = parsed.slice(0, 3);
-        }
+        if (Array.isArray(parsed) && parsed.length >= 3) followUps = parsed.slice(0, 3);
       } catch(e) {}
     }
 
     return { coreAnswer, analogy, followUps };
-
   } catch(err) {
     return { coreAnswer: rawText.trim(), analogy: null, followUps: [] };
   }
@@ -143,98 +296,59 @@ function parseCompanionResponse(rawText) {
 
 function shouldEnableWebSearch(message, matchContext) {
   if (!message) return false;
-
   const msg = message.toLowerCase();
-
   const incidentKeywords = [
-    'why was that',
-    'why did',
-    'what happened with',
-    'why is he off',
-    'why were they',
-    'red card',
-    'why ruled out',
-    'why disallowed',
-    'why no goal',
-    'var review',
-    'var check',
-    'offside call',
-    'penalty reason',
-    'why a penalty',
-    'what was the foul',
-    'why did they stop',
-    'explain that call',
-    'what just happened',
+    'why was that', 'why did', 'what happened with', 'why is he off',
+    'why were they', 'red card', 'why ruled out', 'why disallowed',
+    'why no goal', 'var review', 'var check', 'offside call',
+    'penalty reason', 'why a penalty', 'what was the foul',
+    'why did they stop', 'explain that call', 'what just happened',
     'why is everyone',
   ];
-
-  const hasIncidentQuestion = incidentKeywords.some(k => msg.includes(k));
-  if (hasIncidentQuestion) return true;
-
+  if (incidentKeywords.some(k => msg.includes(k))) return true;
   if (matchContext?.events?.length > 0) {
     const currentMinute = matchContext.minute || 0;
     const recentDramatic = matchContext.events.some(e => {
       const elapsed = e.time?.elapsed || 0;
-      const isRecent = elapsed >= currentMinute - 10;
-      const isDramatic = ['Red Card', 'VAR', 'Missed Penalty'].includes(e.type);
-      return isRecent && isDramatic;
+      return elapsed >= currentMinute - 10 && ['Red Card', 'VAR', 'Missed Penalty'].includes(e.type);
     });
     if (recentDramatic) return true;
   }
-
   return false;
 }
 
 function buildUserContextString(userContext) {
-  if (!userContext || !userContext.knownSports?.length)
-    return 'No user sports context available.';
+  if (!userContext || !userContext.knownSports?.length) return 'No user sports context available.';
   const sports = userContext.knownSports.join(', ');
-  const teams = userContext.favoriteTeams?.length
-    ? `Favorite teams: ${userContext.favoriteTeams.join(', ')}.`
-    : '';
+  const teams = userContext.favoriteTeams?.length ? `Favorite teams: ${userContext.favoriteTeams.join(', ')}.` : '';
   return `This user follows ${sports}. ${teams} Always use analogies from these sports when explaining soccer concepts.`;
 }
 
 function buildMatchContextString(matchContext) {
-  if (!matchContext) return 'No live match data available.';
+  if (!matchContext) return 'MATCH CONTEXT: No live match data available.';
 
-  const {
-    homeTeam, awayTeam, homeScore, awayScore,
-    minute, stage, venue, kickoffET, derivedSignals, recentEventsText, stats,
-  } = matchContext;
+  const { homeTeam, awayTeam, homeScore, awayScore, minute, stage, venue, kickoffET, derivedSignals, recentEventsText, stats } = matchContext;
 
-  const scoreStr = (homeScore !== null && awayScore !== null)
-    ? `${homeScore} - ${awayScore}`
-    : 'Not started';
+  const scoreStr = (homeScore !== null && awayScore !== null) ? `${homeScore} - ${awayScore}` : 'Not started';
 
   let context = `LIVE MATCH:
 ${homeTeam} ${scoreStr} ${awayTeam}
 Minute: ${minute != null ? minute + "'" : 'Not started'}
-Stage: ${stage || 'Unknown'}
-`;
+Stage: ${stage || 'Unknown'}`;
 
-  if (venue) context += `Venue: ${venue}\n`;
-  if (kickoffET && minute == null) context += `Kickoff: ${kickoffET}\n`;
-
+  if (venue) context += `\nVenue: ${venue}`;
+  if (kickoffET && minute == null) context += `\nKickoff: ${kickoffET}`;
 
   if (recentEventsText && recentEventsText !== 'No events yet') {
-    context += `
-RECENT EVENTS (last 5):
-${recentEventsText}
-`;
+    context += `\n\nRECENT EVENTS (last 5):\n${recentEventsText}`;
   }
 
   if (stats?.possession) {
-    context += `
-MATCH STATS:
-Possession: ${homeTeam} ${stats.possession.home}% vs ${awayTeam} ${stats.possession.away}%
-Shots: ${homeTeam} ${stats.shots?.home || 0} vs ${awayTeam} ${stats.shots?.away || 0}
-`;
+    context += `\n\nMATCH STATS:\nPossession: ${homeTeam} ${stats.possession.home}% vs ${awayTeam} ${stats.possession.away}%\nShots: ${homeTeam} ${stats.shots?.home || 0} vs ${awayTeam} ${stats.shots?.away || 0}`;
   }
 
   if (derivedSignals) {
-    context += `
-MATCH INTELLIGENCE (calibrate your response energy to these signals):
+    context += `\n\nMATCH INTELLIGENCE (calibrate your response energy to these signals):
 Pressure level: ${derivedSignals.pressure}
 Momentum: ${derivedSignals.momentum}
 Stakes: ${derivedSignals.stakes}
@@ -246,40 +360,49 @@ SIGNAL INSTRUCTIONS:
 - SPIKE intensity → acknowledge the drama first
 - MAXIMUM or CRITICAL stakes → explain consequences clearly
 - Clear momentum → reference it naturally in your answer
-- Match your energy to the moment
-`;
+- Match your energy to the moment`;
   }
 
   return context;
 }
 
+// ── Route ─────────────────────────────────────────────────────────────────────
+
 router.post('/', async (req, res) => {
   try {
     const { message, conversationHistory = [], matchContext, userContext } = req.body;
 
-    const [liveContext, retrievedKnowledge] = await Promise.all([
-      getLiveMatchContext(),
-      Promise.resolve(retrieve(message, 3)),
+    const today = new Date().toISOString().split('T')[0];
+    const matchId = matchContext?.matchId || matchContext?.id;
+    const homeTeam = matchContext?.homeTeam;
+    const awayTeam = matchContext?.awayTeam;
+
+    // Fetch all context in parallel — cached by livescoreApi layer (5 min TTL)
+    const [liveContext, retrievedKnowledge, lineupData, allHistory, standingsData] = await Promise.all([
+      getLiveMatchContext().catch(() => null),
+      Promise.resolve(retrieve(message, 5)),
+      matchId ? getMatchLineups(matchId).catch(() => null) : Promise.resolve(null),
+      getHistoryMatches('2026-06-11', today).catch(() => []),
+      getStandings().catch(() => null),
     ]);
 
     const activeMatch = matchContext || liveContext;
-
     const isLiveMode = !!(matchContext || liveContext?.homeTeam);
+    const activeMatchId = matchId || activeMatch?.matchId || activeMatch?.id;
 
-    // Fetch events for both live AND finished matches.
-    // Never fall back to liveContext.recentEventsText — it may be from a different concurrent match.
+    // ── Event context: all significant events (goals, cards, subs, VAR) ──────
     let eventsContext = activeMatch?.recentEventsText || '';
-    const matchId = activeMatch?.matchId || activeMatch?.id;
-    if ((!eventsContext || eventsContext === 'No events yet') && matchId) {
+    if ((!eventsContext || eventsContext === 'No events yet') && activeMatchId) {
       try {
-        const events = await getMatchEvents(matchId);
+        const events = await getMatchEvents(activeMatchId);
         if (events?.length) {
+          const SIGNIFICANT = ['GOAL', 'GOAL_PENALTY', 'OWN_GOAL', 'RED_CARD', 'YELLOW_CARD', 'SUBSTITUTION', 'VAR', 'MISSED_PENALTY', 'PENALTY_MISSED'];
           eventsContext = events
-            .filter(e => ['GOAL', 'GOAL_PENALTY', 'OWN_GOAL', 'RED_CARD', 'YELLOW_CARD'].includes(e.type))
-            .slice(-15)
+            .filter(e => SIGNIFICANT.includes(e.type))
+            .slice(-20)
             .map(e => {
               const team = e.isHome ? (activeMatch?.homeTeam || 'home') : (activeMatch?.awayTeam || 'away');
-              const assist = e.assist ? ` (assist: ${e.assist})` : '';
+              const assist = e.assist ? ` (${e.type === 'SUBSTITUTION' ? 'ON: ' : 'assist: '}${e.assist})` : '';
               const label = e.label || e.type || 'Event';
               const playerName = e.player?.name || 'Unknown';
               return `${e.minute}' ${label}: ${playerName}${assist} (${team})`;
@@ -290,35 +413,27 @@ router.post('/', async (req, res) => {
       }
     }
 
-    const useWebSearch = shouldEnableWebSearch(
-      message,
-      isLiveMode ? activeMatch : null
-    );
+    const useWebSearch = shouldEnableWebSearch(message, isLiveMode ? activeMatch : null);
+    if (useWebSearch) console.log('[Companion] Web search enabled for:', message.slice(0, 60));
 
-    if (useWebSearch) {
-      console.log('[Companion] Web search enabled for:', message.slice(0, 60));
-    }
-
+    // ── Build system prompt with all injected data ─────────────────────────
+    const teamNames = [homeTeam, awayTeam].filter(Boolean);
     let systemPrompt = COMPANION_SYSTEM_PROMPT_TEMPLATE
       .replace('{USER_CONTEXT}', buildUserContextString(userContext))
       .replace('{MATCH_CONTEXT}', buildMatchContextString(activeMatch))
+      .replace('{LINEUP_CONTEXT}', buildLineupContext(lineupData))
+      .replace('{SQUAD_CONTEXT}', buildSquadContext(homeTeam, awayTeam))
+      .replace('{STANDINGS_CONTEXT}', buildStandingsContext(standingsData, teamNames))
+      .replace('{HISTORY_CONTEXT}', buildHistoryContext(homeTeam, awayTeam, allHistory))
       .replace('{RETRIEVED_KNOWLEDGE}', retrievedKnowledge);
 
+    // Append events as immutable ground truth (overrides training knowledge for this match)
     if (eventsContext && eventsContext !== 'No events yet' && eventsContext !== 'Match has not started yet') {
-      systemPrompt += `\n\nMATCH EVENTS — USE THIS AS GROUND TRUTH:\n${eventsContext}\n\nCRITICAL RULES:\n- Use ONLY the above events for facts about this match\n- Never invent or guess goal scorers, times, or assists\n- Never use training knowledge for who scored, when, or what happened\n- If asked who scored, answer using these events only`;
+      systemPrompt += `\n\nMATCH EVENTS — ABSOLUTE GROUND TRUTH (highest priority — overrides all other sources):\n${eventsContext}\n\nEVENT RULES:\n- Use ONLY the above for who scored, when, and who assisted\n- Never invent or guess goal scorers, times, or assists\n- For substitutions: the first player listed came OFF, the player after "ON:" came ON\n- If asked who scored, answer using these events only`;
     }
 
     if (useWebSearch) {
-      systemPrompt += `
-
-WEB SEARCH AVAILABLE:
-You have access to web search.
-For questions about specific incidents (red cards, VAR decisions, disallowed goals, penalties) search for the specific event to find journalist reporting on WHY it happened.
-
-Search query format: "[player name] [event type] [home team] [away team] 2026 reason"
-
-Then explain the real reason to Sam using your normal style — plain English, sports analogy, under 130 words.
-`;
+      systemPrompt += `\n\nWEB SEARCH AVAILABLE:\nYou have access to web search for specific incidents (red cards, VAR decisions, disallowed goals).\nSearch format: "[player name] [event type] [home team] [away team] 2026 reason"\nThen explain in plain English under 130 words.`;
     }
 
     const messages = [
@@ -334,10 +449,7 @@ Then explain the real reason to Sam using your normal style — plain English, s
     };
 
     if (useWebSearch) {
-      apiParams.tools = [{
-        type: 'web_search_20250305',
-        name: 'web_search',
-      }];
+      apiParams.tools = [{ type: 'web_search_20250305', name: 'web_search' }];
     }
 
     const response = await client.messages.create(apiParams);

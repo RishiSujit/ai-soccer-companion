@@ -1,0 +1,7724 @@
+{
+  "Mexico": {
+    "formation": null,
+    "players": [
+      {
+        "name": "Jose Raul Rangel Aguilar",
+        "num": "1",
+        "position": "GK",
+        "isStarter": true
+      },
+      {
+        "name": "Jorge Sanchez",
+        "num": "2",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Cesar Montes",
+        "num": "3",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Edson Alvarez",
+        "num": "4",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Johan Vasquez",
+        "num": "5",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Erik Lira",
+        "num": "6",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Luis Romo",
+        "num": "7",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Alvaro Fidalgo",
+        "num": "8",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Raul Jimenez",
+        "num": "9",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Alexis Vega",
+        "num": "10",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Santiago Gimenez",
+        "num": "11",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Carlos Acevedo",
+        "num": "12",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Guillermo Ochoa",
+        "num": "13",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Armando González",
+        "num": "14",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Israel Reyes",
+        "num": "15",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Julian Quinones",
+        "num": "16",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Orbelin Pineda",
+        "num": "17",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Obed Vargas",
+        "num": "18",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Gilberto Mora",
+        "num": "19",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Mateo Chávez",
+        "num": "20",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Cesar Huerta",
+        "num": "21",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Guillermo Martinez",
+        "num": "22",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Jesus Gallardo",
+        "num": "23",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Luis Chavez",
+        "num": "24",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Roberto Alvarado",
+        "num": "25",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Brian Gutierrez",
+        "num": "26",
+        "position": "MF",
+        "isStarter": true
+      }
+    ]
+  },
+  "South Africa": {
+    "formation": null,
+    "players": [
+      {
+        "name": "Ronwen Williams",
+        "num": "1",
+        "position": "GK",
+        "isStarter": true
+      },
+      {
+        "name": "Tholo Thabang Matuludi",
+        "num": "2",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Khulumani Ndamane",
+        "num": "3",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Teboho Mokoena",
+        "num": "4",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Thalente Mbatha",
+        "num": "5",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Aubrey Modiba",
+        "num": "6",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Oswin Appollis",
+        "num": "7",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Tshepang Moremi",
+        "num": "8",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Lyle Foster",
+        "num": "9",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Relebohile Mofokeng",
+        "num": "10",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Themba Zwane",
+        "num": "11",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Thapelo Maseko",
+        "num": "12",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Sphephelo Sithole",
+        "num": "13",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Mbekezeli Mbokazi",
+        "num": "14",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Iqraam Rayners",
+        "num": "15",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Sipho Chaine",
+        "num": "16",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Evidence Makgopa",
+        "num": "17",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Samukelo Kabini",
+        "num": "18",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Nkosinathi Sibisi",
+        "num": "19",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Khuliso Mudau",
+        "num": "20",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Ime Okon",
+        "num": "21",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Ricardo Goss",
+        "num": "22",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Jayden Adams",
+        "num": "23",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Olwethu Makhanya",
+        "num": "24",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Kamogelo Sebelebele",
+        "num": "25",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Bradley Cross",
+        "num": "26",
+        "position": "DF",
+        "isStarter": false
+      }
+    ]
+  },
+  "South Korea": {
+    "formation": null,
+    "players": [
+      {
+        "name": "Seung Gyu Kim",
+        "num": "1",
+        "position": "GK",
+        "isStarter": true
+      },
+      {
+        "name": "Han-Beom Lee",
+        "num": "2",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Lee Gi-hyuk",
+        "num": "3",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Min-jae Kim",
+        "num": "4",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Kim Tae-hyeon",
+        "num": "5",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Hwang In-beom",
+        "num": "6",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Heung Min Son",
+        "num": "7",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Seung-Ho Paik",
+        "num": "8",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Cho Gue-Sung",
+        "num": "9",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Lee Jae Sung",
+        "num": "10",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Hee-chan Hwang",
+        "num": "11",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Song Beom-keun",
+        "num": "12",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Lee Taeseok",
+        "num": "13",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Cho Wi-Je",
+        "num": "14",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Kim Moon-Hwan",
+        "num": "15",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Park Jin seob",
+        "num": "16",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Bae Jun-Ho",
+        "num": "17",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Oh Hyeon gyu",
+        "num": "18",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Kang In Lee",
+        "num": "19",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Yang Hyun-jun",
+        "num": "20",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Jo Hyeon woo",
+        "num": "21",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Seol Young-Woo",
+        "num": "22",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Jens Castrop",
+        "num": "23",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Kim Jin-Gyu",
+        "num": "24",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Eom Ji-sung",
+        "num": "25",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Lee Dong-Kyeong",
+        "num": "26",
+        "position": "MF",
+        "isStarter": false
+      }
+    ]
+  },
+  "Czech Republic": {
+    "formation": null,
+    "players": [
+      {
+        "name": "Matej Kovar",
+        "num": "1",
+        "position": "GK",
+        "isStarter": true
+      },
+      {
+        "name": "David Zima",
+        "num": "2",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Tomas Holes",
+        "num": "3",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Robin Hranac",
+        "num": "4",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Vladimir Coufal",
+        "num": "5",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Stepan Chaloupek",
+        "num": "6",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Ladislav Krejci",
+        "num": "7",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Vladimir Darida",
+        "num": "8",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Adam Hlozek",
+        "num": "9",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Patrik Schick",
+        "num": "10",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Jan Kuchta",
+        "num": "11",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Lukas Cerv",
+        "num": "12",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Mojmir Chytil",
+        "num": "13",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "David Jurasek",
+        "num": "14",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Pavel Sulc",
+        "num": "15",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Jindrich Stanek",
+        "num": "16",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Lukas Provod",
+        "num": "17",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Michal Sadilek",
+        "num": "18",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Tomas Chory",
+        "num": "19",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Jaroslav Zeleny",
+        "num": "20",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "David Doudera",
+        "num": "21",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Tomas Soucek",
+        "num": "22",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Lukas Hornicek",
+        "num": "23",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Alexandr Sojka",
+        "num": "24",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Hugo Sochurek",
+        "num": "25",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Denis Visinsky",
+        "num": "26",
+        "position": "FW",
+        "isStarter": false
+      }
+    ]
+  },
+  "Canada": {
+    "formation": null,
+    "players": [
+      {
+        "name": "Dayne St Clair",
+        "num": "1",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Alistair Johnston",
+        "num": "2",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Alfie Jones",
+        "num": "3",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Luc De Fougerolles",
+        "num": "4",
+        "position": "Unknown",
+        "isStarter": true
+      },
+      {
+        "name": "Joel Waterman",
+        "num": "5",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Mathieu Choiniere",
+        "num": "6",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Stephen Eustaquio",
+        "num": "7",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Ismael Koné",
+        "num": "8",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Cyle Larin",
+        "num": "9",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Jonathan David",
+        "num": "10",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Liam Millar",
+        "num": "11",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Tani Oluwaseyi",
+        "num": "12",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Derek Cornelius",
+        "num": "13",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Jacob Shaffelburg",
+        "num": "14",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Moïse Bombito",
+        "num": "15",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Maxime Crepeau",
+        "num": "16",
+        "position": "GK",
+        "isStarter": true
+      },
+      {
+        "name": "Tajon Buchanan",
+        "num": "17",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Owen Goodman",
+        "num": "18",
+        "position": "Unknown",
+        "isStarter": false
+      },
+      {
+        "name": "Alphonso Davies",
+        "num": "19",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Ali Ahmed",
+        "num": "20",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Jonathan Osorio",
+        "num": "21",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Richie Laryea",
+        "num": "22",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Niko Sigur",
+        "num": "23",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Promise David",
+        "num": "24",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Nathan-Dylan Saliba",
+        "num": "25",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Jayden Nelson",
+        "num": "26",
+        "position": "Unknown",
+        "isStarter": false
+      }
+    ]
+  },
+  "Bosnia and Herzegovina": {
+    "formation": null,
+    "players": [
+      {
+        "name": "Nikola Vasilj",
+        "num": "1",
+        "position": "GK",
+        "isStarter": true
+      },
+      {
+        "name": "Nihad Mujakic",
+        "num": "2",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Denis Hadzikadunic",
+        "num": "3",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Tarik Muharemovic",
+        "num": "4",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Sead Kolasinac",
+        "num": "5",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Benjamin Tahirović",
+        "num": "6",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Amar Dedic",
+        "num": "7",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Armin Gigovic",
+        "num": "8",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Samed Baždar",
+        "num": "9",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Ermedin Demirovic",
+        "num": "10",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Edin Dzeko",
+        "num": "11",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Mladen Jurkas",
+        "num": "12",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Ivan Basic",
+        "num": "13",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Ivan Sunjic",
+        "num": "14",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Amar Memic",
+        "num": "15",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Amir Hadziahmetovic",
+        "num": "16",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Dzenis Burnic",
+        "num": "17",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Nikola Katic",
+        "num": "18",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Kerim-Sam Alajbegović",
+        "num": "19",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Esmir Bajraktarevic",
+        "num": "20",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Stjepan Radeljic",
+        "num": "21",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Martin Zlomislic",
+        "num": "22",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Haris Tabakovic",
+        "num": "23",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Arjan Malic",
+        "num": "24",
+        "position": "Unknown",
+        "isStarter": false
+      },
+      {
+        "name": "Jovo Lukic",
+        "num": "25",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Ermin Mahmic",
+        "num": "26",
+        "position": "MF",
+        "isStarter": false
+      }
+    ]
+  },
+  "USA": {
+    "formation": null,
+    "players": [
+      {
+        "name": "Matt Turner",
+        "num": "1",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Sergino Dest",
+        "num": "2",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Chris Richards",
+        "num": "3",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Tyler Adams",
+        "num": "4",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Antonee Robinson",
+        "num": "5",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Auston Trusty",
+        "num": "6",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Giovanni Reyna",
+        "num": "7",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Weston McKennie",
+        "num": "8",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Ricardo Pepi",
+        "num": "9",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Christian Pulisic",
+        "num": "10",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Brendan Aaronson",
+        "num": "11",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Miles Robinson",
+        "num": "12",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Tim Ream",
+        "num": "13",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Sebastian Berhalter",
+        "num": "14",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Cristian Roldan",
+        "num": "15",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Alex Freeman",
+        "num": "16",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Malik Tillman",
+        "num": "17",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Max Arfsten",
+        "num": "18",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Haji Wright",
+        "num": "19",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Folarin Balogun",
+        "num": "20",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Tim Weah",
+        "num": "21",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Mark McKenzie",
+        "num": "22",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Joe Scally",
+        "num": "23",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Matt Freese",
+        "num": "24",
+        "position": "GK",
+        "isStarter": true
+      },
+      {
+        "name": "Chris Brady",
+        "num": "25",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Alex Zendejas",
+        "num": "26",
+        "position": "FW",
+        "isStarter": false
+      }
+    ]
+  },
+  "Paraguay": {
+    "formation": null,
+    "players": [
+      {
+        "name": "Roberto Fernandez",
+        "num": "1",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Gustavo Velazquez",
+        "num": "2",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Omar Alderete",
+        "num": "3",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Juan Jose Caceres",
+        "num": "4",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Fabian Balbuena",
+        "num": "5",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Junior Alonso",
+        "num": "6",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Ramon Sosa",
+        "num": "7",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Diego Gomez",
+        "num": "8",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Antonio Sanabria",
+        "num": "9",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Miguel Almiron",
+        "num": "10",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Mauricio",
+        "num": "11",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Orlando Gill",
+        "num": "12",
+        "position": "GK",
+        "isStarter": true
+      },
+      {
+        "name": "Jose Canale",
+        "num": "13",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Adrián Cubas",
+        "num": "14",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Gustavo Gomez",
+        "num": "15",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Damian Bobadilla",
+        "num": "16",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Alejandro Romero",
+        "num": "17",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Alex Adrian Arce Barrios",
+        "num": "18",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Julio Enciso",
+        "num": "19",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Braian Ojeda",
+        "num": "20",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Gabriel Avalos",
+        "num": "21",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Gaston Olveira",
+        "num": "22",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Matias Galarza",
+        "num": "23",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Gustavo Caballero",
+        "num": "24",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Isidro Pitta",
+        "num": "25",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Alexandro Maidana",
+        "num": "26",
+        "position": "DF",
+        "isStarter": false
+      }
+    ]
+  },
+  "Qatar": {
+    "formation": null,
+    "players": [
+      {
+        "name": "Mahmud Ibrahim Abunada",
+        "num": "1",
+        "position": "GK",
+        "isStarter": true
+      },
+      {
+        "name": "Pedro Correia",
+        "num": "2",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Lucas Mendes",
+        "num": "3",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Gueye Laye",
+        "num": "4",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Jassem Gaber Abdulsallam",
+        "num": "5",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Abdelaziz Hatem",
+        "num": "6",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Ahmed Abelmotaal",
+        "num": "7",
+        "position": "Unknown",
+        "isStarter": false
+      },
+      {
+        "name": "Edmilson Junior",
+        "num": "8",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Mohammed Muntari",
+        "num": "9",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Hasan Al Heidos",
+        "num": "10",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Akram Afif",
+        "num": "11",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Karim Boudiaf",
+        "num": "12",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Ayoub Al Oui",
+        "num": "13",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Homam Ahmed",
+        "num": "14",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Yusuf Abdurisag",
+        "num": "15",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Boualem Khoukhi",
+        "num": "16",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Ahmed Alganehi",
+        "num": "17",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Sultan Al Brake",
+        "num": "18",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Almoez Ali",
+        "num": "19",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Ahmed Fathy Abdoulla",
+        "num": "20",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Salah Zakaria",
+        "num": "21",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Meshaal Aissa Barsham",
+        "num": "22",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Assim Madibo",
+        "num": "23",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Tahsin Mohammed Jamshid",
+        "num": "24",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Al Hashmi Al Hussain",
+        "num": "25",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Mohammad Al Mannai",
+        "num": "26",
+        "position": "Unknown",
+        "isStarter": false
+      }
+    ]
+  },
+  "Switzerland": {
+    "formation": null,
+    "players": [
+      {
+        "name": "Gregor Kobel",
+        "num": "1",
+        "position": "GK",
+        "isStarter": true
+      },
+      {
+        "name": "Miro Muheim",
+        "num": "2",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Silvan Widmer",
+        "num": "3",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Nico Elvedi",
+        "num": "4",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Manuel Akanji",
+        "num": "5",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Denis Zakaria",
+        "num": "6",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Breel Embolo",
+        "num": "7",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Remo Freuler",
+        "num": "8",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Johan Manzambi",
+        "num": "9",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Granit Xhaka",
+        "num": "10",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Dan Ndoye",
+        "num": "11",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Yvon Mvogo",
+        "num": "12",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Ricardo Rodriguez",
+        "num": "13",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Ardon Jasari",
+        "num": "14",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Djibril Sow",
+        "num": "15",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Christian Fassnacht",
+        "num": "16",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Ruben Vargas",
+        "num": "17",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Eray Comert",
+        "num": "18",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Noah Okafor",
+        "num": "19",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Michel Aebischer",
+        "num": "20",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Marvin Keller",
+        "num": "21",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Fabian Rieder",
+        "num": "22",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Zeki Amdouni",
+        "num": "23",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Aurele Amenda",
+        "num": "24",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Luca Jaquez",
+        "num": "25",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Cedric Itten",
+        "num": "26",
+        "position": "FW",
+        "isStarter": false
+      }
+    ]
+  },
+  "Brazil": {
+    "formation": null,
+    "players": [
+      {
+        "name": "Alisson",
+        "num": "1",
+        "position": "GK",
+        "isStarter": true
+      },
+      {
+        "name": "Ederson",
+        "num": "2",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Gabriel Magalhaes",
+        "num": "3",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Marquinhos",
+        "num": "4",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Casemiro",
+        "num": "5",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Alex Sandro",
+        "num": "6",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Vinicius Junior",
+        "num": "7",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Bruno Guimaraes",
+        "num": "8",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Matheus Cunha",
+        "num": "9",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Neymar",
+        "num": "10",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Raphinha",
+        "num": "11",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Weverton",
+        "num": "12",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Danilo",
+        "num": "13",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Gleison Bremer",
+        "num": "14",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Leo Pereira",
+        "num": "15",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Douglas Santos",
+        "num": "16",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Fabinho",
+        "num": "17",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Danilo Dos Santos De Oliveira",
+        "num": "18",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Endrick Felipe Sousa",
+        "num": "19",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Lucas Paqueta",
+        "num": "20",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Luiz Henrique",
+        "num": "21",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Gabriel Martinelli",
+        "num": "22",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Ederson Moraes",
+        "num": "23",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Roger Ibanez",
+        "num": "24",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Igor Thiago Nascimento Rodrigues",
+        "num": "25",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Rayan",
+        "num": "26",
+        "position": "FW",
+        "isStarter": false
+      }
+    ]
+  },
+  "Morocco": {
+    "formation": null,
+    "players": [
+      {
+        "name": "Yassine \"Bono\" Bounou",
+        "num": "1",
+        "position": "GK",
+        "isStarter": true
+      },
+      {
+        "name": "Achraf Hakimi",
+        "num": "2",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Noussair Mazraoui",
+        "num": "3",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Sofyan Amrabat",
+        "num": "4",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Marwane Saadane",
+        "num": "5",
+        "position": "Unknown",
+        "isStarter": false
+      },
+      {
+        "name": "Ayyoub Bouaddi",
+        "num": "6",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Chemsdine Talbi",
+        "num": "7",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Azzedine Ounahi",
+        "num": "8",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Soufiane Rahimi",
+        "num": "9",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Brahim Diaz",
+        "num": "10",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Ismael Saibari",
+        "num": "11",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Munir El Haddadi",
+        "num": "12",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Zakaria El-Ouadi",
+        "num": "13",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Issa Diop",
+        "num": "14",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Samir El Mourabet",
+        "num": "15",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Gessime Yassine",
+        "num": "16",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Amine Sbai",
+        "num": "17",
+        "position": "Unknown",
+        "isStarter": false
+      },
+      {
+        "name": "Chadi Riad",
+        "num": "18",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Youssef Belammari",
+        "num": "19",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Ayoub El Kaabi",
+        "num": "20",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Ayoube Amaimouni-Echghouyab",
+        "num": "21",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Ahmed Reda Tagnaouti",
+        "num": "22",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Bilal El Khannouss",
+        "num": "23",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Neil El Aynaoui",
+        "num": "24",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Redouane Halhal",
+        "num": "25",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Anass Salah-Eddine",
+        "num": "26",
+        "position": "DF",
+        "isStarter": false
+      }
+    ]
+  },
+  "Haiti": {
+    "formation": null,
+    "players": [
+      {
+        "name": "Johny Placide",
+        "num": "1",
+        "position": "GK",
+        "isStarter": true
+      },
+      {
+        "name": "Carlens Arcus",
+        "num": "2",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Keeto Thermoncy",
+        "num": "3",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Ricardo Ade",
+        "num": "4",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Hannes Delcroix",
+        "num": "5",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Carl Sainté",
+        "num": "6",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Derrick Etienne",
+        "num": "7",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Martin Experience",
+        "num": "8",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Duckens Nazon",
+        "num": "9",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Jeanricner Bellegarde",
+        "num": "10",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Louicius Don Deedson",
+        "num": "11",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Alexandre Pierre",
+        "num": "12",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Duke Lacroix",
+        "num": "13",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Garven-Michee Metusala",
+        "num": "14",
+        "position": "Unknown",
+        "isStarter": false
+      },
+      {
+        "name": "Ruben Providence",
+        "num": "15",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Lenny Joseph",
+        "num": "16",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Danley Jean Jacques",
+        "num": "17",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Wilson Isidor",
+        "num": "18",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Yassin Fortune",
+        "num": "19",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Frantzdy Pierrot",
+        "num": "20",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Josue Casimir",
+        "num": "21",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Jean-Kevin Duverne",
+        "num": "22",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Josue Duverger",
+        "num": "23",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Wilguens Paugain",
+        "num": "24",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Dominique Simon",
+        "num": "25",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Woodensky Pierre",
+        "num": "26",
+        "position": "MF",
+        "isStarter": false
+      }
+    ]
+  },
+  "Scotland": {
+    "formation": null,
+    "players": [
+      {
+        "name": "Angus Gunn",
+        "num": "1",
+        "position": "GK",
+        "isStarter": true
+      },
+      {
+        "name": "Aaron Hickey",
+        "num": "2",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Andrew Robertson",
+        "num": "3",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Scott McTominay",
+        "num": "4",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Grant Hanley",
+        "num": "5",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Kieran Tierney",
+        "num": "6",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "John McGinn",
+        "num": "7",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Tyler Fletcher",
+        "num": "8",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Lyndon Dykes",
+        "num": "9",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Che Adams",
+        "num": "10",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Ryan Christie",
+        "num": "11",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Liam Kelly",
+        "num": "12",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Jack Hendry",
+        "num": "13",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Ross Stewart",
+        "num": "14",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "John Souttar",
+        "num": "15",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Dominic Hyam",
+        "num": "16",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Ben Doak",
+        "num": "17",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "George Hirst",
+        "num": "18",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Lewis Ferguson",
+        "num": "19",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Lawrence Shankland",
+        "num": "20",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Craig Gordon",
+        "num": "21",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Nathan Patterson",
+        "num": "22",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Kenny McLean",
+        "num": "23",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Tony Ralston",
+        "num": "24",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Findlay Curtis",
+        "num": "25",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Scott McKenna",
+        "num": "26",
+        "position": "DF",
+        "isStarter": false
+      }
+    ]
+  },
+  "Australia": {
+    "formation": null,
+    "players": [
+      {
+        "name": "Mathew Ryan",
+        "num": "1",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Milos Degenek",
+        "num": "2",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Alessandro Circati",
+        "num": "3",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Jacob Italiano",
+        "num": "4",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Jordan Bos",
+        "num": "5",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Jason Geria",
+        "num": "6",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Mathew Leckie",
+        "num": "7",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Conor Metcalfe",
+        "num": "8",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Mohamed Toure",
+        "num": "9",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Ajdin Hrustic",
+        "num": "10",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Awer Mabil",
+        "num": "11",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Paul Izzo",
+        "num": "12",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Aiden O`Neill",
+        "num": "13",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Cameron Devlin",
+        "num": "14",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Kai Trewin",
+        "num": "15",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Aziz Behich",
+        "num": "16",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Nestory Irankunda",
+        "num": "17",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Patrick Beach",
+        "num": "18",
+        "position": "GK",
+        "isStarter": true
+      },
+      {
+        "name": "Harry Souttar",
+        "num": "19",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Cristian Volpato",
+        "num": "20",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Cameron Burgess",
+        "num": "21",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Jackson Irvine",
+        "num": "22",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Nishan Velupillay",
+        "num": "23",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Paul Okon",
+        "num": "24",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Lucas Herrington",
+        "num": "25",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Tete Yengi",
+        "num": "26",
+        "position": "FW",
+        "isStarter": false
+      }
+    ]
+  },
+  "Turkey": {
+    "formation": null,
+    "players": [
+      {
+        "name": "Mert Gunok",
+        "num": "1",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Mehmet Celik",
+        "num": "2",
+        "position": "Unknown",
+        "isStarter": true
+      },
+      {
+        "name": "Merih Demiral",
+        "num": "3",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Caglar Soyuncu",
+        "num": "4",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Salih Ozcan",
+        "num": "5",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Orkun Kokcu",
+        "num": "6",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Muhammed Kerem Akturkoglu",
+        "num": "7",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Guler Arda",
+        "num": "8",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Deniz Gül",
+        "num": "9",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Hakan Calhanoglu",
+        "num": "10",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Kenan Yildiz",
+        "num": "11",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Altay Bayindir",
+        "num": "12",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Evren Eren Elmali",
+        "num": "13",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Abdulkerim Bardakci",
+        "num": "14",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Ozan Kabak",
+        "num": "15",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Ismail Yuksek",
+        "num": "16",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Irfan Kahveci",
+        "num": "17",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Mert Muldur",
+        "num": "18",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Yunus Akgun",
+        "num": "19",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Ferdi Kadioglu",
+        "num": "20",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Baris Alper Yilmaz",
+        "num": "21",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Kaan Ayhan",
+        "num": "22",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Ugurcan Cakir",
+        "num": "23",
+        "position": "GK",
+        "isStarter": true
+      },
+      {
+        "name": "Oguz Aydin",
+        "num": "24",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Samet Akaydin",
+        "num": "25",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Can Uzun",
+        "num": "26",
+        "position": "FW",
+        "isStarter": false
+      }
+    ]
+  },
+  "Germany": {
+    "formation": null,
+    "players": [
+      {
+        "name": "Manuel Neuer",
+        "num": "1",
+        "position": "GK",
+        "isStarter": true
+      },
+      {
+        "name": "Antonio Rudiger",
+        "num": "2",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Waldemar Anton",
+        "num": "3",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Jonathan Tah",
+        "num": "4",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Aleksandar Pavlović",
+        "num": "5",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Joshua Kimmich",
+        "num": "6",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Kai Havertz",
+        "num": "7",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Leon Goretzka",
+        "num": "8",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Jamie Leweling",
+        "num": "9",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Jamal Musiala",
+        "num": "10",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Nick Woltemade",
+        "num": "11",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Oliver Baumann",
+        "num": "12",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Pascal Gross",
+        "num": "13",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Maximilian Beier",
+        "num": "14",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Nico Schlotterbeck",
+        "num": "15",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Angelo Stiller",
+        "num": "16",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Florian Wirtz",
+        "num": "17",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Nathaniel Brown",
+        "num": "18",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Leroy Sane",
+        "num": "19",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Nadiem Amiri",
+        "num": "20",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Alexander Nubel",
+        "num": "21",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "David Raum",
+        "num": "22",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Felix Nmecha",
+        "num": "23",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Malick Thiaw",
+        "num": "24",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Forzan Ouédraogo",
+        "num": "25",
+        "position": "Unknown",
+        "isStarter": false
+      },
+      {
+        "name": "Deniz Undav",
+        "num": "26",
+        "position": "FW",
+        "isStarter": false
+      }
+    ]
+  },
+  "Curacao": {
+    "formation": null,
+    "players": [
+      {
+        "name": "Eloy Room",
+        "num": "1",
+        "position": "GK",
+        "isStarter": true
+      },
+      {
+        "name": "Shurandy Sambo",
+        "num": "2",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Jurien Gaari",
+        "num": "3",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Roshon van Eijma",
+        "num": "4",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Sherel Floranus",
+        "num": "5",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Godfried Roemeratoe",
+        "num": "6",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Juninho Bacuna",
+        "num": "7",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Livano Comenencia",
+        "num": "8",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Jurgen Locadia",
+        "num": "9",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Leandro Bacuna",
+        "num": "10",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Jeremy Antonisse",
+        "num": "11",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Sontje Hansen",
+        "num": "12",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Tyrese Noslin",
+        "num": "13",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Kenji Gorre",
+        "num": "14",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "ArJany Martha",
+        "num": "15",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Jearl Margaritha",
+        "num": "16",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Brandley Kuwas",
+        "num": "17",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Armando Obispo",
+        "num": "18",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Gervane Kastaneer",
+        "num": "19",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Joshua Brenet",
+        "num": "20",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Tahith Chong",
+        "num": "21",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Kevin Felida",
+        "num": "22",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Riechedly Bazoer",
+        "num": "23",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Deveron Fonville",
+        "num": "24",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Tyrick Bodak",
+        "num": "25",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Trevor Doornbusch",
+        "num": "26",
+        "position": "GK",
+        "isStarter": false
+      }
+    ]
+  },
+  "Netherlands": {
+    "formation": null,
+    "players": [
+      {
+        "name": "Bart Verbruggen",
+        "num": "1",
+        "position": "GK",
+        "isStarter": true
+      },
+      {
+        "name": "Lutsharel Geertruida",
+        "num": "2",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Marten De Roon",
+        "num": "3",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Virgil van Dijk",
+        "num": "4",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Nathan Ake",
+        "num": "5",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Jan Paul van Hecke",
+        "num": "6",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Justin Kluivert",
+        "num": "7",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Ryan Gravenberch",
+        "num": "8",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Wout Weghorst",
+        "num": "9",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Memphis Depay",
+        "num": "10",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Cody Gakpo",
+        "num": "11",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Mats Wieffer",
+        "num": "12",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Robin Roefs",
+        "num": "13",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Tijani Reijnders",
+        "num": "14",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Mickey van de Ven",
+        "num": "15",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Guus Til",
+        "num": "16",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Noa Lang",
+        "num": "17",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Donyell Malen",
+        "num": "18",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Brian Brobbey",
+        "num": "19",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Teun Koopmeiners",
+        "num": "20",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Frenkie De Jong",
+        "num": "21",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Denzel Dumfries",
+        "num": "22",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Mark Flekken",
+        "num": "23",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Crysencio Summerville",
+        "num": "24",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Jorrel Hato",
+        "num": "25",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Quinten Timber",
+        "num": "26",
+        "position": "MF",
+        "isStarter": false
+      }
+    ]
+  },
+  "Japan": {
+    "formation": null,
+    "players": [
+      {
+        "name": "Zion Suzuki",
+        "num": "1",
+        "position": "GK",
+        "isStarter": true
+      },
+      {
+        "name": "Yukinari Sugawara",
+        "num": "2",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Shogo Taniguchi",
+        "num": "3",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Ko Itakura",
+        "num": "4",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Yuto Nagatomo",
+        "num": "5",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Shuto Machino",
+        "num": "6",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Ao Tanaka",
+        "num": "7",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Takefusa Kubo",
+        "num": "8",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Keisuke Goto",
+        "num": "9",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Ritsu Doan",
+        "num": "10",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Daizen Maeda",
+        "num": "11",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Keisuke Osako",
+        "num": "12",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Keito Nakamura",
+        "num": "13",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Junya Ito",
+        "num": "14",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Daichi Kamada",
+        "num": "15",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Tsuyoshi Watanabe",
+        "num": "16",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Yuito Suzuki",
+        "num": "17",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Ayase Ueda",
+        "num": "18",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Koki Ogawa",
+        "num": "19",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Ayumu Seko",
+        "num": "20",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Hiroki Ito",
+        "num": "21",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Takehiro Tomiyasu",
+        "num": "22",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Tomoki Hayakawa",
+        "num": "23",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Kaishu Sano",
+        "num": "24",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Junnosuke Suzuki",
+        "num": "25",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Kento Shiogai",
+        "num": "26",
+        "position": "FW",
+        "isStarter": false
+      }
+    ]
+  },
+  "Ivory Coast": {
+    "formation": null,
+    "players": [
+      {
+        "name": "Yahia Fofana",
+        "num": "1",
+        "position": "GK",
+        "isStarter": true
+      },
+      {
+        "name": "Ousmane Diomande",
+        "num": "2",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Ghislain Konan",
+        "num": "3",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Jean Seri",
+        "num": "4",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Wilfried Stephane Singo",
+        "num": "5",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Seko Fofana",
+        "num": "6",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Odilon Kossounou",
+        "num": "7",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Franck Kessie",
+        "num": "8",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Ange-Yoan Bonny",
+        "num": "9",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Simon Adingra",
+        "num": "10",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Yan Diomande",
+        "num": "11",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Sepe Elye Wahi",
+        "num": "12",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Christopher Operi",
+        "num": "13",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Oumar Diakite",
+        "num": "14",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Amad Diallo",
+        "num": "15",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Mohamed Kone",
+        "num": "16",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Guela Doue",
+        "num": "17",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Ibrahim Sangare",
+        "num": "18",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Nicolas Pepe",
+        "num": "19",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Emmanuel Agbadou",
+        "num": "20",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Evan N`Dicka",
+        "num": "21",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Evann Guessand",
+        "num": "22",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Alban Lafont",
+        "num": "23",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Bazoumana Touré",
+        "num": "24",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Parfait Guiagon",
+        "num": "25",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Christ Inao Oulaï",
+        "num": "26",
+        "position": "MF",
+        "isStarter": false
+      }
+    ]
+  },
+  "Ecuador": {
+    "formation": null,
+    "players": [
+      {
+        "name": "Hernan Galindez",
+        "num": "1",
+        "position": "GK",
+        "isStarter": true
+      },
+      {
+        "name": "Felix Torres",
+        "num": "2",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Piero Martin Hincapie",
+        "num": "3",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Joel Ordonez",
+        "num": "4",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Jordy Alcivar",
+        "num": "5",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "William Pacho",
+        "num": "6",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Pervis Estupinan",
+        "num": "7",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Anthony Valencia",
+        "num": "8",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "John Yeboah",
+        "num": "9",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Kendry Páez",
+        "num": "10",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Kevin Rodriguez",
+        "num": "11",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Moises Ramirez",
+        "num": "12",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Enner Valencia",
+        "num": "13",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Alan Minda",
+        "num": "14",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Pedro Vite",
+        "num": "15",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Jordy Caicedo",
+        "num": "16",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Angelo Preciado",
+        "num": "17",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Denil Castillo",
+        "num": "18",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Gonzalo Plata",
+        "num": "19",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Nilson David Angulo Ramirez",
+        "num": "20",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Alan Franco",
+        "num": "21",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Gonzalo Valle",
+        "num": "22",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Moises Caicedo",
+        "num": "23",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Jeremy Arévalo",
+        "num": "24",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Jackson Porozo",
+        "num": "25",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Yaimar Abel Medina Ortiz",
+        "num": "26",
+        "position": "MF",
+        "isStarter": false
+      }
+    ]
+  },
+  "Sweden": {
+    "formation": null,
+    "players": [
+      {
+        "name": "Jacob Widell Zetterstrom",
+        "num": "1",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Gustaf Lagerbielke",
+        "num": "2",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Victor Lindelof",
+        "num": "3",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Isak Hien",
+        "num": "4",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Gabriel Gudmundsson",
+        "num": "5",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Herman Johansson",
+        "num": "6",
+        "position": "Unknown",
+        "isStarter": false
+      },
+      {
+        "name": "Lucas Bergvall",
+        "num": "7",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Daniel Svensson",
+        "num": "8",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Alexander Isak",
+        "num": "9",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Benjamin Nygren",
+        "num": "10",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Anthony Elanga",
+        "num": "11",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Viktor Johansson",
+        "num": "12",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Ken Sema",
+        "num": "13",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Hjalmar Ekdal",
+        "num": "14",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Carl Starfelt",
+        "num": "15",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Jesper Karlstrom",
+        "num": "16",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Viktor Gyokeres",
+        "num": "17",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Yasin Abbas Ayari",
+        "num": "18",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Mattias Svanberg",
+        "num": "19",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Eric Smith",
+        "num": "20",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Alexander Bernhardsson",
+        "num": "21",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Besfort Zeneli",
+        "num": "22",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Kristoffer Nordfeldt",
+        "num": "23",
+        "position": "GK",
+        "isStarter": true
+      },
+      {
+        "name": "Elliot Stroud",
+        "num": "24",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Gustaf Nilsson",
+        "num": "25",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Taha Ali",
+        "num": "26",
+        "position": "FW",
+        "isStarter": false
+      }
+    ]
+  },
+  "Tunisia": {
+    "formation": null,
+    "players": [
+      {
+        "name": "Abdelmouhib Chamakh",
+        "num": "1",
+        "position": "GK",
+        "isStarter": true
+      },
+      {
+        "name": "Ali Abdi",
+        "num": "2",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Montassar Talbi",
+        "num": "3",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Omar Rekik",
+        "num": "4",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Adem Arous",
+        "num": "5",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Dylan Bronn",
+        "num": "6",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Elias Achouri",
+        "num": "7",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Elias Saad",
+        "num": "8",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Hazem Mastouri",
+        "num": "9",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Hannibal Mejbri",
+        "num": "10",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Ismael Gharbi",
+        "num": "11",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Mortadha Ben Ouanes",
+        "num": "12",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Rani Khedira",
+        "num": "13",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Khalil Ayari",
+        "num": "14",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Mahmoud Mohamed Belhadj",
+        "num": "15",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Aymen Dahmen",
+        "num": "16",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Ellyes Skhiri",
+        "num": "17",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Rayan Elloumi",
+        "num": "18",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Firas Chaouat",
+        "num": "19",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Yann Valery",
+        "num": "20",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Mohamed Amine Ben Hamida",
+        "num": "21",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Sabri Ben Hsan",
+        "num": "22",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Moutaz Neffati",
+        "num": "23",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Raed Chikhaoui",
+        "num": "24",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Anis Ben Slimane",
+        "num": "25",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Sebastian Tounekti",
+        "num": "26",
+        "position": "FW",
+        "isStarter": false
+      }
+    ]
+  },
+  "Spain": {
+    "formation": null,
+    "players": [
+      {
+        "name": "David Raya",
+        "num": "1",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Marc Pubill Pages",
+        "num": "2",
+        "position": "Unknown",
+        "isStarter": false
+      },
+      {
+        "name": "Alex Grimaldo",
+        "num": "3",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Eric Garcia",
+        "num": "4",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Marcos Llorente",
+        "num": "5",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Mikel Merino",
+        "num": "6",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Ferran Torres",
+        "num": "7",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Fabian Ruiz",
+        "num": "8",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Pablo Gavi",
+        "num": "9",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Dani Olmo",
+        "num": "10",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Yeremi Pino",
+        "num": "11",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Pedro Porro",
+        "num": "12",
+        "position": "Unknown",
+        "isStarter": false
+      },
+      {
+        "name": "Joan Garcia Pons",
+        "num": "13",
+        "position": "Unknown",
+        "isStarter": false
+      },
+      {
+        "name": "Aymeric Laporte",
+        "num": "14",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Alex Baena",
+        "num": "15",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Rodri",
+        "num": "16",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Nicholas Williams",
+        "num": "17",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Martin Zubimendi",
+        "num": "18",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Lamine Yamal",
+        "num": "19",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Pedro Gonzalez",
+        "num": "20",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Mikel Oyarzabal",
+        "num": "21",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Pau Cubarsí",
+        "num": "22",
+        "position": "Unknown",
+        "isStarter": true
+      },
+      {
+        "name": "Unai Simon",
+        "num": "23",
+        "position": "GK",
+        "isStarter": true
+      },
+      {
+        "name": "Marc Cucurella",
+        "num": "24",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Víctor Muñoz",
+        "num": "25",
+        "position": "Unknown",
+        "isStarter": false
+      },
+      {
+        "name": "Borja Iglesias",
+        "num": "26",
+        "position": "Unknown",
+        "isStarter": false
+      }
+    ]
+  },
+  "Cape Verde": {
+    "formation": null,
+    "players": [
+      {
+        "name": "Josimar Jose Évora Dias",
+        "num": "1",
+        "position": "GK",
+        "isStarter": true
+      },
+      {
+        "name": "Ianique dos Santos Tavares",
+        "num": "2",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Diney Borges",
+        "num": "3",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Roberto Lopes",
+        "num": "4",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Logan Costa",
+        "num": "5",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Kevin Lenini Pina",
+        "num": "6",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Jovane Cabral",
+        "num": "7",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Joao Paulo",
+        "num": "8",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Gilson Tavares",
+        "num": "9",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Jamiro Monteiro",
+        "num": "10",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Garry Rodrigues",
+        "num": "11",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Marcio Rosa",
+        "num": "12",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Sidny Lopes Cabral",
+        "num": "13",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Deroy Duarte",
+        "num": "14",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Laros Duarte",
+        "num": "15",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Jair Semedo Monteiro",
+        "num": "16",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Willy Semedo",
+        "num": "17",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Telmo Arcanjo",
+        "num": "18",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Dailon Rocha Livramento",
+        "num": "19",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Ryan Mendes",
+        "num": "20",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Nuno Da Costa",
+        "num": "21",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Steven Moreira",
+        "num": "22",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "CJ Dos Santos",
+        "num": "23",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Wagner Pina",
+        "num": "24",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Kelvin Pires",
+        "num": "25",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Hélio Varela",
+        "num": "26",
+        "position": "FW",
+        "isStarter": false
+      }
+    ]
+  },
+  "Belgium": {
+    "formation": null,
+    "players": [
+      {
+        "name": "Thibaut Courtois",
+        "num": "1",
+        "position": "GK",
+        "isStarter": true
+      },
+      {
+        "name": "Arthur Theate",
+        "num": "3",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Brandon Mechele",
+        "num": "4",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Maxime De Cuyper",
+        "num": "5",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Axel Witsel",
+        "num": "6",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Kevin De Bruyne",
+        "num": "7",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Youri Tielemans",
+        "num": "8",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Romelu Lukaku",
+        "num": "9",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Leandro Trossard",
+        "num": "10",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Jeremy Doku",
+        "num": "11",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Senne Lammens",
+        "num": "12",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Mike Penders",
+        "num": "13",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Dodi Lukebakio",
+        "num": "14",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Thomas Meunier",
+        "num": "15",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Koni De Winter",
+        "num": "16",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Charles De Ketelaere",
+        "num": "17",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Joaquin Seys",
+        "num": "18",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Diego Moreira",
+        "num": "19",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Hans Vanaken",
+        "num": "20",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Timothy Castagne",
+        "num": "21",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Alexis Saelemaekers",
+        "num": "22",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Nicolas Raskin",
+        "num": "23",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Amadou Mvom Onana",
+        "num": "24",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Nathan Ngoy",
+        "num": "25",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Matias Fernandez-Pardo",
+        "num": "26",
+        "position": "FW",
+        "isStarter": false
+      }
+    ]
+  },
+  "Egypt": {
+    "formation": null,
+    "players": [
+      {
+        "name": "Mohamed El Shenawy",
+        "num": "1",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Yasser Ahmed Ibrahim El Hanafi",
+        "num": "2",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Mohamed Hany Eldemerdash",
+        "num": "3",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Hossam Abdelmaguid Abdelsalam Abdelmaguid",
+        "num": "4",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Rami Rabia",
+        "num": "5",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Mohamed Abdel Monem",
+        "num": "6",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Mahmoud Trezegue",
+        "num": "7",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Emam Ashour",
+        "num": "8",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Hamza Abdelkarim",
+        "num": "9",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Mohamed Salah",
+        "num": "10",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Mostafa Zico",
+        "num": "11",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Haissem Hassan",
+        "num": "12",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Ahmed Abou El Fotouh",
+        "num": "13",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Hamdy Fathy",
+        "num": "14",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Karim Hafez",
+        "num": "15",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Mahdi Soliman",
+        "num": "16",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Mohanad Mostafa Lasheen",
+        "num": "17",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Nabil Dunga",
+        "num": "18",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Marwan Attia",
+        "num": "19",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Ibrahim Adel Ali Mohamed Hassan",
+        "num": "20",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Mahmoud Saber",
+        "num": "21",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Omar Marmoush",
+        "num": "22",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Mostafa Shobeir",
+        "num": "23",
+        "position": "GK",
+        "isStarter": true
+      },
+      {
+        "name": "Tarek Alaa",
+        "num": "24",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Ahmed Sayed",
+        "num": "25",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Mohamed Alaa",
+        "num": "26",
+        "position": "GK",
+        "isStarter": false
+      }
+    ]
+  },
+  "Saudi Arabia": {
+    "formation": null,
+    "players": [
+      {
+        "name": "Nawaf Al-Aqidi",
+        "num": "1",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Ali Majrashi",
+        "num": "2",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Ali Lajami",
+        "num": "3",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Abdulelah Al Amri",
+        "num": "4",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Hassan Al Tambakti",
+        "num": "5",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Nasser Al Dawsari",
+        "num": "6",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Musab Fahad Al Juwayr",
+        "num": "7",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Ayman Yahya",
+        "num": "8",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Firas Al Buraikan",
+        "num": "9",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Salem Al Dawsari",
+        "num": "10",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Saleh Al-Shehri",
+        "num": "11",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Saud Abdulhamid",
+        "num": "12",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Nawaf Al-Boushal",
+        "num": "13",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Hasan Kadesh",
+        "num": "14",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Abdullah Al Khaibari",
+        "num": "15",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Ziyad Mubarak Aljohani",
+        "num": "16",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Khalid Al-Ghannam",
+        "num": "17",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Ala'a Al-Hajji",
+        "num": "18",
+        "position": "Unknown",
+        "isStarter": false
+      },
+      {
+        "name": "Abdullah Al Hamdan",
+        "num": "19",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Sultan Mandash",
+        "num": "20",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Mohammed Khalil Al Owais",
+        "num": "21",
+        "position": "GK",
+        "isStarter": true
+      },
+      {
+        "name": "Ahmed Ali Alkassar",
+        "num": "22",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Mohamed Kanno",
+        "num": "23",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Moteb Al-Harbi",
+        "num": "24",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Jehad Thikri",
+        "num": "25",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Mohammed Abu Al Shamat",
+        "num": "26",
+        "position": "Unknown",
+        "isStarter": true
+      }
+    ]
+  },
+  "Uruguay": {
+    "formation": null,
+    "players": [
+      {
+        "name": "Sergio Rochet",
+        "num": "1",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Jose Gimenez",
+        "num": "2",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Sebastian Caceres",
+        "num": "3",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Ronald Araujo",
+        "num": "4",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Manuel Ugarte",
+        "num": "5",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Rodrigo Bentancur",
+        "num": "6",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Nicolas De la Cruz",
+        "num": "7",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Federico Valverde",
+        "num": "8",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Darwin Nunez",
+        "num": "9",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Giorgian De Arrascaeta",
+        "num": "10",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Facundo Pellistri",
+        "num": "11",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Santiago Mele",
+        "num": "12",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Guillermo Varela",
+        "num": "13",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Agustin Canobbio",
+        "num": "14",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Emiliano Martinez",
+        "num": "15",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Mathias Olivera",
+        "num": "16",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Matias Vina",
+        "num": "17",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Brian Rodriguez",
+        "num": "18",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Rodrigo Aguirre",
+        "num": "19",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Maximiliano Araujo",
+        "num": "20",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Federico Vinas",
+        "num": "21",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Joaquin Piquerez",
+        "num": "22",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Fernando Muslera",
+        "num": "23",
+        "position": "GK",
+        "isStarter": true
+      },
+      {
+        "name": "Santiago Bueno",
+        "num": "24",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Juan Sanabria",
+        "num": "25",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Rodrigo Zalazar Martinez",
+        "num": "26",
+        "position": "MF",
+        "isStarter": false
+      }
+    ]
+  },
+  "Iran": {
+    "formation": null,
+    "players": [
+      {
+        "name": "Alireza Beiranvand",
+        "num": "1",
+        "position": "GK",
+        "isStarter": true
+      },
+      {
+        "name": "Saleh Hardani Kherad",
+        "num": "2",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Ehsan Hajsafi",
+        "num": "3",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Shojae Khalilzadeh",
+        "num": "4",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Milad Mohammadi",
+        "num": "5",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Saeid Ezatollahi",
+        "num": "6",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Alireza Jahanbakhsh",
+        "num": "7",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Mohammad Mohebi",
+        "num": "8",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Mehdi Taremi",
+        "num": "9",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Mehdi Ghayedi",
+        "num": "10",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Ali Alipour",
+        "num": "11",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Payam Niazmand",
+        "num": "12",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Hossein Kanaani",
+        "num": "13",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Saman Ghoddos",
+        "num": "14",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Roozbeh Cheshmi",
+        "num": "15",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Mehdi Torabi",
+        "num": "16",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Arya Yousefi",
+        "num": "17",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Amirhossein Hosseinzadeh",
+        "num": "18",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Ali Nemati",
+        "num": "19",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Shahriar Moghanloo",
+        "num": "20",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Mohammad Ghorbani",
+        "num": "21",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Hossein Hosseini",
+        "num": "22",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Ramin Rezaeian",
+        "num": "23",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Dennis Eckert Ayensa",
+        "num": "24",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Danial Eiri",
+        "num": "25",
+        "position": "Unknown",
+        "isStarter": false
+      },
+      {
+        "name": "Amir Razzaghinia",
+        "num": "26",
+        "position": "MF",
+        "isStarter": false
+      }
+    ]
+  },
+  "New Zealand": {
+    "formation": null,
+    "players": [
+      {
+        "name": "Max Crocombe",
+        "num": "1",
+        "position": "GK",
+        "isStarter": true
+      },
+      {
+        "name": "Tim Payne",
+        "num": "2",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Francis De Vries",
+        "num": "3",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Tyler Bindon",
+        "num": "4",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Michael Boxall",
+        "num": "5",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Joe Bell",
+        "num": "6",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Logan Rogerson",
+        "num": "7",
+        "position": "Unknown",
+        "isStarter": false
+      },
+      {
+        "name": "Marko Stamenic",
+        "num": "8",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Chris Wood",
+        "num": "9",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Sarpreet Singh",
+        "num": "10",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Elijah Just",
+        "num": "11",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Alex Paulsen",
+        "num": "12",
+        "position": "Unknown",
+        "isStarter": false
+      },
+      {
+        "name": "Liberato Cacace",
+        "num": "13",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Alex Rufer",
+        "num": "14",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Nando Pijnaker",
+        "num": "15",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Finn Surman",
+        "num": "16",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Kosta Barbarouses",
+        "num": "17",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Ben Waine",
+        "num": "18",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Benjamin Craig Old",
+        "num": "19",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Callum McCowatt",
+        "num": "20",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Jesse Randall",
+        "num": "21",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Michael Woud",
+        "num": "22",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Ryan Thomas",
+        "num": "23",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Callan Elliot",
+        "num": "24",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Lachlan Bayliss",
+        "num": "25",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Tommy Smith",
+        "num": "26",
+        "position": "DF",
+        "isStarter": false
+      }
+    ]
+  },
+  "France": {
+    "formation": null,
+    "players": [
+      {
+        "name": "Brice Samba",
+        "num": "1",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Malo Gusto",
+        "num": "2",
+        "position": "Unknown",
+        "isStarter": false
+      },
+      {
+        "name": "Lucas Digne",
+        "num": "3",
+        "position": "Unknown",
+        "isStarter": false
+      },
+      {
+        "name": "Dayot Upamecano",
+        "num": "4",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Jules Kounde",
+        "num": "5",
+        "position": "Unknown",
+        "isStarter": true
+      },
+      {
+        "name": "Kouadio Kone",
+        "num": "6",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Ousmane Dembele",
+        "num": "7",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Aurelien Tchouameni",
+        "num": "8",
+        "position": "Unknown",
+        "isStarter": true
+      },
+      {
+        "name": "Marcus Thuram",
+        "num": "9",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Kylian Mbappe",
+        "num": "10",
+        "position": "Unknown",
+        "isStarter": true
+      },
+      {
+        "name": "Michael Olise",
+        "num": "11",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Bradley Barcola",
+        "num": "12",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "N`Golo Kante",
+        "num": "13",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Adrien Rabiot",
+        "num": "14",
+        "position": "Unknown",
+        "isStarter": true
+      },
+      {
+        "name": "Ibrahima Konate",
+        "num": "15",
+        "position": "Unknown",
+        "isStarter": false
+      },
+      {
+        "name": "Mike Maignan",
+        "num": "16",
+        "position": "Unknown",
+        "isStarter": true
+      },
+      {
+        "name": "William Saliba",
+        "num": "17",
+        "position": "Unknown",
+        "isStarter": true
+      },
+      {
+        "name": "Warren Zaire-Emery",
+        "num": "18",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Theo Hernandez",
+        "num": "19",
+        "position": "Unknown",
+        "isStarter": true
+      },
+      {
+        "name": "Desire Doue",
+        "num": "20",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Lucas Hernandez",
+        "num": "21",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Jean-Philippe Mateta",
+        "num": "22",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Robin Risser",
+        "num": "23",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Rayan Cherki",
+        "num": "24",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Maghnes Akliouche",
+        "num": "25",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Maxence Lacroix",
+        "num": "26",
+        "position": "DF",
+        "isStarter": false
+      }
+    ]
+  },
+  "Senegal": {
+    "formation": null,
+    "players": [
+      {
+        "name": "Yehvann Diouf",
+        "num": "1",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Mamadou Sarr",
+        "num": "2",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Kalidou Koulibaly",
+        "num": "3",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Abdoulaye Seck",
+        "num": "4",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Idrissa Gueye",
+        "num": "5",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Pathe Ciss",
+        "num": "6",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Assane Diao",
+        "num": "7",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Lamine Camara",
+        "num": "8",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Cheikh Ahmadou Bamba Mbacke Dieng",
+        "num": "9",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Sadio Mane",
+        "num": "10",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Nicolas Jackson",
+        "num": "11",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Cherif Ndiaye",
+        "num": "12",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Iliman Ndiaye",
+        "num": "13",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Ismail Jakobs",
+        "num": "14",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Krepin Diatta",
+        "num": "15",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Edouard Mendy",
+        "num": "16",
+        "position": "GK",
+        "isStarter": true
+      },
+      {
+        "name": "Pape Matar Sarr",
+        "num": "17",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Ismaila Sarr",
+        "num": "18",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Moussa Niakhate",
+        "num": "19",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Ibrahim Mbaye",
+        "num": "20",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Mouhamadou Diarra",
+        "num": "21",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Bara Ndiaye",
+        "num": "22",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Mory Diaw",
+        "num": "23",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Antoine Mendy",
+        "num": "24",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "El Diouf",
+        "num": "25",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Pape Alassane Gueye",
+        "num": "26",
+        "position": "MF",
+        "isStarter": true
+      }
+    ]
+  },
+  "Iraq": {
+    "formation": null,
+    "players": [
+      {
+        "name": "Fahad Talib",
+        "num": "1",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Rebin Sulaka",
+        "num": "2",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Hussein Ali",
+        "num": "3",
+        "position": "Unknown",
+        "isStarter": true
+      },
+      {
+        "name": "Zaid Tahseen",
+        "num": "4",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Akam Hashim Rahman",
+        "num": "5",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Munaf Younus",
+        "num": "6",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Youssef Amyn",
+        "num": "7",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Ibrahim Bayesh",
+        "num": "8",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Ali Al-Hamadi",
+        "num": "9",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Mohanad Ali",
+        "num": "10",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Ahmed Qasem",
+        "num": "11",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Jalal Hassan",
+        "num": "12",
+        "position": "GK",
+        "isStarter": true
+      },
+      {
+        "name": "Ali Yousif",
+        "num": "13",
+        "position": "Unknown",
+        "isStarter": false
+      },
+      {
+        "name": "Zidane Iqbal",
+        "num": "14",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Ahmed Hasan Al Reeshawee",
+        "num": "15",
+        "position": "Unknown",
+        "isStarter": false
+      },
+      {
+        "name": "Amir Al Ammari",
+        "num": "16",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Ali Jasim Elaibi",
+        "num": "17",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Aymen Hussein",
+        "num": "18",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Kevin Yakob",
+        "num": "19",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Aimar Sher",
+        "num": "20",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Marko Farji",
+        "num": "21",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Ahmed Basil Fadhil",
+        "num": "22",
+        "position": "Unknown",
+        "isStarter": false
+      },
+      {
+        "name": "Merchas Doski",
+        "num": "23",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Zaid Ismael",
+        "num": "24",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Mustafa Saadoon",
+        "num": "25",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Frans Putros",
+        "num": "26",
+        "position": "DF",
+        "isStarter": false
+      }
+    ]
+  },
+  "Norway": {
+    "formation": null,
+    "players": [
+      {
+        "name": "Orjan Nyland",
+        "num": "1",
+        "position": "GK",
+        "isStarter": true
+      },
+      {
+        "name": "Morten Thorsby",
+        "num": "2",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Kristoffer Ajer",
+        "num": "3",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Leo Ostigard",
+        "num": "4",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "David Moller Wolfe",
+        "num": "5",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Patrick Berg",
+        "num": "6",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Alexander Sorloth",
+        "num": "7",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Sander Berge",
+        "num": "8",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Erling Haaland",
+        "num": "9",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Martin Odegaard",
+        "num": "10",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Jorgen Strand Larsen",
+        "num": "11",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Sander Tangvik",
+        "num": "12",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Egil Selvik",
+        "num": "13",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Fredrik Aursnes",
+        "num": "14",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Fredrik Bjorkan",
+        "num": "15",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Marcus Holmgren Pedersen",
+        "num": "16",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Torbjorn Heggem",
+        "num": "17",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Kristian Thorstvedt",
+        "num": "18",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Thelo Aasgaard",
+        "num": "19",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Antonio Nusa",
+        "num": "20",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Andreas Schjelderup",
+        "num": "21",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Oscar Bobb",
+        "num": "22",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Jens Hauge",
+        "num": "23",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Sondre Klingen Langas",
+        "num": "24",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Henrik Saelebakke Falchener",
+        "num": "25",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Julian Ryerson",
+        "num": "26",
+        "position": "DF",
+        "isStarter": true
+      }
+    ]
+  },
+  "Argentina": {
+    "formation": null,
+    "players": [
+      {
+        "name": "Juan Musso",
+        "num": "1",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Marcos Senesi",
+        "num": "2",
+        "position": "Unknown",
+        "isStarter": false
+      },
+      {
+        "name": "Nicolas Tagliafico",
+        "num": "3",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Gonzalo Montiel",
+        "num": "4",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Leandro Paredes",
+        "num": "5",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Lisandro Martinez",
+        "num": "6",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Rodrigo De Paul",
+        "num": "7",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Valentin Barco",
+        "num": "8",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Julian Alvarez",
+        "num": "9",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Lionel Messi",
+        "num": "10",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Giovani Lo Celso",
+        "num": "11",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Geronimo Rulli",
+        "num": "12",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Cristian Romero",
+        "num": "13",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Exequiel Palacios",
+        "num": "14",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Nicolas Gonzalez",
+        "num": "15",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Thiago Almada",
+        "num": "16",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Giuliano Simeone",
+        "num": "17",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Nicolas Paz Martinez",
+        "num": "18",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Nicolas Otamendi",
+        "num": "19",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Alexis MacAllister",
+        "num": "20",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Jose Manuel Lopez",
+        "num": "21",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Lautaro Martinez",
+        "num": "22",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Emiliano Martinez",
+        "num": "23",
+        "position": "GK",
+        "isStarter": true
+      },
+      {
+        "name": "Enzo Fernandez",
+        "num": "24",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Facundo Medina",
+        "num": "25",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Nahuel Molina",
+        "num": "26",
+        "position": "DF",
+        "isStarter": false
+      }
+    ]
+  },
+  "Algeria": {
+    "formation": null,
+    "players": [
+      {
+        "name": "Melvin Mastil",
+        "num": "1",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Aissa Mandi",
+        "num": "2",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Achref Abada",
+        "num": "3",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Mohamed Amine Tougai",
+        "num": "4",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Zinéddine Belaïd",
+        "num": "5",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Ramiz Zerrouki",
+        "num": "6",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Riyad Mahrez",
+        "num": "7",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Houssem Aouar",
+        "num": "8",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Amine Gouiri",
+        "num": "9",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Fares Chaibi",
+        "num": "10",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Anis Hadj-Moussa",
+        "num": "11",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Nadhir Benbouali",
+        "num": "12",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Jaouen Hadjam",
+        "num": "13",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Hicham Boudaoui",
+        "num": "14",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Rayan Ait-Nouri",
+        "num": "15",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Oussama Benbot",
+        "num": "16",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Rafik Belghali",
+        "num": "17",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Mohamed El Amine Amoura",
+        "num": "18",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Nabil Bentaleb",
+        "num": "19",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Adil Boulbina",
+        "num": "20",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Ramy Bensebaini",
+        "num": "21",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Ibrahim Maza",
+        "num": "22",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Luca Zidane",
+        "num": "23",
+        "position": "GK",
+        "isStarter": true
+      },
+      {
+        "name": "Yacine Titraoui",
+        "num": "24",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Farès Ghedjemis",
+        "num": "25",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Samir Chergui",
+        "num": "26",
+        "position": "DF",
+        "isStarter": false
+      }
+    ]
+  },
+  "Austria": {
+    "formation": null,
+    "players": [
+      {
+        "name": "Alexander Schlager",
+        "num": "1",
+        "position": "GK",
+        "isStarter": true
+      },
+      {
+        "name": "David Affengruber",
+        "num": "2",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Kevin Danso",
+        "num": "3",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Xaver Schlager",
+        "num": "4",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Stefan Posch",
+        "num": "5",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Nicolas Seiwald",
+        "num": "6",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Marko Arnautovic",
+        "num": "7",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "David Alaba",
+        "num": "8",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Marcel Sabitzer",
+        "num": "9",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Florian Grillitsch",
+        "num": "10",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Michael Gregoritsch",
+        "num": "11",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Florian Wiegele",
+        "num": "12",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Patrick Pentz",
+        "num": "13",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Sasa Kalajdzic",
+        "num": "14",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Philipp Lienhart",
+        "num": "15",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Philipp Mwene",
+        "num": "16",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Carney Chukwuemeka",
+        "num": "17",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Romano Schmid",
+        "num": "18",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Dejan Ljubicic",
+        "num": "19",
+        "position": "Unknown",
+        "isStarter": false
+      },
+      {
+        "name": "Konrad Laimer",
+        "num": "20",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Patrick Wimmer",
+        "num": "21",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Alexander Prass",
+        "num": "22",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Marco Friedl",
+        "num": "23",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Paul Wanner",
+        "num": "24",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Michael Svoboda",
+        "num": "25",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Alessandro Schopf",
+        "num": "26",
+        "position": "MF",
+        "isStarter": false
+      }
+    ]
+  },
+  "Jordan": {
+    "formation": null,
+    "players": [
+      {
+        "name": "Yazeed Abu Laila",
+        "num": "1",
+        "position": "GK",
+        "isStarter": true
+      },
+      {
+        "name": "Mohammad Ali Hasan Abuhasheesh",
+        "num": "2",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Abdallah Mousa Musallam Nasib",
+        "num": "3",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Husam Ali Mohammad Abudahab",
+        "num": "4",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Yazan Arab",
+        "num": "5",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Amer Jamous",
+        "num": "6",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Mohamed Abu Zraiq",
+        "num": "7",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Noor Al Din Rawabda",
+        "num": "8",
+        "position": "Unknown",
+        "isStarter": true
+      },
+      {
+        "name": "Ali Iyad Olwan",
+        "num": "9",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Moussa Al-Taamari",
+        "num": "10",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Odeh Al Fakhouri",
+        "num": "11",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Noureddin zaid",
+        "num": "12",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Mahmoud Al Mardi",
+        "num": "13",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Rajaei Ayed",
+        "num": "14",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Ibrahim Sadeh",
+        "num": "15",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Mohammad Abualnadi",
+        "num": "16",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Saleem Obaid",
+        "num": "17",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Mohammad Taha Al Aqeel",
+        "num": "18",
+        "position": "Unknown",
+        "isStarter": false
+      },
+      {
+        "name": "Saed Al Rosan",
+        "num": "19",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Abu Taha",
+        "num": "20",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Nizar Mahmoud Al-Rashdan",
+        "num": "21",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Abdallah Al Fakhouri",
+        "num": "22",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Ehsan Hadad",
+        "num": "23",
+        "position": "Unknown",
+        "isStarter": true
+      },
+      {
+        "name": "Ali Ahmad Azaizeh",
+        "num": "24",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Mohammad Al Daoud",
+        "num": "25",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Anas Badawi",
+        "num": "26",
+        "position": "DF",
+        "isStarter": false
+      }
+    ]
+  },
+  "Portugal": {
+    "formation": null,
+    "players": [
+      {
+        "name": "Diogo Costa",
+        "num": "1",
+        "position": "GK",
+        "isStarter": true
+      },
+      {
+        "name": "Nelson Semedo",
+        "num": "2",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Ruben Dias",
+        "num": "3",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Tomas Araujo",
+        "num": "4",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Diogo Dalot",
+        "num": "5",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Matheus Nunes",
+        "num": "6",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Cristiano Ronaldo",
+        "num": "7",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Bruno Fernandes",
+        "num": "8",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Goncalo Ramos",
+        "num": "9",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Bernardo Silva",
+        "num": "10",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Joao Felix",
+        "num": "11",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Jose Sa",
+        "num": "12",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Renato Veiga",
+        "num": "13",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Gonçalo Inacio",
+        "num": "14",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Joao Neves",
+        "num": "15",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Trincao",
+        "num": "16",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Rafael Leao",
+        "num": "17",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Pedro Neto",
+        "num": "18",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Goncalo Guedes",
+        "num": "19",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Joao Cancelo",
+        "num": "20",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Ruben Neves",
+        "num": "21",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Rui Silva",
+        "num": "22",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Vitinha",
+        "num": "23",
+        "position": "Unknown",
+        "isStarter": true
+      },
+      {
+        "name": "Samuel De Almeida Costa",
+        "num": "24",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Nuno Mendes",
+        "num": "25",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Francisco Fernandes Conceicao",
+        "num": "26",
+        "position": "FW",
+        "isStarter": false
+      }
+    ]
+  },
+  "DR Congo": {
+    "formation": null,
+    "players": [
+      {
+        "name": "Lionel M'Pasi",
+        "num": "1",
+        "position": "Unknown",
+        "isStarter": true
+      },
+      {
+        "name": "Aaron Wan-Bissaka",
+        "num": "2",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Steve Kapuadi",
+        "num": "3",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Axel Tuanzebe",
+        "num": "4",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Dylan Batubinsika",
+        "num": "5",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Ngal'ayel Mukau",
+        "num": "6",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Nathanael Mbuku",
+        "num": "7",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Samuel Moutoussamy",
+        "num": "8",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Brian Cipenga",
+        "num": "9",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Theo Bongonda",
+        "num": "10",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Gael Kakuta",
+        "num": "11",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Joris Kayembe",
+        "num": "12",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Meschak Elia",
+        "num": "13",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Noah Sadiki",
+        "num": "14",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Aaron Tshibola",
+        "num": "15",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Timothy Fayulu",
+        "num": "16",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Cedric Bakambu",
+        "num": "17",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Charles Pickel",
+        "num": "18",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Fiston Mayele",
+        "num": "19",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Yoane Wissa",
+        "num": "20",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Matthieu Epolo",
+        "num": "21",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Chancel Mbemba",
+        "num": "22",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Simon Banza",
+        "num": "23",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Gedeon Kalulu",
+        "num": "24",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Edo Kayembe",
+        "num": "25",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Arthur Masuaku",
+        "num": "26",
+        "position": "DF",
+        "isStarter": true
+      }
+    ]
+  },
+  "England": {
+    "formation": null,
+    "players": [
+      {
+        "name": "Jordan Pickford",
+        "num": "1",
+        "position": "GK",
+        "isStarter": true
+      },
+      {
+        "name": "Ezri Konsa",
+        "num": "2",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Nico O'Reilly",
+        "num": "3",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Declan Rice",
+        "num": "4",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "John Stones",
+        "num": "5",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Marc Guehi",
+        "num": "6",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Bukayo Saka",
+        "num": "7",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Elliot Anderson",
+        "num": "8",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Harry Kane",
+        "num": "9",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Jude Bellingham",
+        "num": "10",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Marcus Rashford",
+        "num": "11",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Trevoh Chalobah",
+        "num": "12",
+        "position": "Unknown",
+        "isStarter": false
+      },
+      {
+        "name": "Dean Henderson",
+        "num": "13",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Jordan Henderson",
+        "num": "14",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Dan Burn",
+        "num": "15",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Kobbie Mainoo",
+        "num": "16",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Morgan Rogers",
+        "num": "17",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Anthony Gordon",
+        "num": "18",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Ollie Watkins",
+        "num": "19",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Chukwunonso Madueke",
+        "num": "20",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Eberechi Eze",
+        "num": "21",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Ivan Toney",
+        "num": "22",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "James Trafford",
+        "num": "23",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Reece James",
+        "num": "24",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Djed Spence",
+        "num": "25",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Jarell Quansah",
+        "num": "26",
+        "position": "DF",
+        "isStarter": false
+      }
+    ]
+  },
+  "Croatia": {
+    "formation": null,
+    "players": [
+      {
+        "name": "Dominik Livakovic",
+        "num": "1",
+        "position": "Unknown",
+        "isStarter": true
+      },
+      {
+        "name": "Josip Stanisic",
+        "num": "2",
+        "position": "Unknown",
+        "isStarter": true
+      },
+      {
+        "name": "Marin Pongracic",
+        "num": "3",
+        "position": "Unknown",
+        "isStarter": false
+      },
+      {
+        "name": "Josko Gvardiol",
+        "num": "4",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Duje Caleta Car",
+        "num": "5",
+        "position": "Unknown",
+        "isStarter": false
+      },
+      {
+        "name": "Josip Sutalo",
+        "num": "6",
+        "position": "Unknown",
+        "isStarter": true
+      },
+      {
+        "name": "Nikola Moro",
+        "num": "7",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Mateo Kovacic",
+        "num": "8",
+        "position": "Unknown",
+        "isStarter": false
+      },
+      {
+        "name": "Andrej Kramaric",
+        "num": "9",
+        "position": "Unknown",
+        "isStarter": false
+      },
+      {
+        "name": "Luka Modric",
+        "num": "10",
+        "position": "Unknown",
+        "isStarter": true
+      },
+      {
+        "name": "Ante Budimir",
+        "num": "11",
+        "position": "Unknown",
+        "isStarter": false
+      },
+      {
+        "name": "Ivor Pandur",
+        "num": "12",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Nikola Vlasic",
+        "num": "13",
+        "position": "Unknown",
+        "isStarter": false
+      },
+      {
+        "name": "Ivan Perisic",
+        "num": "14",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Mario Pasalic",
+        "num": "15",
+        "position": "Unknown",
+        "isStarter": true
+      },
+      {
+        "name": "Martin Baturina",
+        "num": "16",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Petar Sučić",
+        "num": "17",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Kristijan Jakic",
+        "num": "18",
+        "position": "Unknown",
+        "isStarter": false
+      },
+      {
+        "name": "Toni Fruk",
+        "num": "19",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Igor Matanovic",
+        "num": "20",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Luka Sucic",
+        "num": "21",
+        "position": "Unknown",
+        "isStarter": false
+      },
+      {
+        "name": "Luka Vuskovic",
+        "num": "22",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Dominik Kotarski",
+        "num": "23",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Marco Pasalic",
+        "num": "24",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Martin Erlic",
+        "num": "25",
+        "position": "Unknown",
+        "isStarter": false
+      },
+      {
+        "name": "Petar Musa",
+        "num": "26",
+        "position": "FW",
+        "isStarter": true
+      }
+    ]
+  },
+  "Ghana": {
+    "formation": null,
+    "players": [
+      {
+        "name": "Lawrence Ati Zigi",
+        "num": "1",
+        "position": "GK",
+        "isStarter": true
+      },
+      {
+        "name": "Alidu Seidu",
+        "num": "2",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Caleb Yirenkyi",
+        "num": "3",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Jonas Adjetey",
+        "num": "4",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Thomas Partey",
+        "num": "5",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Abdul Mumin",
+        "num": "6",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Issahaku Abdul Fatawu",
+        "num": "7",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Kwasi Sibo",
+        "num": "8",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Jordan Ayew",
+        "num": "9",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Brandon Thomas-Asante",
+        "num": "10",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Antoine Semenyo",
+        "num": "11",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Joseph Anang",
+        "num": "12",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Christopher Bonsu Baah",
+        "num": "13",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Gideon Mensah",
+        "num": "14",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Elisha Owusu",
+        "num": "15",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Benjamin Asare",
+        "num": "16",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Rahman Baba",
+        "num": "17",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Jerome Opoku",
+        "num": "18",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Inaki Williams",
+        "num": "19",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Augustine Boakye",
+        "num": "20",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Kojo Peprah Oppong",
+        "num": "21",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Kamal Deen Sulemana",
+        "num": "22",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Derrick Luckassen",
+        "num": "23",
+        "position": "Unknown",
+        "isStarter": false
+      },
+      {
+        "name": "Ernest Nuamah",
+        "num": "24",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Prince Kwabena Adu",
+        "num": "25",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Marvin Senaya",
+        "num": "26",
+        "position": "DF",
+        "isStarter": true
+      }
+    ]
+  },
+  "Panama": {
+    "formation": null,
+    "players": [
+      {
+        "name": "Luis Mejia",
+        "num": "1",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Cesar Blackman",
+        "num": "2",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Jose Angel Cordoba Chambers",
+        "num": "3",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Fidel Escobar",
+        "num": "4",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Edgardo Fariña",
+        "num": "5",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Cristian Jesús Martínez",
+        "num": "6",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Jose Luis Rodriguez",
+        "num": "7",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Adalberto Carrasquilla",
+        "num": "8",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Tomás Rodríguez",
+        "num": "9",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Ismael Diaz",
+        "num": "10",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Edgar Barcenas",
+        "num": "11",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Cesar Samudio",
+        "num": "12",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Jiovany Ramos",
+        "num": "13",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Carlos Harvey",
+        "num": "14",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Eric Davis",
+        "num": "15",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Andres Andrade",
+        "num": "16",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Jose Fajardo",
+        "num": "17",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Cecilio Waterman",
+        "num": "18",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Alberto Quintero",
+        "num": "19",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Anibal Godoy",
+        "num": "20",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Cesar Augusto Yanis Velasco",
+        "num": "21",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Orlando Mosquera",
+        "num": "22",
+        "position": "GK",
+        "isStarter": true
+      },
+      {
+        "name": "Amir Murillo",
+        "num": "23",
+        "position": "Unknown",
+        "isStarter": true
+      },
+      {
+        "name": "Azarias Londoño",
+        "num": "24",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Roderick Miller",
+        "num": "25",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Jorge Gutierrez",
+        "num": "26",
+        "position": "DF",
+        "isStarter": false
+      }
+    ]
+  },
+  "Uzbekistan": {
+    "formation": null,
+    "players": [
+      {
+        "name": "Utkir Yusupov",
+        "num": "1",
+        "position": "GK",
+        "isStarter": true
+      },
+      {
+        "name": "Abduqodir Khusanov",
+        "num": "2",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Khojiakbar Alijonov",
+        "num": "3",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Farrukh Sayfiev",
+        "num": "4",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Rustamjon Ashurmatov",
+        "num": "5",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Akmal Mozgovoy",
+        "num": "6",
+        "position": "Unknown",
+        "isStarter": true
+      },
+      {
+        "name": "Otabek Shukurov",
+        "num": "7",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Jamshid Iskanderov",
+        "num": "8",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Odiljon Khamrobekov",
+        "num": "9",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Ruslanbek Jiyanov",
+        "num": "10",
+        "position": "Unknown",
+        "isStarter": false
+      },
+      {
+        "name": "Oston Urunov",
+        "num": "11",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Abduvokhid Nematov",
+        "num": "12",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Sherzod Nasrullaev",
+        "num": "13",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Eldor Shomurodov",
+        "num": "14",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Umar Eshmuradov",
+        "num": "15",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Botirali Ergashev",
+        "num": "16",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Dostonbek Khamdamov",
+        "num": "17",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Abdulla Abdullaev",
+        "num": "18",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Azizjon Ganiev",
+        "num": "19",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Azizbek Amanov",
+        "num": "20",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Igor Sergeev",
+        "num": "21",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Abbosbek Fayzullaev",
+        "num": "22",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Sherzod Esanov",
+        "num": "23",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Behruzjon Karimov",
+        "num": "24",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Avazbek Ulasmaliev",
+        "num": "25",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Jakhongir Urozov",
+        "num": "26",
+        "position": "DF",
+        "isStarter": false
+      }
+    ]
+  },
+  "Colombia": {
+    "formation": null,
+    "players": [
+      {
+        "name": "David Ospina",
+        "num": "1",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Daniel Munoz",
+        "num": "2",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Jhon Lucumi",
+        "num": "3",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Santiago Arias",
+        "num": "4",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Kevin Castano",
+        "num": "5",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Richard Ríos",
+        "num": "6",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Luis Diaz",
+        "num": "7",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Jorge Carrascal",
+        "num": "8",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Jhon Cordoba",
+        "num": "9",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "James Rodriguez",
+        "num": "10",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Jhon Arias",
+        "num": "11",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Camilo Vargas",
+        "num": "12",
+        "position": "GK",
+        "isStarter": true
+      },
+      {
+        "name": "Yerry Mina",
+        "num": "13",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Gustavo Puerta",
+        "num": "14",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Juan Portilla",
+        "num": "15",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Jefferson Lerma",
+        "num": "16",
+        "position": "MF",
+        "isStarter": true
+      },
+      {
+        "name": "Johan Mojica",
+        "num": "17",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Willer Ditta",
+        "num": "18",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Cucho Hernández",
+        "num": "19",
+        "position": "FW",
+        "isStarter": false
+      },
+      {
+        "name": "Juan Quintero",
+        "num": "20",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Jaminton Campaz",
+        "num": "21",
+        "position": "MF",
+        "isStarter": false
+      },
+      {
+        "name": "Deiver Machado",
+        "num": "22",
+        "position": "DF",
+        "isStarter": false
+      },
+      {
+        "name": "Davinson Sanchez",
+        "num": "23",
+        "position": "DF",
+        "isStarter": true
+      },
+      {
+        "name": "Alvaro Montero",
+        "num": "24",
+        "position": "GK",
+        "isStarter": false
+      },
+      {
+        "name": "Luis Suarez",
+        "num": "25",
+        "position": "FW",
+        "isStarter": true
+      },
+      {
+        "name": "Carlos Andrés Gómez",
+        "num": "26",
+        "position": "MF",
+        "isStarter": false
+      }
+    ]
+  }
+}

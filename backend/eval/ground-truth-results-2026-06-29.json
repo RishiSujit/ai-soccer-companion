@@ -1,0 +1,130 @@
+{
+  "timestamp": "2026-06-29T03:45:32.361Z",
+  "pass": 15,
+  "partial": 0,
+  "fail": 0,
+  "total": 15,
+  "pct": 100,
+  "results": [
+    {
+      "id": "result-usa-paraguay",
+      "description": "USA vs Paraguay final score",
+      "score": "PASS",
+      "reply": "USA beat Paraguay 4–1 in their opening match on June 13th. It was a dominant performance — the USA controlled the match from the start and Paraguay's goal was more of a consolation than a real threat.",
+      "missing": [],
+      "hallucinations": []
+    },
+    {
+      "id": "result-brazil-morocco",
+      "description": "Brazil vs Morocco final score",
+      "score": "PASS",
+      "reply": "Brazil and Morocco drew 1–1 in their group stage match. It was a surprise result — Brazil were heavily favored but Morocco's defense held strong and they earned a crucial point.",
+      "missing": [],
+      "hallucinations": []
+    },
+    {
+      "id": "result-brazil-haiti",
+      "description": "Brazil vs Haiti final score",
+      "score": "PASS",
+      "reply": "Brazil beat Haiti 3-0 on June 20th. Brazil dominated that match in Group C — Haiti finished the group stage with zero points from three losses.",
+      "missing": [],
+      "hallucinations": []
+    },
+    {
+      "id": "result-usa-turkey",
+      "description": "USA lost to Turkey 3-2",
+      "score": "PASS",
+      "reply": "No, USA lost 3–2 to Turkey in their final group stage match on June 26. They had already secured advancement by winning their first two games against Paraguay (4–1) and Australia (2–0), so they finish",
+      "missing": [],
+      "hallucinations": []
+    },
+    {
+      "id": "scorer-usa-paraguay",
+      "description": "Goals scored in USA vs Paraguay",
+      "score": "PASS",
+      "reply": "USA had four goal scorers: Folarin Balogun scored twice (31' and 45'), Giovanni Reyna added one late (90'), and Paraguay's Damian Bobadilla scored an own goal in the 7th minute. Paraguay's only goal c",
+      "missing": [],
+      "hallucinations": []
+    },
+    {
+      "id": "scorer-usa-australia",
+      "description": "Goals scored in USA vs Australia",
+      "score": "PASS",
+      "reply": "USA scored twice — an own goal by Australia's Cameron Burgess in the 11th minute, and Alex Freeman in the 43rd minute. Those are the only goals so far.",
+      "missing": [],
+      "hallucinations": []
+    },
+    {
+      "id": "standings-mexico-points",
+      "description": "Mexico points in Group A",
+      "score": "PASS",
+      "reply": "Mexico has 9 points in Group A — a perfect record with 3 wins and 0 losses. They've already won their group and are through to the Round of 16.",
+      "missing": [],
+      "hallucinations": []
+    },
+    {
+      "id": "standings-group-e",
+      "description": "Group E top teams",
+      "score": "PASS",
+      "reply": "Germany and Ivory Coast are the top two teams in Group E. Germany leads with 6 points and +6 goal difference, while Ivory Coast also has 6 points but a +2 goal difference. Both teams have won 2 and lo",
+      "missing": [],
+      "hallucinations": []
+    },
+    {
+      "id": "standings-usa-group",
+      "description": "USA group standing",
+      "score": "PASS",
+      "reply": "USA finished the group stage with 6 points from 3 matches. They beat Paraguay 4–1 and Australia 2–0, but lost to Turkey 3–2 in their final game. That was enough to win Group D and advance to the knock",
+      "missing": [],
+      "hallucinations": []
+    },
+    {
+      "id": "lineup-mexico-gk",
+      "description": "Mexico goalkeeper vs South Africa",
+      "score": "PASS",
+      "reply": "Jose Raul Rangel Aguilar is starting in goal for Mexico today. He wears #1 and is Mexico's first-choice keeper for this tournament.",
+      "missing": [],
+      "hallucinations": []
+    },
+    {
+      "id": "lineup-usa-starters",
+      "description": "USA squad midfielders",
+      "score": "PASS",
+      "reply": "The USA midfielders in this match are Tyler Adams (#4), Weston McKennie (#8), and Malik Tillman (#17). Adams is the captain and defensive anchor, McKennie is the two-way workhorse, and Tillman adds cr",
+      "missing": [],
+      "hallucinations": []
+    },
+    {
+      "id": "history-brazil-full",
+      "description": "Brazil full group stage results",
+      "score": "PASS",
+      "reply": "Brazil went 2-1-0 in Group C. They drew Morocco 1-1, beat Haiti 3-0, and beat Scotland 3-0. They finished first in the group with 7 points and a +6 goal difference.",
+      "missing": [],
+      "hallucinations": []
+    },
+    {
+      "id": "history-usa-qualified",
+      "description": "USA advanced to knockout stage",
+      "score": "PASS",
+      "reply": "Yes, USA qualified for the knockout stage. They finished second in Group D with 6 points from 2 wins and 1 loss. They beat Paraguay 4-1 and Australia 2-0, but lost to Turkey 3-2 in their final group m",
+      "missing": [],
+      "hallucinations": []
+    },
+    {
+      "id": "rules-offside",
+      "description": "Offside rule explanation",
+      "score": "PASS",
+      "reply": "A player is offside if they're closer to the opponent's goal than both the ball and the second-to-last defender when the ball is played to them. The ref only calls it if that player gets involved in t",
+      "missing": [],
+      "hallucinations": []
+    },
+    {
+      "id": "rules-penalty",
+      "description": "Penalty kick explanation",
+      "score": "PASS",
+      "reply": "A penalty kick is awarded when a foul occurs inside the penalty box — the large rectangle in front of the goal. It's a one-on-one shot from 12 yards out with just the goalkeeper to beat. No other defe",
+      "missing": [],
+      "hallucinations": []
+    }
+  ]
+}

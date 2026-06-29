@@ -234,16 +234,55 @@ async function getMatchLineups(matchId) {
   return data?.data || null;
 }
 
-// Returns finished matches for a date range from the history feed
-async function getHistoryMatches(from, to) {
-  const data = await call('/scores/history.json', {
-    competition_id: COMP,
-    from,
-    to,
-  });
-  if (!data?.data?.match) return [];
+// Returns finished matches for a date range from the history feed — paginates all pages
+function parseHistoryMatch(m) {
+  const ftParts = (m.ft_score || m.score || '0 - 0').split(' - ');
+  return {
+    id: String(m.id),
+    fixtureId: String(m.fixture_id || ''),
+    homeTeam: m.home_name,
+    awayTeam: m.away_name,
+    homeId: m.home_id,
+    awayId: m.away_id,
+    homeScore: parseInt(ftParts[0]) || 0,
+    awayScore: parseInt(ftParts[1]) || 0,
+    htScore: m.ht_score || '',
+    ftScore: m.ft_score || m.score || '',
+    status: m.status || 'FINISHED',
+    date: m.date,
+    venue: m.location || '',
+    stage: 'Group Stage',
+    homeFlag: getFlagEmoji(m.home_name),
+    awayFlag: getFlagEmoji(m.away_name),
+    isLive: false,
+    isFinished: true,
+    matchId: String(m.id),
+    eventsUrl: m.events || '',
+    lineupsUrl: m.has_lineups
+      ? `${BASE}/matches/lineups.json?match_id=${m.id}`
+      : '',
+  };
+}
 
-  return data.data.match.map(m => {
+async function getHistoryMatches(from, to) {
+  const firstPage = await call('/scores/history.json', { competition_id: COMP, from, to });
+  if (!firstPage?.data?.match) return [];
+
+  const allMatches = [...firstPage.data.match];
+  const totalPages = parseInt(firstPage.data.total_pages) || 1;
+
+  if (totalPages > 1) {
+    const pageRequests = [];
+    for (let p = 2; p <= totalPages; p++) {
+      pageRequests.push(call('/scores/history.json', { competition_id: COMP, from, to, page: p }));
+    }
+    const pages = await Promise.all(pageRequests);
+    pages.forEach(pg => {
+      if (pg?.data?.match) allMatches.push(...pg.data.match);
+    });
+  }
+
+  return allMatches.map(m => {
     const ftParts = (m.ft_score || m.score || '0 - 0').split(' - ');
     return {
       id: String(m.id),
