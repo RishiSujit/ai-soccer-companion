@@ -306,6 +306,17 @@ async function getHistoryMatches(from, to) {
 
   return allMatches.map(m => {
     const ftParts = (m.ft_score || m.score || '0 - 0').split(' - ');
+    const timeStr = String(m.time || 'FT');
+    const isPenalties = timeStr === 'AP' || !!(m.ps_score && m.ps_score.trim());
+    const isExtraTime = timeStr === 'AET' || isPenalties;
+
+    // Penalty shootout score and winner
+    const psParts = (m.ps_score || '').split(' - ');
+    const psScoreHome = psParts.length === 2 && psParts[0].trim() ? parseInt(psParts[0]) : null;
+    const psScoreAway = psParts.length === 2 && psParts[1].trim() ? parseInt(psParts[1]) : null;
+    const psWinner = m.outcomes?.penalty_shootout === '1' ? m.home_name
+      : m.outcomes?.penalty_shootout === '2' ? m.away_name : null;
+
     return {
       id: String(m.id),
       fixtureId: String(m.fixture_id || ''),
@@ -317,10 +328,17 @@ async function getHistoryMatches(from, to) {
       awayScore: parseInt(ftParts[1]) || 0,
       htScore: m.ht_score || '',
       ftScore: m.ft_score || m.score || '',
+      etScore: m.et_score || null,
+      psScoreHome,
+      psScoreAway,
+      psWinner,
+      isPenalties,
+      isExtraTime,
+      timeStr,
       status: m.status || 'FINISHED',
       date: m.date,
       venue: m.location || '',
-      stage: 'Group Stage',
+      stage: inferStageFromDate(m.date),
       homeFlag: getFlagEmoji(m.home_name),
       awayFlag: getFlagEmoji(m.away_name),
       isLive: false,
@@ -419,13 +437,33 @@ function expandPosition(pos) {
 function inferStage(round) {
   if (!round) return 'Group Stage';
   const r = String(round).toLowerCase().trim();
+  // Short codes from the fixtures API (R32, R16, QF, SF, F, 3PPO)
+  if (r === 'r32') return 'Round of 32';
+  if (r === 'r16') return 'Round of 16';
+  if (r === 'qf') return 'Quarterfinals';
+  if (r === 'sf') return 'Semifinals';
+  if (r === 'f') return 'Final';
+  if (r === '3ppo') return 'Third Place Playoff';
+  // Numeric group stage rounds
   if (/^\d+$/.test(r)) return 'Group Stage';
+  // Full text fallbacks
   if (r.includes('final') && !r.includes('semi') && !r.includes('quarter')) return 'Final';
-  if (r.includes('semi')) return 'Semi-finals';
-  if (r.includes('quarter')) return 'Quarter-finals';
+  if (r.includes('semi')) return 'Semifinals';
+  if (r.includes('quarter')) return 'Quarterfinals';
   if (r.includes('round of 16') || r.includes('round of sixteen')) return 'Round of 16';
   if (r.includes('round of 32')) return 'Round of 32';
   return String(round);
+}
+
+// Infer tournament stage from match date — used for history matches that lack a round field
+function inferStageFromDate(dateStr) {
+  if (!dateStr || dateStr <= '2026-06-27') return 'Group Stage';
+  if (dateStr <= '2026-07-03') return 'Round of 32';
+  if (dateStr <= '2026-07-07') return 'Round of 16';
+  if (dateStr <= '2026-07-10') return 'Quarterfinals';
+  if (dateStr <= '2026-07-14') return 'Semifinals';
+  if (dateStr === '2026-07-16') return 'Third Place Playoff';
+  return 'Final';
 }
 
 function toISOKickoff(date, time) {
@@ -510,10 +548,41 @@ function getFlagEmoji(teamName) {
   return flags[teamName] || '🌍';
 }
 
+// Returns confirmed upcoming knockout fixtures (next 14 days) — filters out TBD placeholder teams
+async function getUpcomingKnockoutFixtures() {
+  const etToday = etDateStr();
+  const end = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+  const data = await call('/fixtures/matches.json', {
+    competition_id: COMP,
+    date_from: etToday,
+    date_to: end,
+  });
+  if (!data?.data?.fixtures) return [];
+
+  return data.data.fixtures
+    .filter(f => {
+      const stage = inferStage(f.round);
+      if (stage === 'Group Stage') return false;
+      // Only include matches where both teams are confirmed (no "Winner R32 Match X" placeholders)
+      const isPlaceholder = /winner|loser/i.test(f.home_name) || /winner|loser/i.test(f.away_name);
+      return !isPlaceholder;
+    })
+    .map(f => ({
+      homeTeam: f.home_name,
+      awayTeam: f.away_name,
+      kickoffET: convertToET(f.date, f.time),
+      date: f.date,
+      stage: inferStage(f.round),
+      venue: f.location || '',
+      matchId: String(f.id),
+    }));
+}
+
 module.exports = {
   getLiveMatches,
   getTodayFixtures,
   getUpcomingFixtures,
+  getUpcomingKnockoutFixtures,
   getFixturesInRange,
   getFixturesForDate,
   getFinishedMatches,
@@ -526,4 +595,5 @@ module.exports = {
   getStandings,
   getFlagEmoji,
   convertToET,
+  inferStageFromDate,
 };
